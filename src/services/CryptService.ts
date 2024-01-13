@@ -25,7 +25,7 @@ export class CryptService {
 	}
 
 	generatePasswordToken(userId: string): string {
-		const passwordToken = String(Math.random());
+		const passwordToken = crypto.randomBytes(16).toString('hex');
 
 		const token = sign(
 			{ userId, passwordToken },
