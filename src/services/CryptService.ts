@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import jsonwebtoken from "jsonwebtoken";
+import {sign, verify} from "jsonwebtoken";
 
 const SECRET = "ABCDEF"
 const ENVIRONMENT = "development"
@@ -9,7 +9,7 @@ const ONE_HOUR_MILLIS = 3600;
 
 type hashedPasswordData = {password:string, salt:string}
 
-export class CryptUtil {
+export class CryptService {
 	async hashPassword(password: string): Promise<hashedPasswordData> {
         const salt = crypto.randomBytes(16).toString('hex')
         const hashedPassword:string = crypto.pbkdf2Sync(password, salt, 10, 32, 'sha512').toString('hex')
@@ -27,7 +27,7 @@ export class CryptUtil {
 	generatePasswordToken(userId: string): string {
 		const passwordToken = String(Math.random());
 
-		const token = jsonwebtoken.sign(
+		const token = sign(
 			{ userId, passwordToken },
 			SECRET as string,
 			{
@@ -41,12 +41,12 @@ export class CryptUtil {
 		userId: string;
 		passwordToken: string;
 	} {
-		const decoded = jsonwebtoken.verify(token, SECRET as string);
+		const decoded = verify(token, SECRET as string);
 		return decoded as { userId: string; passwordToken: string };
 	}
 
 	generateJWT(userData: { id: string; name: string; email: string }): string {
-		const token = jsonwebtoken.sign(userData, SECRET as string, {
+		const token = sign(userData, SECRET as string, {
 			expiresIn: this.getJWTExpireTimeMillis(ENVIRONMENT as string),
 		});
 		return token;
