@@ -4,7 +4,7 @@ import {CryptService} from './CryptService';
 const cryptService = new CryptService();
 
 
-describe.concurrent("Encrypting Service", () => {
+describe("Encrypting Service", () => {
     test("hashPassword should return a object containing the hashed password and the salt generated", async () => {
         const testingPassword = "testingPassword";
         
@@ -46,5 +46,29 @@ describe.concurrent("Encrypting Service", () => {
 
         expect(result.userId).toBe("userId");
         expect(result.passwordToken).toBeTypeOf("string");
+    });
+
+    test("generateJWT should return a token", () => {
+        const token = cryptService.generateJWT({id: "userId-test", name: "userName", email: "userEmail"});
+
+        expect(token).toBeTypeOf("string");
+    });
+
+    test("getJWTExpireTimeMillis should return 86400 if the env is development", () => {
+        const result = cryptService.getJWTExpireTimeMillis("development");
+
+        expect(result).toBe(86400);
+    });
+
+    test("getJWTExpireTimeMillis should return 3600 if the env is production", () => {
+        const result = cryptService.getJWTExpireTimeMillis("production");
+
+        expect(result).toBe(3600);
+    });
+
+    test("getJWTExpireTimeMillis should return 3600 if the env is not development or production", () => {
+        const result = cryptService.getJWTExpireTimeMillis("test");
+
+        expect(result).toBe(3600);
     });
 });
