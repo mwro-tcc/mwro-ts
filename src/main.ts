@@ -2,7 +2,7 @@
 import express from "express"
 import router from "./routes"
 const app = express()
-const port = 3040
+const port = process.env.PORT
 
 app.use(router)
 

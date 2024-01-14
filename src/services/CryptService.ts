@@ -2,8 +2,8 @@ import crypto from 'crypto';
 
 import jsonwebtoken from "jsonwebtoken";
 
-const SECRET = "ABCDEF"
-const ENVIRONMENT = "development"
+const SECRET = process.env.SECRET;
+const ENVIRONMENT = process.env.NODE_ENV;
 const TWENTY_FOUR_HOURS_MILLIS = 86400;
 const ONE_HOUR_MILLIS = 3600;
 
