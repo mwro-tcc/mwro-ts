@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import {sign, verify} from "jsonwebtoken";
+import jsonwebtoken from "jsonwebtoken";
 
 const SECRET = "ABCDEF"
 const ENVIRONMENT = "development"
@@ -27,7 +27,7 @@ export class CryptService {
 	generatePasswordToken(userId: string): string {
 		const passwordToken = crypto.randomBytes(16).toString('hex');
 
-		const token = sign(
+		const token = jsonwebtoken.sign(
 			{ userId, passwordToken },
 			SECRET as string,
 			{
@@ -41,12 +41,12 @@ export class CryptService {
 		userId: string;
 		passwordToken: string;
 	} {
-		const decoded = verify(token, SECRET as string);
+		const decoded = jsonwebtoken.verify(token, SECRET as string);
 		return decoded as { userId: string; passwordToken: string };
 	}
 
 	generateJWT(userData: { id: string; name: string; email: string }): string {
-		const token = sign(userData, SECRET as string, {
+		const token = jsonwebtoken.sign(userData, SECRET as string, {
 			expiresIn: this.getJWTExpireTimeMillis(ENVIRONMENT as string),
 		});
 		return token;
