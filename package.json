@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"test": "pnpm pretest && cross-env NODE_ENV=test vitest run",
-		"pretest": "cross-env NODE_ENV=test tsx src/database/test_preparations.ts && cross-env NODE_ENV=test tsx src/database/migrate.ts",
+		"pretest": "cross-env NODE_ENV=test tsx src/database/DestroyTestDatabase.ts && cross-env NODE_ENV=test tsx src/database/migrate.ts",
 		"dev": "ts-node-dev src/main.ts",
 		"migration:generate": "pnpm drizzle-kit generate:pg",
 		"migration:delete": "pnpm drizzle-kit drop",
