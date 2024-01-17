@@ -38,10 +38,6 @@ export class TestDatabaseReseter {
 
 		const isOnTestEnvironment = isTestEnv && isTestDatabase && isTestUser;
 
-		console.log(isTestEnv);
-		console.log(process.env.DATABASE_NAME);
-		console.log(process.env.DATABASE_USER);
-
 		if (!isOnTestEnvironment) throw new Error('Truncate should be used only in test environment');
 	};
 }
