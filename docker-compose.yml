@@ -2,16 +2,30 @@ version: '3.7'
 services:
   postgres:
     image: postgres:16
-    container_name: mwro-db 
+    container_name: mwro-db
     environment:
-        POSTGRES_USER: mwro
-        POSTGRES_PASSWORD: pswd
-        POSTGRES_DB: mwro_db
+      POSTGRES_USER: mwro
+      POSTGRES_PASSWORD: pswd
+      POSTGRES_DB: mwro_db
     volumes:
       - postgresdata:/var/lib/postgres
     ports:
       - 5430:5432
 
-volumes: 
-    postgresdata: 
-      driver: local
+  postgres_test:
+    image: postgres:16
+    container_name: mwro-test-db
+    environment:
+      POSTGRES_USER: mwro_test
+      POSTGRES_PASSWORD: pswd_test
+      POSTGRES_DB: mwro_db_test
+    volumes:
+      - postgrestestdata:/var/lib/postgres
+    ports:
+      - 5429:5432
+
+volumes:
+  postgresdata:
+    driver: local
+  postgrestestdata:
+    driver: local

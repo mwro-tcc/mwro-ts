@@ -8,7 +8,7 @@ const port = process.env.PORT;
 
 app.use(router);
 
-app.listen(port, () => {
+app.listen(port, async () => {
 	console.log(`mwro API listening on port ${port}`);
 });
 

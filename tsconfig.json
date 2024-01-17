@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
-		"target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-		"module": "commonjs" /* Specify what module code is generated. */,
+		"target": "es2022" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+		"module": "es2022" /* Specify what module code is generated. */,
 		"lib": ["ES7", "DOM"],
 		"typeRoots": ["./src/types"],
 		"removeComments": true,
