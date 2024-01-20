@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import jsonwebtoken from 'jsonwebtoken';
 import { DecodedTokenPayload } from '../services/crypto/CryptService';
+import { getEnvValues } from '../constants/EnvironmentVariables';
 
-const { SECRET } = process.env;
+const env = getEnvValues()
+const { SECRET } = env;
 
 export function authenticationMiddleware() {
 	return (req: Request, res: Response, next: NextFunction) => {
