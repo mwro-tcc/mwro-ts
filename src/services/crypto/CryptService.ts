@@ -10,7 +10,7 @@ const ONE_HOUR_MILLIS = 3600;
 type hashedPasswordData = { password: string; salt: string };
 
 export type DecodedTokenPayload = { id: string; name: string; email: string };
-export class CryptService {
+export class CryptoService {
 	async hashPassword(password: string): Promise<hashedPasswordData> {
 		const salt = crypto.randomBytes(16).toString('hex');
 		const hashedPassword: string = crypto

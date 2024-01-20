@@ -1,8 +1,8 @@
-import dotenv from 'dotenv';
-dotenv.config({ path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env' });
-
 import { sql } from 'drizzle-orm';
 import { db } from '../database';
+import { getEnvValues } from '../constants/EnvironmentVariables';
+
+const env = getEnvValues();
 
 export class TestDatabaseReseter {
 	async prepareForTests() {
@@ -32,9 +32,9 @@ export class TestDatabaseReseter {
 	}
 
 	private assureTestEnvironment = () => {
-		const isTestEnv = process.env.NODE_ENV === 'test';
-		const isTestDatabase = process.env.DATABASE_NAME === 'mwro_db_test';
-		const isTestUser = process.env.DATABASE_USER === 'mwro_test';
+		const isTestEnv = env.NODE_ENV === 'test';
+		const isTestDatabase = env.DATABASE_NAME === 'mwro_db_test';
+		const isTestUser = env.DATABASE_USER === 'mwro_test';
 
 		const isOnTestEnvironment = isTestEnv && isTestDatabase && isTestUser;
 

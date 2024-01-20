@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import jsonwebtoken from 'jsonwebtoken';
-import { DecodedTokenPayload } from '../services/CryptService';
+import { DecodedTokenPayload } from '../services/crypto/CryptService';
 
 const { SECRET } = process.env;
 
