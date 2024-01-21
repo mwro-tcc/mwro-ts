@@ -1,14 +1,16 @@
-import 'dotenv/config';
-import type { Config } from 'drizzle-kit';
+import type { Config } from 'drizzle-kit'
 
+import { getEnvValues } from "./src/constants/EnvironmentVariables";
+
+const env = getEnvValues()
 export default {
 	schema: './src/database/schema',
 	out: './drizzle',
 	driver: 'pg',
 	dbCredentials: {
-		host: process.env.DATABASE_HOST as string,
-		user: process.env.DATABASE_USER,
-		password: process.env.DATABASE_PASSWORD,
-		database: process.env.DATABASE_NAME as string,
+		host: env.DATABASE_HOST as string,
+		user: env.DATABASE_USER,
+		password: env.DATABASE_PASSWORD,
+		database: env.DATABASE_NAME as string,
 	},
-} satisfies Config;
+} satisfies Config

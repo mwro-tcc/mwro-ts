@@ -1,8 +1,8 @@
 {
 	"compilerOptions": {
 		"target": "es2022" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-		"module": "es2022" /* Specify what module code is generated. */,
-		"lib": ["ES7", "DOM"],
+		"module": "commonjs" /* Specify what module code is generated. */,
+		"lib": ["ES2022"],
 		"typeRoots": ["./src/types"],
 		"removeComments": true,
 		"rootDir": "./" /* Specify the root folder within your source files. */,

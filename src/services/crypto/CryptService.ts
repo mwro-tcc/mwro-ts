@@ -12,10 +12,10 @@ export type hashedPasswordData = { password: string; salt: string };
 export type DecodedToken = {
 	userId: string;
 	passwordToken: string;
-}
+};
 
 export type DecodedTokenPayload = { id: string; name: string; email: string };
-class CryptService implements ICryptoService {
+export class CryptoService {
 	async hashPassword(password: string): Promise<hashedPasswordData> {
 		const salt = crypto.randomBytes(16).toString('hex');
 		const hashedPassword: string = crypto
@@ -35,15 +35,15 @@ class CryptService implements ICryptoService {
 	}
 
 	/*
-	* Generates a JWT token intended for change password requests
-	* */
+	 * Generates a JWT token intended for change password requests
+	 * */
 	generatePasswordToken(userId: string): string {
 		const passwordToken = crypto.randomBytes(16).toString('hex');
 
-		const jwtPayload = { userId, passwordToken }
+		const jwtPayload = { userId, passwordToken };
 		const jwtOptions = {
 			expiresIn: this.getJWTExpireTimeMillis(ENVIRONMENT as string),
-		}
+		};
 		const token = jsonwebtoken.sign(jwtPayload, SECRET as string, jwtOptions);
 		return token;
 	}
@@ -54,8 +54,8 @@ class CryptService implements ICryptoService {
 	}
 
 	/*
-	* Generates a JWT token intended for user session management
-	* */
+	 * Generates a JWT token intended for user session management
+	 * */
 	generateJWT(userData: DecodedTokenPayload): string {
 		const token = jsonwebtoken.sign(userData, SECRET as string, {
 			expiresIn: this.getJWTExpireTimeMillis(ENVIRONMENT as string),
@@ -71,5 +71,5 @@ class CryptService implements ICryptoService {
 }
 
 export function makeCryptoService() {
-	return new CryptService()
+	return new CryptService();
 }

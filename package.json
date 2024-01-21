@@ -3,11 +3,10 @@
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
-	"type": "module",
 	"scripts": {
 		"test": "pnpm pretest && cross-env NODE_ENV=test vitest run",
-		"pretest": "cross-env NODE_ENV=test tsx src/database/DestroyTestDatabase.ts && cross-env NODE_ENV=test tsx src/database/migrate.ts",
-		"dev": "ts-node-dev src/main.ts",
+		"pretest": "node -r ts-node/register --env-file=.env.test src/database/DestroyTestDatabase.ts && node -r ts-node/register --env-file=.env.test src/database/migrate.ts",
+		"dev": "node -r ts-node/register --env-file=.env src/main.ts",
 		"migration:generate": "pnpm drizzle-kit generate:pg",
 		"migration:delete": "pnpm drizzle-kit drop",
 		"migration:run": "tsx src/database/migrate.ts"
@@ -31,10 +30,10 @@
 	"dependencies": {
 		"@types/express": "^4.17.21",
 		"cross-env": "^7.0.3",
-		"dotenv": "^16.3.1",
 		"drizzle-orm": "^0.29.3",
 		"express": "^4.18.2",
 		"jsonwebtoken": "^9.0.2",
-		"pg": "^8.11.3"
+		"pg": "^8.11.3",
+		"zod": "^3.22.4"
 	}
 }
