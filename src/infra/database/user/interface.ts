@@ -1,6 +1,6 @@
-import { UserCreationPayload } from ".";
-import { User } from "../../../database/schema/users";
+import { NewUser, User } from "../../../database/schema/users";
 
 export interface IUserAdapter {
-	create(payload: UserCreationPayload): Promise<User>
+	create(payload: NewUser): Promise<User>
+	isEmailAvailable(email: string): Promise<boolean>
 }

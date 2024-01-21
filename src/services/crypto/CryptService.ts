@@ -15,7 +15,7 @@ export type DecodedToken = {
 };
 
 export type DecodedTokenPayload = { id: string; name: string; email: string };
-export class CryptoService {
+export class CryptoService implements ICryptoService {
 	async hashPassword(password: string): Promise<hashedPasswordData> {
 		const salt = crypto.randomBytes(16).toString('hex');
 		const hashedPassword: string = crypto
@@ -71,5 +71,5 @@ export class CryptoService {
 }
 
 export function makeCryptoService() {
-	return new CryptService();
+	return new CryptoService();
 }
