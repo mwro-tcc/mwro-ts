@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 
 import jsonwebtoken from 'jsonwebtoken';
+import { ICryptoService } from './interface';
 
 const SECRET = process.env.SECRET;
 const ENVIRONMENT = process.env.NODE_ENV;
@@ -14,7 +15,7 @@ export type DecodedToken = {
 }
 
 export type DecodedTokenPayload = { id: string; name: string; email: string };
-export class CryptService implements ICryptoService {
+class CryptService implements ICryptoService {
 	async hashPassword(password: string): Promise<hashedPasswordData> {
 		const salt = crypto.randomBytes(16).toString('hex');
 		const hashedPassword: string = crypto
@@ -67,4 +68,8 @@ export class CryptService implements ICryptoService {
 		if (env === 'production') return ONE_HOUR_MILLIS;
 		return ONE_HOUR_MILLIS;
 	}
+}
+
+export function makeCryptoService() {
+	return new CryptService()
 }
