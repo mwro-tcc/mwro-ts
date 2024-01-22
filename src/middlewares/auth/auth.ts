@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { makeCryptoService } from '../services/crypto/CryptService';
-import { ErrorMessages } from '../constants/StatusError';
+import { makeCryptoService } from '../../services/crypto/CryptService';
+import { ErrorMessages } from '../../constants/StatusError';
 
 const cryptoService = makeCryptoService();
 

@@ -7,8 +7,8 @@ import { Env, envSchema } from "../validations/EnvironmentVariables";
  * */
 export const getEnvValues = () => {
 	const env = process.env
-	envSchema.parse(env)
-	return env as Env
+	const values = envSchema.passthrough().parse(env)
+	return values
 }
 
 // havent found a way to make vitest load .env.test, but for now this works.
