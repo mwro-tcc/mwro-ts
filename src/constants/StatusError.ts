@@ -11,5 +11,6 @@ export class StatusError extends Error {
 export const ErrorMessages = {
 	emailAlreadyInUse: 'Email already in use',
 	passwordTooSmall: 'Passwords must be at least 8 characters long',
-	mustBeAuthenticated: 'Only authenticated users can perform this action.'
+	mustBeAuthenticated: 'Only authenticated users can perform this action.',
+	internalServerError: 'Internal Server Error'
 }
