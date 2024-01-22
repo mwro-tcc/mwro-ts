@@ -3,9 +3,12 @@ import { db } from '../../../database';
 import { users } from '../../../database/schema/users';
 import { TestDatabaseReseter } from '../../../services/TestDatabaseReseterService';
 import { makeSignUpUseCase } from '.';
+import { ErrorMessages, StatusError } from '../../../constants/StatusError';
+import { makeCryptoService } from '../../../services/crypto/CryptService';
 
 const testDatabaseReseter = new TestDatabaseReseter();
 const userSignUpUseCase = makeSignUpUseCase();
+const cryptoService = makeCryptoService();
 
 describe('User Sign Up', () => {
 	beforeEach(async () => {
@@ -30,7 +33,7 @@ describe('User Sign Up', () => {
 			email: 'test',
 			password: 'test',
 		};
-		await expect(userSignUpUseCase.execute(userPreCreation)).rejects.toThrowError('Passwords must be at least 8 characters long')
+		await expect(userSignUpUseCase.execute(userPreCreation)).rejects.toThrow(new StatusError(400, ErrorMessages.passwordTooSmall))
 	})
 
 	test('It should hash the users password', async () => {
@@ -53,6 +56,18 @@ describe('User Sign Up', () => {
 			password: 'testWithMoreThanEightChars',
 		};
 		await userSignUpUseCase.execute(userPreCreation1);
-		await expect(userSignUpUseCase.execute(userPreCreation1)).rejects.toThrowError('Email already in use');
+		await expect(userSignUpUseCase.execute(userPreCreation1)).rejects.toThrow(new StatusError(400, ErrorMessages.emailAlreadyInUse))
+	});
+
+	test('it should generate a valid JWT on a user creation', async () => {
+		const userPreCreation = {
+			name: 'test',
+			email: 'test',
+			password: 'testWithMoreThanEightChars',
+		};
+		const created = await userSignUpUseCase.execute(userPreCreation);
+		const validated = cryptoService.verifyJWT(created.token);
+		expect(validated.name).toBe(userPreCreation.name);
+		expect(validated.id).toBeTypeOf('string');
 	});
 });

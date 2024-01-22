@@ -53,6 +53,11 @@ export class CryptoService implements ICryptoService {
 		return decoded as { userId: string; passwordToken: string };
 	}
 
+	verifyJWT(token: string): DecodedTokenPayload {
+		const decoded = jsonwebtoken.verify(token, SECRET as string);
+		return decoded as DecodedTokenPayload
+	}
+
 	/*
 	 * Generates a JWT token intended for user session management
 	 * */

@@ -8,5 +8,6 @@ export interface ICryptoService {
 	verifyPasswordToken(token: string): DecodedToken
 
 	generateJWT(userData: DecodedTokenPayload): string
+	verifyJWT(token: string): DecodedTokenPayload
 	getJWTExpireTimeMillis(env: string): number
 }
