@@ -1,32 +1,29 @@
 import { NextFunction, Request, Response } from 'express';
-import jsonwebtoken from 'jsonwebtoken';
-import { DecodedTokenPayload } from '../services/crypto/CryptService';
-import { getEnvValues } from '../constants/EnvironmentVariables';
+import { makeCryptoService } from '../services/crypto/CryptService';
+import { ErrorMessages } from '../constants/StatusError';
 
-const env = getEnvValues()
-const { SECRET } = env;
+const cryptoService = makeCryptoService();
+
 
 export function authenticationMiddleware() {
 	return (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { headers } = req;
 			const { authorization } = headers;
-			if (!authorization)
-				return res.status(401).send({
-					message: 'Only authenticated users can perform this action.',
+			if (!authorization) {
+				res.status(401).send({
+					message: ErrorMessages.mustBeAuthenticated,
 				});
 
-			const decoded = verifyToken(authorization);
+				return
+			}
+
+			const decoded = cryptoService.verifyJWT(authorization);
 			req.user = decoded;
 
 			next();
 		} catch (e) {
-			return res.status(401).send({ message: 'Only authenticated users can perform this action.' });
+			return res.status(401).send({ message: ErrorMessages.mustBeAuthenticated });
 		}
 	};
 }
-
-const verifyToken = (token: string) => {
-	const decoded = jsonwebtoken.verify(token, SECRET as string) as DecodedTokenPayload;
-	return decoded;
-};
