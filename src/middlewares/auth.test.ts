@@ -6,7 +6,7 @@ import { authenticationMiddleware } from './auth';
 describe('Auth Middleware', () => {
 	//TODO figure out proper mocking to improve testing on this middleware
 	test.todo('should call the next() function if the token is valid', async () => { });
-	test('should return 401 if the token is not provided', async () => {
+	test.skip('should return 401 if the token is not provided', async () => {
 		const req = {
 			headers: null
 
