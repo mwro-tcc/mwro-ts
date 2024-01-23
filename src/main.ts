@@ -15,10 +15,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-	next(new StatusError(404, ErrorMessages.routeNotFound))
-});
-
 app.use(router);
 
 app.listen(port, async () => {
@@ -34,6 +30,10 @@ app.use((err: Error | StatusError, _req: Request, res: Response, _next: NextFunc
 	}
 	res.status(500).send(ErrorMessages.internalServerError)
 })
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+	next(new StatusError(404, ErrorMessages.routeNotFound))
+});
 
 process.on('SIGINT', () => {
 	logger.info('Terminating mwro API...');

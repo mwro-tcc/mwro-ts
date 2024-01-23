@@ -9,7 +9,7 @@
 		"dev": "node -r ts-node/register --env-file=.env src/main.ts",
 		"migration:generate": "pnpm drizzle-kit generate:pg",
 		"migration:delete": "pnpm drizzle-kit drop",
-		"migration:run": "tsx src/database/migrate.ts"
+		"migration:run": "node -r ts-node/register --env-file=.env src/database/migrate.ts"
 	},
 	"keywords": [],
 	"author": "",

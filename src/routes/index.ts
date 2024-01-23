@@ -7,6 +7,6 @@ router.get('/', (_, res) => {
 	res.send('Testing response');
 });
 
-router.use(userRouter)
+router.use("/user", userRouter)
 
 export default router;
