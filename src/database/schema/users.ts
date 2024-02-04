@@ -14,3 +14,4 @@ export const users = pgTable('users', {
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+export type PublicUserFields = Pick<User, "name" | "email" | "createdAt">

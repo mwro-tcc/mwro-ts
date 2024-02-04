@@ -5,7 +5,7 @@ import { IUserAdapter } from '../../../infra/database/user/interface';
 import { DecodedTokenPayload, makeCryptoService } from '../../../services/crypto/CryptService';
 import { ICryptoService } from '../../../services/crypto/interface';
 
-type SignUpPayload = Omit<UserCreationPayload, 'salt'>;
+export type SignUpPayload = Omit<UserCreationPayload, 'salt'>;
 
 type SignUpUseCaseReturn = {
 	user: Omit<User, 'salt'>,

@@ -1,7 +1,7 @@
 import { expect, test, describe } from 'vitest';
-import { CryptoService } from './CryptService';
+import { makeCryptoService } from './CryptService';
 
-const cryptService = new CryptoService();
+const cryptService = makeCryptoService()
 
 describe('Encrypting Service', () => {
 	test('hashPassword should return a object containing the hashed password and the salt generated', async () => {

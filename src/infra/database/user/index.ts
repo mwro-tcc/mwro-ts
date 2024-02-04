@@ -18,6 +18,11 @@ class UserAdapter implements IUserAdapter {
 		const emailIsAvailable = !userExists
 		return emailIsAvailable
 	}
+
+	async findByEmail(email: string): Promise<User> {
+		const data = await db.select().from(users).where(eq(users.email, email)).limit(1)
+		return data[0]
+	}
 }
 
 export function makeUserAdapter() {
