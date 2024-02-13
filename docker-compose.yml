@@ -13,7 +13,7 @@ services:
       - 5430:5432
 
   postgres_test:
-    image: postgres:16
+    image: postgis/postgis:16-3.4-alpine
     container_name: mwro-test-db
     environment:
       POSTGRES_USER: mwro_test
