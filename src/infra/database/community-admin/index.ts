@@ -50,6 +50,10 @@ class CommunityAdminAdapter implements ICommunityAdminAdapter {
             .where(eq(communitiesAdmins.uuid, uuid));
         return data[0];
     }
+
+    async delete(uuid: string): Promise<void> {
+        await db.delete(communitiesAdmins).where(eq(communitiesAdmins.uuid, uuid));
+    }
 }
 
 export function makeCommunityAdminAdapter() {
