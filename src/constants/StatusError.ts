@@ -15,5 +15,10 @@ export const ErrorMessages = {
 	mustBeAuthenticated: 'Only authenticated users can perform this action.',
 	internalServerError: 'Internal Server Error',
 	routeNotFound: 'Route not found',
-	invalidCredentials: 'Invalid Credentials'
+	invalidCredentials: 'Invalid Credentials',
+	communityNotFound: 'Community not found',
+	userNotFound: 'User not found',
+	assetNotFound: 'Asset not found',
+	userNotAnAdmin: 'User is not an admin of this community',
+	userNotCreator: 'User is not the creator of this community'
 }
