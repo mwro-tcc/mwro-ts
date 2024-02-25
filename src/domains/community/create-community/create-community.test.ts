@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { TestDatabaseReseter } from "../../../services/TestDatabaseReseterService";
 import { makeCreateCommunityUseCase } from ".";
-import { SignUpPayload, makeSignUpUseCase } from "../sign-up";
 import { CommunityCreationData } from "./types";
+import { SignUpPayload, makeSignUpUseCase } from "../../user/sign-up";
 
 const testDatabaseReseter = new TestDatabaseReseter();
 const signUpUseCase = makeSignUpUseCase();
