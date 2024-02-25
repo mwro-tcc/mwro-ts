@@ -1,7 +1,7 @@
 import { db } from "../../../database";
 import { NewUser, User, users } from "../../../database/schema/users";
 import { IUserAdapter } from "./interface";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 export type UserCreationPayload = Pick<User, "name" | "salt" | "email" | "password">
 
@@ -21,6 +21,11 @@ class UserAdapter implements IUserAdapter {
 
 	async findByEmail(email: string): Promise<User> {
 		const data = await db.select().from(users).where(eq(users.email, email)).limit(1)
+		return data[0]
+	}
+
+	async findByUuid(uuid: string): Promise<User> {
+		const data = await db.select().from(users).where(eq(users.uuid, uuid)).limit(1)
 		return data[0]
 	}
 }
