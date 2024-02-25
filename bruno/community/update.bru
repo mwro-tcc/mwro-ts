@@ -1,0 +1,24 @@
+meta {
+  name: update
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{url}}/community/update/607aff7c-26f0-421b-99bd-b0feb1b61f5e
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM4MDE3NzcyLTQ4NTUtNDI5Zi1iNjJhLTE1ZmNkZTNhZTI0NSIsIm5hbWUiOiJQZWRybyIsImVtYWlsIjoicGVkcm9AZW1haWwuY29tIiwiaWF0IjoxNzA4ODg3NDMyLCJleHAiOjE3MDg5NzM4MzJ9.i00ohEIaQo8Xu4GJWU-w7PsAdCReY_jA70G9GDhTmeQ
+}
+
+body:json {
+  {
+    "name": "Mudei o titulo",
+    "latitude": 100.30,
+    "longitude": 100.20,
+    "isPrivate": false
+  }
+}
