@@ -24,8 +24,10 @@ export class TestDatabaseReseter {
 		const tables = await db.execute(query); // retrieve tables
 
 		for (const table of tables.rows) {
-			const query = sql.raw(`TRUNCATE TABLE ${table.table_name} CASCADE;`);
-			await db.execute(query); // Truncate (clear all the data) the table
+			const query = sql.raw(`TRUNCATE TABLE "${table.table_name}" CASCADE;`);
+
+			await db.execute(query) // Truncate (clear all the data) the table
+
 		}
 	}
 
