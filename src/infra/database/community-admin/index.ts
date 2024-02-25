@@ -20,6 +20,22 @@ class CommunityAdminAdapter implements ICommunityAdminAdapter {
 		)
 		return data[0].value
 	}
+
+	async findByUserAndCommunityUuid(userUuid: string, communityUuid: string): Promise<CommunityAdmin> {
+		const data = await db.select().from(communitiesAdmins).where(
+			and(
+				eq(communitiesAdmins.userUuid, userUuid),
+				eq(communitiesAdmins.communityUuid, communityUuid)
+			)
+		)
+		return data[0]
+	}
+	async findByUuid(uuid: string): Promise<CommunityAdmin> {
+		const data = await db.select().from(communitiesAdmins).where(
+			eq(communitiesAdmins.uuid, uuid)
+		)
+		return data[0]
+	}
 }
 
 export function makeCommunityAdminAdapter() {
