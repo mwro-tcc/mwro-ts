@@ -1,9 +1,8 @@
 export type SignInReturn = {
-	jwt: string
-}
-
+    jwt: string;
+};
 
 export type SignInPayload = {
-	email: string,
-	password: string
-}
+    email: string;
+    password: string;
+};

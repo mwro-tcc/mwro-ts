@@ -1,6 +1,5 @@
-import { SignInPayload, SignInReturn } from "./types"
+import { SignInPayload, SignInReturn } from "./types";
 
 export interface ISignInUseCase {
-	execute(payload: SignInPayload): Promise<SignInReturn>
+    execute(payload: SignInPayload): Promise<SignInReturn>;
 }
-
