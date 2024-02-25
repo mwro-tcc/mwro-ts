@@ -5,6 +5,6 @@ import { authenticationMiddleware } from "../middlewares/auth/auth";
 const router = express.Router();
 
 router.post("/create", authenticationMiddleware(), communityController.create());
-router.post("/update", authenticationMiddleware(), communityController.update());
+router.post("/update/:uuid", authenticationMiddleware(), communityController.update());
 
 export default router;

@@ -27,8 +27,8 @@ class CommunityController {
                 .then(async (validated) => {
                     return await updateCommunity.execute(
                         req.user.id,
-                        validated.body.communityUuid,
-                        validated.body.community,
+                        validated.params.uuid,
+                        validated.body,
                     );
                 })
                 .then((data) => res.status(200).send(data))
