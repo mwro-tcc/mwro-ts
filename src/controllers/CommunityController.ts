@@ -4,9 +4,12 @@ import { createCommunitySchema } from "../validations/CreateCommunity";
 import { makeCreateCommunityUseCase } from "../domains/community/create-community";
 import { makeUpdateCommunityUseCase } from "../domains/community/update-community";
 import { updateCommunitySchema } from "../validations/UpdateCommunity";
+import { findByUuidSchema } from "../validations/FindByUuid";
+import { makeDeleteCommunityUseCase } from "../domains/community/delete-community";
 
 const createCommunity = makeCreateCommunityUseCase();
 const updateCommunity = makeUpdateCommunityUseCase();
+const deleteCommunity = makeDeleteCommunityUseCase();
 class CommunityController {
     create() {
         return async (req: Request, res: Response, next: NextFunction) => {
@@ -32,6 +35,16 @@ class CommunityController {
                     );
                 })
                 .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+    delete() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(findByUuidSchema, req)
+                .then(async (validated) => {
+                    return await deleteCommunity.execute(req.user.id, validated.params.uuid);
+                })
+                .then((data) => res.status(204).send(data))
                 .catch(next);
         };
     }

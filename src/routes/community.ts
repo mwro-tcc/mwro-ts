@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.post("/create", authenticationMiddleware(), communityController.create());
 router.put("/update/:uuid", authenticationMiddleware(), communityController.update());
+router.delete("/delete/:uuid", authenticationMiddleware(), communityController.delete());
 
 export default router;
