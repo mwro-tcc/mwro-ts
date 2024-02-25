@@ -23,6 +23,10 @@ class CommunityAdapter implements ICommunityAdapter {
         const data = await db.select().from(communities).where(eq(communities.uuid, uuid));
         return data[0];
     }
+
+    async delete(uuid: string): Promise<void> {
+        await db.delete(communities).where(eq(communities.uuid, uuid));
+    }
 }
 
 export function makeCommunityAdapter() {
