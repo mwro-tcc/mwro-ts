@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { boolean, date, pgTable, uuid, varchar, real } from 'drizzle-orm/pg-core';
+import { boolean, date, pgTable, uuid, varchar, real, text } from 'drizzle-orm/pg-core';
 
 export const communities = pgTable('communities', {
 	uuid: uuid('uuid')
@@ -9,6 +9,7 @@ export const communities = pgTable('communities', {
 	isPrivate: boolean('isPrivate').notNull().default(false),
 	latitude: real('latitude').notNull(),
 	longitude: real('longitude').notNull(),
+	description: text('description'),
 
 	createdAt: date('createdAt').defaultNow().notNull(),
 });
