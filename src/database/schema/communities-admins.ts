@@ -4,7 +4,7 @@ import { boolean, date, pgTable, uuid, varchar, real } from 'drizzle-orm/pg-core
 import { users } from './users';
 import { communities } from './communities';
 
-export const communitiesAdmins = pgTable('communitiesAdmins', {
+export const communitiesAdmins = pgTable('communities_admins', {
 	uuid: uuid('uuid')
 		.primaryKey()
 		.default(sql`gen_random_uuid()`),

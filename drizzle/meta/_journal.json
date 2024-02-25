@@ -22,6 +22,13 @@
       "when": 1708281062743,
       "tag": "0002_clean_ghost_rider",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1708856929909,
+      "tag": "0003_overjoyed_molly_hayes",
+      "breakpoints": true
     }
   ]
 }
