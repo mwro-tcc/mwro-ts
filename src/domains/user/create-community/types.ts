@@ -6,6 +6,7 @@ export type CommunityCreationData = {
 	latitude: number
 	longitude: number
 	isPrivate: boolean
+	description?: string
 }
 
 export type CreateCommunityUseCasePayload = {

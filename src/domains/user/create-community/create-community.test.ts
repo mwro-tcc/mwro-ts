@@ -19,7 +19,8 @@ const communityData: CommunityCreationData = {
 	latitude: 100,
 	longitude: 50,
 	name: "New Community",
-	isPrivate: false
+	isPrivate: false,
+	description: "Testando"
 }
 
 describe('Community Creation UseCase test suite', () => {
