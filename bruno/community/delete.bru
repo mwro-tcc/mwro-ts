@@ -1,11 +1,11 @@
 meta {
-  name: create
+  name: delete
   type: http
-  seq: 1
+  seq: 4
 }
 
-post {
-  url: {{url}}/community/created
+delete {
+  url: {{url}}/community/delete/607aff7c-26f0-421b-99bd-b0feb1b61f5e
   body: json
   auth: none
 }
@@ -16,9 +16,9 @@ headers {
 
 body:json {
   {
-    "name": "Testando2",
+    "name": "Mudei o titulo",
     "latitude": 100.30,
     "longitude": 100.20,
-    "isPrivate": true
+    "isPrivate": false
   }
 }
