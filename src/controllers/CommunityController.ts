@@ -6,10 +6,13 @@ import { makeUpdateCommunityUseCase } from "../domains/community/update-communit
 import { updateCommunitySchema } from "../validations/UpdateCommunity";
 import { findByUuidSchema } from "../validations/FindByUuid";
 import { makeDeleteCommunityUseCase } from "../domains/community/delete-community";
+import { makeCommunityAdapter } from "../infra/database/community";
 
+const communityAdapter = makeCommunityAdapter();
 const createCommunity = makeCreateCommunityUseCase();
 const updateCommunity = makeUpdateCommunityUseCase();
 const deleteCommunity = makeDeleteCommunityUseCase();
+
 class CommunityController {
     create() {
         return async (req: Request, res: Response, next: NextFunction) => {
@@ -45,6 +48,20 @@ class CommunityController {
                     return await deleteCommunity.execute(req.user.id, validated.params.uuid);
                 })
                 .then((data) => res.status(204).send(data))
+                .catch(next);
+        };
+    }
+
+    listCreatedByUser() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            let { limit = 10, offset = 0 } = req.params;
+
+            limit = Number(limit);
+            offset = Number(offset);
+
+            return await communityAdapter
+                .listCreatedByUserUuid(req.user.id, { limit, offset })
+                .then((data) => res.status(200).send(data))
                 .catch(next);
         };
     }

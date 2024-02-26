@@ -1,7 +1,8 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "../../../database";
 import { Community, NewCommunity, communities } from "../../../database/schema/communities";
 import { ICommunityAdapter } from "./interface";
+import { communitiesAdmins } from "../../../database/schema/communities-admins";
 
 class CommunityAdapter implements ICommunityAdapter {
     constructor() {}
@@ -26,6 +27,21 @@ class CommunityAdapter implements ICommunityAdapter {
 
     async delete(uuid: string): Promise<void> {
         await db.delete(communities).where(eq(communities.uuid, uuid));
+    }
+
+    async listCreatedByUserUuid(userUuid: string, params: { limit: number; offset: number }) {
+        return db
+            .select({ community: communities })
+            .from(communities)
+            .innerJoin(communitiesAdmins, eq(communitiesAdmins.communityUuid, communities.uuid))
+            .where(
+                and(
+                    eq(communitiesAdmins.isCreator, true),
+                    eq(communitiesAdmins.userUuid, userUuid),
+                ),
+            )
+            .limit(params.limit)
+            .offset(params.offset);
     }
 }
 
