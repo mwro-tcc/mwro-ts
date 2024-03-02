@@ -61,10 +61,10 @@ export class TestDatabaseReseter {
             sql.raw(
                 "SELECT schema_name FROM information_schema.schemata where schema_name like 'test%';",
             ),
-        )) as any;
+        ).then(result => result.rows)) as any;
 
         for (const s of schemasList) {
-            await db.execute(sql.raw(`DROP SCHEMA ${s.schema_name}`));
+            await db.execute(sql.raw(`DROP SCHEMA "${s.schema_name}" CASCADE`));
         }
     }
 
