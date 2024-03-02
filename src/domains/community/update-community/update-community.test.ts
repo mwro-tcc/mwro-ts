@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { TestDatabaseReseter } from "../../../services/TestDatabaseReseterService";
 import { SignUpPayload, makeSignUpUseCase } from "../../user/sign-up";
 import { makeCreateCommunityUseCase } from "../create-community";
@@ -7,11 +7,6 @@ import { makeUpdateCommunityUseCase } from ".";
 import { makeCommunityAdapter } from "../../../infra/database/community";
 
 const testDatabaseReseter = new TestDatabaseReseter();
-const signUpUseCase = makeSignUpUseCase();
-const createCommunityUseCase = makeCreateCommunityUseCase();
-const communityAdapter = makeCommunityAdapter();
-
-const updateCommunityUseCase = makeUpdateCommunityUseCase();
 
 const newUserPayload: SignUpPayload = {
     name: "Test user",
@@ -27,29 +22,28 @@ const communityData: CommunityCreationData = {
     description: "Testando",
 };
 
-let communityUuid: string;
-let userUuid: string;
 describe("Community Update UseCase test suite", () => {
-    beforeEach(async () => {
-        await testDatabaseReseter.truncateAllTables();
+    it("It should update a community without errors", async () => {
+        const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
+
+        const signUpUseCase = makeSignUpUseCase(testDbInstance);
+        const createCommunityUseCase = makeCreateCommunityUseCase(testDbInstance);
+        const updateCommunityUseCase = makeUpdateCommunityUseCase(testDbInstance);
+        const communityAdapter = makeCommunityAdapter(testDbInstance);
+
         const { user, token: _ } = await signUpUseCase.execute(newUserPayload);
         const { community } = await createCommunityUseCase.execute({
             creatorUserUuid: user.uuid,
             communityData,
         });
-        userUuid = user.uuid;
-        communityUuid = community.uuid;
-    });
 
-    it("It should update a community without errors", async () => {
-        const communityBeforeUpdate = await communityAdapter.findByUuid(communityUuid);
+        const communityBeforeUpdate = await communityAdapter.findByUuid(community.uuid);
 
-        const community = await updateCommunityUseCase.execute(userUuid, communityUuid, {
+        const updatedCommunity = await updateCommunityUseCase.execute(user.uuid, community.uuid, {
             name: "Updated Name",
         });
 
-        expect(communityBeforeUpdate.name).not.toBe(community.name);
-        expect(community.name).toBe(community.name);
+        expect(communityBeforeUpdate.name).not.toBe(updatedCommunity.name);
     });
 
     it.skip("It throw an error when trying to update a community that does not exists");

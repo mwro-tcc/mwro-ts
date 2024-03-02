@@ -37,4 +37,4 @@ pool.connect()
     .catch(() => logger.error("Failed to connect to database"));
 
 // Db is the ORM instance, which is a wrapper around the client
-export const db = drizzle(pool);
+export const databaseConnectionPool = drizzle(pool);

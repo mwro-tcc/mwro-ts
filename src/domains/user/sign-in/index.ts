@@ -1,3 +1,4 @@
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { ErrorMessages, StatusError } from "../../../constants/StatusError";
 import { makeUserAdapter } from "../../../infra/database/user";
 import { IUserAdapter } from "../../../infra/database/user/interface";
@@ -5,6 +6,7 @@ import { makeCryptoService } from "../../../services/crypto/CryptService";
 import { ICryptoService } from "../../../services/crypto/interface";
 import { ISignInUseCase } from "./interface";
 import { SignInPayload, SignInReturn } from "./types";
+import { databaseConnectionPool } from "../../../database";
 
 class SignInUseCase implements ISignInUseCase {
     constructor(
@@ -34,6 +36,6 @@ class SignInUseCase implements ISignInUseCase {
     }
 }
 
-export function makeSignInUseCase() {
-    return new SignInUseCase(makeUserAdapter(), makeCryptoService());
+export function makeSignInUseCase(db: NodePgDatabase = databaseConnectionPool) {
+    return new SignInUseCase(makeUserAdapter(db), makeCryptoService());
 }

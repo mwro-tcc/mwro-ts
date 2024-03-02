@@ -1,22 +1,23 @@
 import { and, count, eq } from "drizzle-orm";
-import { db } from "../../../database";
 import {
     CommunityAdmin,
     NewCommunityAdmin,
     communitiesAdmins,
 } from "../../../database/schema/communities-admins";
 import { ICommunityAdminAdapter } from "./interface";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { databaseConnectionPool } from "../../../database";
 
 class CommunityAdminAdapter implements ICommunityAdminAdapter {
-    constructor() {}
+    constructor(private readonly db: NodePgDatabase) {}
 
     async create(params: NewCommunityAdmin): Promise<CommunityAdmin> {
-        const data = await db.insert(communitiesAdmins).values(params).returning();
+        const data = await this.db.insert(communitiesAdmins).values(params).returning();
         return data[0];
     }
 
     async getNumberOfCommunitiesCreated(userUuid: string): Promise<number> {
-        const data = await db
+        const data = await this.db
             .select({ value: count() })
             .from(communitiesAdmins)
             .where(
@@ -32,7 +33,7 @@ class CommunityAdminAdapter implements ICommunityAdminAdapter {
         userUuid: string,
         communityUuid: string,
     ): Promise<CommunityAdmin> {
-        const data = await db
+        const data = await this.db
             .select()
             .from(communitiesAdmins)
             .where(
@@ -44,7 +45,7 @@ class CommunityAdminAdapter implements ICommunityAdminAdapter {
         return data[0];
     }
     async findByUuid(uuid: string): Promise<CommunityAdmin> {
-        const data = await db
+        const data = await this.db
             .select()
             .from(communitiesAdmins)
             .where(eq(communitiesAdmins.uuid, uuid));
@@ -52,10 +53,10 @@ class CommunityAdminAdapter implements ICommunityAdminAdapter {
     }
 
     async delete(uuid: string): Promise<void> {
-        await db.delete(communitiesAdmins).where(eq(communitiesAdmins.uuid, uuid));
+        await this.db.delete(communitiesAdmins).where(eq(communitiesAdmins.uuid, uuid));
     }
 }
 
-export function makeCommunityAdminAdapter() {
-    return new CommunityAdminAdapter();
+export function makeCommunityAdminAdapter(db: NodePgDatabase = databaseConnectionPool) {
+    return new CommunityAdminAdapter(db);
 }

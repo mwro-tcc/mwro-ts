@@ -4,8 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "pnpm pretest && cross-env NODE_ENV=test vitest run",
-        "pretest": "node -r ts-node/register --env-file=.env.test src/database/DestroyTestDatabase.ts && node -r ts-node/register --env-file=.env.test src/database/migrate.ts",
+        "test": "cross-env NODE_ENV=test vitest run",
         "dev": "node -r ts-node/register --env-file=.env src/main.ts",
         "migration:generate": "pnpm drizzle-kit generate:pg",
         "migration:delete": "pnpm drizzle-kit drop",

@@ -1,32 +1,70 @@
 import { sql } from "drizzle-orm";
-import { db } from "../database";
 import { getEnvValues } from "../constants/EnvironmentVariables";
+import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
+import { randomUUID } from "crypto";
+import { Client } from "pg";
+import { readFileSync, readdirSync } from "fs";
 
 const env = getEnvValues();
 
 export class TestDatabaseReseter {
-    async prepareForTests() {
-        this.assureTestEnvironment();
+    /**
+     * Returns a Drizzle object connected to a database intended for tests usage.
+     *
+     * */
+    async returnTestDbInstance(): Promise<NodePgDatabase> {
+        const env = getEnvValues();
 
-        let query = sql.raw(
-            `DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO mwro_test; GRANT ALL ON SCHEMA public TO public; COMMENT ON SCHEMA public IS 'standard public schema';`,
-        );
-        await db.execute(query);
+        const pool = new Client({
+            host: env.DATABASE_HOST,
+            port: Number(env.DATABASE_PORT),
+            user: env.DATABASE_USER,
+            password: env.DATABASE_PASSWORD,
+            database: env.DATABASE_NAME,
+        });
+        await pool.connect();
 
-        query = sql.raw(`DROP SCHEMA IF EXISTS drizzle CASCADE`);
-        await db.execute(query);
+        // Db is the ORM instance, which is a wrapper around the pg client
+        const db = drizzle(pool);
+        const newSchemaUuid = randomUUID();
+
+        const schema = `test_${newSchemaUuid}`;
+
+        const schemaCreationQuery = sql.raw(`create schema "${schema}"`);
+        await db.execute(schemaCreationQuery);
+
+        const setDefaultSchemaQuery = sql.raw(`SET SEARCH_PATH TO '${schema}'`);
+        await db.execute(setDefaultSchemaQuery);
+
+        // more code for preparing the Db instance for tests can be put here. Eg: Run seeds
+
+        await this.migrateTestDbInstance(db);
+
+        return db;
     }
 
-    async truncateAllTables() {
+    private async migrateTestDbInstance(db: NodePgDatabase): Promise<void> {
         this.assureTestEnvironment();
-        const query = sql<string>`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';`;
+        const migrationsDir = readdirSync("./drizzle");
+        const fileNames = migrationsDir.filter((fileName) => fileName !== "meta");
+        for (const f of fileNames) {
+            const migrationString = readFileSync(`./drizzle/${f}`).toString();
+            const migrationSqlObj = sql.raw(migrationString);
+            await db.execute(migrationSqlObj);
+        }
+    }
 
-        const tables = await db.execute(query); // retrieve tables
+    async dropAllSchemasInTestDatabase(db: NodePgDatabase): Promise<void> {
+        this.assureTestEnvironment();
 
-        for (const table of tables.rows) {
-            const query = sql.raw(`TRUNCATE TABLE "${table.table_name}" CASCADE;`);
+        const schemasList: { schema_name: string }[] = (await db.execute(
+            sql.raw(
+                "SELECT schema_name FROM information_schema.schemata where schema_name like 'test%';",
+            ),
+        )) as any;
 
-            await db.execute(query); // Truncate (clear all the data) the table
+        for (const s of schemasList) {
+            await db.execute(sql.raw(`DROP SCHEMA ${s.schema_name}`));
         }
     }
 

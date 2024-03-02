@@ -8,12 +8,6 @@ import { makeCommunityAdapter } from "../../../infra/database/community";
 import { makeCommunityAdminAdapter } from "../../../infra/database/community-admin";
 
 const testDatabaseReseter = new TestDatabaseReseter();
-const signUpUseCase = makeSignUpUseCase();
-const createCommunityUseCase = makeCreateCommunityUseCase();
-const communityAdapter = makeCommunityAdapter();
-const communityAdminAdapter = makeCommunityAdminAdapter();
-
-const deleteCommunityUseCase = makeDeleteCommunityUseCase();
 
 const newUserPayload: SignUpPayload = {
     name: "Test user",
@@ -29,15 +23,20 @@ const communityData: CommunityCreationData = {
     description: "Testando",
 };
 
-let userUuid: string;
 describe("Community Deletion UseCase test suite", () => {
-    beforeEach(async () => {
-        await testDatabaseReseter.truncateAllTables();
-        const { user, token: _ } = await signUpUseCase.execute(newUserPayload);
-        userUuid = user.uuid;
-    });
-
     it("It should delete a community without errors", async () => {
+        const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
+
+        const signUpUseCase = makeSignUpUseCase(testDbInstance);
+        const createCommunityUseCase = makeCreateCommunityUseCase(testDbInstance);
+        const deleteCommunityUseCase = makeDeleteCommunityUseCase(testDbInstance);
+
+        const communityAdapter = makeCommunityAdapter(testDbInstance);
+        const communityAdminAdapter = makeCommunityAdminAdapter(testDbInstance);
+
+        const { user, token: _ } = await signUpUseCase.execute(newUserPayload);
+        const userUuid = user.uuid;
+
         const { community } = await createCommunityUseCase.execute({
             creatorUserUuid: userUuid,
             communityData,

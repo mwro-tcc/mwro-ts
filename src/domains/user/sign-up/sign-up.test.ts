@@ -1,21 +1,19 @@
 import { beforeEach, describe, expect, test } from "vitest";
-import { db } from "../../../database";
 import { users } from "../../../database/schema/users";
 import { TestDatabaseReseter } from "../../../services/TestDatabaseReseterService";
 import { makeSignUpUseCase } from ".";
 import { ErrorMessages, StatusError } from "../../../constants/StatusError";
 import { makeCryptoService } from "../../../services/crypto/CryptService";
+import { databaseConnectionPool } from "../../../database";
 
 const testDatabaseReseter = new TestDatabaseReseter();
-const userSignUpUseCase = makeSignUpUseCase();
 const cryptoService = makeCryptoService();
 
 describe("User Sign Up", () => {
-    beforeEach(async () => {
-        await testDatabaseReseter.truncateAllTables();
-    });
-
     test("It should create a user", async () => {
+        const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
+        const userSignUpUseCase = makeSignUpUseCase(testDbInstance);
+
         const userPreCreation = {
             name: "test",
             email: "test",
@@ -23,11 +21,14 @@ describe("User Sign Up", () => {
         };
         await userSignUpUseCase.execute(userPreCreation);
 
-        const usersOnDb = await db.select().from(users);
+        const usersOnDb = await testDbInstance.select().from(users);
         expect(usersOnDb).toBeDefined();
     });
 
     test("It should throw an invalid password error", async () => {
+        const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
+        const userSignUpUseCase = makeSignUpUseCase(testDbInstance);
+
         const userPreCreation = {
             name: "test",
             email: "test",
@@ -39,6 +40,9 @@ describe("User Sign Up", () => {
     });
 
     test("It should hash the users password", async () => {
+        const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
+        const userSignUpUseCase = makeSignUpUseCase(testDbInstance);
+
         const userPreCreation = {
             name: "test",
             email: "test",
@@ -46,11 +50,14 @@ describe("User Sign Up", () => {
         };
         await userSignUpUseCase.execute(userPreCreation);
 
-        const usersOnDb = await db.select().from(users);
+        const usersOnDb = await testDbInstance.select().from(users);
         expect(usersOnDb[0].password).not.toBe(userPreCreation.password);
     });
 
     test("It should throw an error due to repeated email", async () => {
+        const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
+        const userSignUpUseCase = makeSignUpUseCase(testDbInstance);
+
         const userPreCreation1 = {
             name: "test",
             email: "test",
@@ -63,6 +70,9 @@ describe("User Sign Up", () => {
     });
 
     test("it should generate a valid JWT on a user creation", async () => {
+        const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
+        const userSignUpUseCase = makeSignUpUseCase(testDbInstance);
+
         const userPreCreation = {
             name: "test",
             email: "test",

@@ -1,19 +1,20 @@
-import { db } from "../../../database";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { NewUser, User, users } from "../../../database/schema/users";
 import { IUserAdapter } from "./interface";
 import { eq } from "drizzle-orm";
+import { databaseConnectionPool } from "../../../database";
 
 export type UserCreationPayload = Pick<User, "name" | "salt" | "email" | "password">;
 
 class UserAdapter implements IUserAdapter {
-    constructor() {}
+    constructor(private readonly db: NodePgDatabase) {}
     async create(payload: NewUser): Promise<User> {
-        const data = await db.insert(users).values(payload).returning();
+        const data = await this.db.insert(users).values(payload).returning();
         return data[0];
     }
 
     async isEmailAvailable(email: string): Promise<boolean> {
-        const data = await db
+        const data = await this.db
             .select({ email: users.email })
             .from(users)
             .where(eq(users.email, email))
@@ -24,16 +25,16 @@ class UserAdapter implements IUserAdapter {
     }
 
     async findByEmail(email: string): Promise<User> {
-        const data = await db.select().from(users).where(eq(users.email, email)).limit(1);
+        const data = await this.db.select().from(users).where(eq(users.email, email)).limit(1);
         return data[0];
     }
 
     async findByUuid(uuid: string): Promise<User> {
-        const data = await db.select().from(users).where(eq(users.uuid, uuid)).limit(1);
+        const data = await this.db.select().from(users).where(eq(users.uuid, uuid)).limit(1);
         return data[0];
     }
 }
 
-export function makeUserAdapter() {
-    return new UserAdapter();
+export function makeUserAdapter(db: NodePgDatabase = databaseConnectionPool) {
+    return new UserAdapter(db);
 }
