@@ -1,5 +1,24 @@
 version: "3.7"
 services:
+    api:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        env_file: .env
+        image: mwro_api_image
+        container_name: mwro_api_container
+        volumes:
+            - .:/app
+        ports:
+            - 3040:3040
+        depends_on:
+            - postgres
+        links:
+            - postgres
+        networks:
+            - mwro_network
+
+
     postgres:
         image: postgres:16
         container_name: mwro-db
@@ -11,6 +30,8 @@ services:
             - postgresdata:/var/lib/postgres
         ports:
             - 5430:5432
+        networks:
+            - mwro_network
 
     postgres_test:
         image: postgres:16
@@ -23,6 +44,11 @@ services:
             - postgrestestdata:/var/lib/postgres
         ports:
             - 5429:5432
+
+
+networks:
+    mwro_network:
+        name: mwro_network
 
 volumes:
     postgresdata:
