@@ -34,7 +34,10 @@ const config = {
 export const pool = new Pool(config[environment]);
 pool.connect()
     .then(() => logger.info("Connected to database successfully"))
-    .catch(() => logger.error("Failed to connect to database"));
+    .catch((e) => {
+        logger.error("Failed to connect to database");
+        logger.error(e);
+    });
 
 // Db is the ORM instance, which is a wrapper around the client
 export const databaseConnectionPool = drizzle(pool);
