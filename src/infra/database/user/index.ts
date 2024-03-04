@@ -33,6 +33,10 @@ class UserAdapter implements IUserAdapter {
         const data = await this.db.select().from(users).where(eq(users.uuid, uuid)).limit(1);
         return data[0];
     }
+
+    async bulkCreate(data: NewUser[]): Promise<void> {
+        await this.db.insert(users).values(data);
+    }
 }
 
 export function makeUserAdapter(db: NodePgDatabase = databaseConnectionPool) {

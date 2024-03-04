@@ -5,4 +5,5 @@ export interface IUserAdapter {
     isEmailAvailable(email: string): Promise<boolean>;
     findByEmail(email: string): Promise<User>;
     findByUuid(uuid: string): Promise<User>;
+    bulkCreate(data: NewUser[]): Promise<void>;
 }
