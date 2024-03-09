@@ -1,41 +1,48 @@
 {
-    "version": "5",
-    "dialect": "pg",
-    "entries": [
-        {
-            "idx": 0,
-            "version": "5",
-            "when": 1705532233974,
-            "tag": "0000_lumpy_wong",
-            "breakpoints": true
-        },
-        {
-            "idx": 1,
-            "version": "5",
-            "when": 1708199254706,
-            "tag": "0001_misty_flatman",
-            "breakpoints": true
-        },
-        {
-            "idx": 2,
-            "version": "5",
-            "when": 1708281062743,
-            "tag": "0002_clean_ghost_rider",
-            "breakpoints": true
-        },
-        {
-            "idx": 3,
-            "version": "5",
-            "when": 1708856929909,
-            "tag": "0003_overjoyed_molly_hayes",
-            "breakpoints": true
-        },
-        {
-            "idx": 4,
-            "version": "5",
-            "when": 1708859981694,
-            "tag": "0004_confused_manta",
-            "breakpoints": true
-        }
-    ]
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1705532233974,
+      "tag": "0000_lumpy_wong",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1708199254706,
+      "tag": "0001_misty_flatman",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1708281062743,
+      "tag": "0002_clean_ghost_rider",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1708856929909,
+      "tag": "0003_overjoyed_molly_hayes",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1708859981694,
+      "tag": "0004_confused_manta",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1709941519051,
+      "tag": "0005_rare_thena",
+      "breakpoints": true
+    }
+  ]
 }
