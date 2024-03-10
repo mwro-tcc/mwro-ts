@@ -9,6 +9,10 @@ class StoreAdapter implements IStoreAdapter {
         const createdCommunity = await this.db.insert(stores).values(data).returning();
         return createdCommunity[0];
     }
+
+    async bulkCreate(payload: NewStore[]): Promise<void> {
+        await this.db.insert(stores).values(payload).returning();
+    }
 }
 
 export function makeStoreAdapter(db: NodePgDatabase) {

@@ -11,8 +11,12 @@ export const TestDatabaseCommonValues = {
             userUuid: "08e462af-4c7f-431e-9c88-4b07b4662438", // user1
             communityUuid: "ffe0b40d-f329-4822-9e4e-1c4a0ad6155f", // community1
         },
+        store1: {
+            uuid: "95c5d341-117a-4f4e-ab98-577592512ff0",
+            userUuid: "08e462af-4c7f-431e-9c88-4b07b4662438", // user1
+            communityUuid: "ffe0b40d-f329-4822-9e4e-1c4a0ad6155f", // community1
+        },
     },
-    store1Uuid: "95c5d341-117a-4f4e-ab98-577592512ff0",
 
     //
     user2: {
