@@ -1,27 +1,23 @@
 import { describe, expect, it } from "vitest";
 import { TestDatabaseReseter } from "../../../services/TestDatabaseReseterService";
-import { makeSignUpUseCase } from "../../user/sign-up";
-import { makeCreateCommunityUseCase } from "../../community/create-community";
+import { makeCreateStoreUseCase } from ".";
+import { randomUUID } from "crypto";
+import { TestDatabaseCommonValues } from "../../../constants/TestDatabaseSeedValues";
 
 const testDatabaseReseter = new TestDatabaseReseter();
 
-const userCreationPayload = {
-    name: "test",
-    email: "test",
-    password: "test",
-};
-
-describe("Community Creation UseCase test suite", () => {
-    it("It should create a new community without errors", async () => {
+describe("Store Creation UseCase test suite", () => {
+    it("It should create a new store without errors", async () => {
         const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
 
-        const signUpUseCase = makeSignUpUseCase(testDbInstance);
-        const createCommunityUseCase = makeCreateCommunityUseCase(testDbInstance);
+        const createStoreUseCase = makeCreateStoreUseCase(testDbInstance);
+        const store = await createStoreUseCase.execute({
+            uuid: randomUUID(),
+            communityUuid: TestDatabaseCommonValues.community1.uuid,
+            userUuid: TestDatabaseCommonValues.community1.admin1.userUuid,
+            name: "Testing store creation",
+        });
 
-        const { user, token: _ } = await signUpUseCase.execute(userCreationPayload);
-        // const { creator, community } = await createCommunityUseCase.execute({
-        //     creatorUserUuid: user.uuid,
-        //     communityData,
-        // });
+        expect(store).toBeDefined();
     });
 });

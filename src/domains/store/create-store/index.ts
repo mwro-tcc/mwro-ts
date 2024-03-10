@@ -3,10 +3,7 @@ import { NewStore, Store } from "../../../database/schema/stores";
 import { makeStoreAdapter } from "../../../infra/database/store";
 import { IStoreAdapter } from "../../../infra/database/store/interface";
 import { databaseConnectionPool } from "../../../database";
-
-interface ICreateStoreUseCase {
-    execute(params: NewStore): Promise<Store>;
-}
+import { ICreateStoreUseCase } from "./interface";
 
 class CreateStoreUseCase implements ICreateStoreUseCase {
     constructor(private readonly storeAdapter: IStoreAdapter) {}
