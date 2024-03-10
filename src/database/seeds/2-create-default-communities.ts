@@ -21,6 +21,7 @@ const communityAdmins: NewCommunityAdmin[] = [
         uuid: TestDatabaseCommonValues.community1.admin1.uuid,
         userUuid: TestDatabaseCommonValues.community1.admin1.userUuid,
         communityUuid: TestDatabaseCommonValues.community1.admin1.communityUuid,
+        isCreator: true,
     },
 ];
 export async function populate(db: NodePgDatabase) {
