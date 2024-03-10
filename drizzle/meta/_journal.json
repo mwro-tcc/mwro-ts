@@ -50,6 +50,13 @@
       "when": 1710080104889,
       "tag": "0006_groovy_mister_fear",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1710080228445,
+      "tag": "0007_flashy_mastermind",
+      "breakpoints": true
     }
   ]
 }

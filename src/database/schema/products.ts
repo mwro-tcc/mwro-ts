@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { boolean, date, pgTable, uuid, varchar, real, text } from "drizzle-orm/pg-core";
+import { stores } from "./stores";
 
 export const products = pgTable("products", {
     uuid: uuid("uuid")
@@ -9,6 +10,9 @@ export const products = pgTable("products", {
     price: real("price").notNull(),
     stock: real("stock").notNull(),
     description: text("description"),
+    storeUuid: uuid("storeUuid")
+        .notNull()
+        .references(() => stores.uuid),
 
     createdAt: date("createdAt").defaultNow().notNull(),
 });
