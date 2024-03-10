@@ -43,6 +43,13 @@
       "when": 1709941519051,
       "tag": "0005_rare_thena",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1710080104889,
+      "tag": "0006_groovy_mister_fear",
+      "breakpoints": true
     }
   ]
 }
