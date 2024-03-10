@@ -13,6 +13,10 @@ class UserAdapter implements IUserAdapter {
         return data[0];
     }
 
+    async bulkCreate(payload: NewUser[]): Promise<void> {
+        await this.db.insert(users).values(payload).returning();
+    }
+
     async isEmailAvailable(email: string): Promise<boolean> {
         const data = await this.db
             .select({ email: users.email })

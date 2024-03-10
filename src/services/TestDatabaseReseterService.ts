@@ -4,6 +4,7 @@ import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
 import { randomUUID } from "crypto";
 import { Client } from "pg";
 import { readFileSync, readdirSync } from "fs";
+import populate from "../database/seeds/seed-calls";
 
 const env = getEnvValues();
 
@@ -36,9 +37,8 @@ export class TestDatabaseReseter {
         const setDefaultSchemaQuery = sql.raw(`SET SEARCH_PATH TO '${schema}'`);
         await db.execute(setDefaultSchemaQuery);
 
-        // more code for preparing the Db instance for tests can be put here. Eg: Run seeds
-
         await this.migrateTestDbInstance(db);
+        await this.seedTestDbInstance(db);
 
         return db;
     }
@@ -54,14 +54,20 @@ export class TestDatabaseReseter {
         }
     }
 
+    private async seedTestDbInstance(db: NodePgDatabase): Promise<void> {
+        await populate(db);
+    }
+
     async dropAllSchemasInTestDatabase(db: NodePgDatabase): Promise<void> {
         this.assureTestEnvironment();
 
-        const schemasList: { schema_name: string }[] = (await db.execute(
-            sql.raw(
-                "SELECT schema_name FROM information_schema.schemata where schema_name like 'test%';",
-            ),
-        ).then(result => result.rows)) as any;
+        const schemasList: { schema_name: string }[] = (await db
+            .execute(
+                sql.raw(
+                    "SELECT schema_name FROM information_schema.schemata where schema_name like 'test%';",
+                ),
+            )
+            .then((result) => result.rows)) as any;
 
         for (const s of schemasList) {
             await db.execute(sql.raw(`DROP SCHEMA "${s.schema_name}" CASCADE`));

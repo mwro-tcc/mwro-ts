@@ -1,10 +1,9 @@
-import { beforeEach, describe, expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
 import { users } from "../../../database/schema/users";
 import { TestDatabaseReseter } from "../../../services/TestDatabaseReseterService";
 import { makeSignUpUseCase } from ".";
 import { ErrorMessages, StatusError } from "../../../constants/StatusError";
 import { makeCryptoService } from "../../../services/crypto/CryptService";
-import { databaseConnectionPool } from "../../../database";
 
 const testDatabaseReseter = new TestDatabaseReseter();
 const cryptoService = makeCryptoService();

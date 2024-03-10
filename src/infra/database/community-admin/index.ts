@@ -16,6 +16,10 @@ class CommunityAdminAdapter implements ICommunityAdminAdapter {
         return data[0];
     }
 
+    async bulkCreate(payload: NewCommunityAdmin[]): Promise<void> {
+        await this.db.insert(communitiesAdmins).values(payload).returning();
+    }
+
     async getNumberOfCommunitiesCreated(userUuid: string): Promise<number> {
         const data = await this.db
             .select({ value: count() })
