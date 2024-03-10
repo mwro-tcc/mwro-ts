@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { TestDatabaseReseter } from "../../../services/TestDatabaseReseterService";
 import { SignUpPayload, makeSignUpUseCase } from "../../user/sign-up";
 import { makeCreateCommunityUseCase } from "../create-community";
@@ -6,14 +6,9 @@ import { CommunityCreationData } from "../create-community/types";
 import { makeDeleteCommunityUseCase } from ".";
 import { makeCommunityAdapter } from "../../../infra/database/community";
 import { makeCommunityAdminAdapter } from "../../../infra/database/community-admin";
+import { TestDatabaseCommonValues } from "../../../constants/TestDatabaseSeedValues";
 
 const testDatabaseReseter = new TestDatabaseReseter();
-
-const newUserPayload: SignUpPayload = {
-    name: "Test user",
-    email: "user@test.com",
-    password: "1234567910ab@",
-};
 
 const communityData: CommunityCreationData = {
     latitude: 100,
@@ -27,15 +22,13 @@ describe("Community Deletion UseCase test suite", () => {
     it("It should delete a community without errors", async () => {
         const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
 
-        const signUpUseCase = makeSignUpUseCase(testDbInstance);
         const createCommunityUseCase = makeCreateCommunityUseCase(testDbInstance);
         const deleteCommunityUseCase = makeDeleteCommunityUseCase(testDbInstance);
 
         const communityAdapter = makeCommunityAdapter(testDbInstance);
         const communityAdminAdapter = makeCommunityAdminAdapter(testDbInstance);
 
-        const { user, token: _ } = await signUpUseCase.execute(newUserPayload);
-        const userUuid = user.uuid;
+        const userUuid = TestDatabaseCommonValues.user1.uuid;
 
         const { community } = await createCommunityUseCase.execute({
             creatorUserUuid: userUuid,

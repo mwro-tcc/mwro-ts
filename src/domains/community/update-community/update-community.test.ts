@@ -1,47 +1,29 @@
 import { describe, expect, it } from "vitest";
 import { TestDatabaseReseter } from "../../../services/TestDatabaseReseterService";
-import { SignUpPayload, makeSignUpUseCase } from "../../user/sign-up";
-import { makeCreateCommunityUseCase } from "../create-community";
-import { CommunityCreationData } from "../create-community/types";
 import { makeUpdateCommunityUseCase } from ".";
 import { makeCommunityAdapter } from "../../../infra/database/community";
+import { TestDatabaseCommonValues } from "../../../constants/TestDatabaseSeedValues";
 
 const testDatabaseReseter = new TestDatabaseReseter();
-
-const newUserPayload: SignUpPayload = {
-    name: "Test user",
-    email: "user@test.com",
-    password: "1234567910ab@",
-};
-
-const communityData: CommunityCreationData = {
-    latitude: 100,
-    longitude: 50,
-    name: "New Community",
-    isPrivate: false,
-    description: "Testando",
-};
 
 describe("Community Update UseCase test suite", () => {
     it("It should update a community without errors", async () => {
         const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
 
-        const signUpUseCase = makeSignUpUseCase(testDbInstance);
-        const createCommunityUseCase = makeCreateCommunityUseCase(testDbInstance);
         const updateCommunityUseCase = makeUpdateCommunityUseCase(testDbInstance);
         const communityAdapter = makeCommunityAdapter(testDbInstance);
 
-        const { user, token: _ } = await signUpUseCase.execute(newUserPayload);
-        const { community } = await createCommunityUseCase.execute({
-            creatorUserUuid: user.uuid,
-            communityData,
-        });
+        const communityBeforeUpdate = await communityAdapter.findByUuid(
+            TestDatabaseCommonValues.community1.uuid,
+        );
 
-        const communityBeforeUpdate = await communityAdapter.findByUuid(community.uuid);
-
-        const updatedCommunity = await updateCommunityUseCase.execute(user.uuid, community.uuid, {
-            name: "Updated Name",
-        });
+        const updatedCommunity = await updateCommunityUseCase.execute(
+            TestDatabaseCommonValues.community1.admin1.uuid,
+            TestDatabaseCommonValues.community1.uuid,
+            {
+                name: "Updated Name",
+            },
+        );
 
         expect(communityBeforeUpdate.name).not.toBe(updatedCommunity.name);
     });

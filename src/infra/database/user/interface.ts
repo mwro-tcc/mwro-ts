@@ -1,6 +1,7 @@
 import { NewUser, User } from "../../../database/schema/users";
 
 export interface IUserAdapter {
+    bulkCreate(payload: NewUser[]): Promise<void>;
     create(payload: NewUser): Promise<User>;
     isEmailAvailable(email: string): Promise<boolean>;
     findByEmail(email: string): Promise<User>;

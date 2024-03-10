@@ -12,6 +12,10 @@ class CommunityAdapter implements ICommunityAdapter {
         return data[0];
     }
 
+    async bulkCreate(payload: NewCommunity[]): Promise<void> {
+        await this.db.insert(communities).values(payload).returning();
+    }
+
     async update(uuid: string, input: Partial<NewCommunity>): Promise<Community> {
         const data = await this.db
             .update(communities)
