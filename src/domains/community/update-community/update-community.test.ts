@@ -18,7 +18,7 @@ describe("Community Update UseCase test suite", () => {
         );
 
         const updatedCommunity = await updateCommunityUseCase.execute(
-            TestDatabaseCommonValues.community1.admin1.uuid,
+            TestDatabaseCommonValues.community1.admin1.userUuid,
             TestDatabaseCommonValues.community1.uuid,
             {
                 name: "Updated Name",

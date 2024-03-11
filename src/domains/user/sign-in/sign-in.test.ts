@@ -13,7 +13,7 @@ describe("User Sign In", () => {
 
         const token = await signInUseCase.execute({
             email: TestDatabaseCommonValues.user1.email,
-            password: TestDatabaseCommonValues.user1.password,
+            password: TestDatabaseCommonValues.user1.unhashedPassword,
         });
 
         expect(token).toBeDefined();
