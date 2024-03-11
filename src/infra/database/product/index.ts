@@ -5,7 +5,7 @@ import { NewProduct, Product, products } from "../../../database/schema/products
 class ProductAdapter implements IProductAdapter {
     constructor(private readonly db: NodePgDatabase) {}
     async bulkCreate(payload: NewProduct[]): Promise<void> {
-        throw new Error("");
+        await this.db.insert(products).values(payload).returning();
     }
 
     async create(params: NewProduct): Promise<Product> {
