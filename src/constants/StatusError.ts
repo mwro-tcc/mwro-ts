@@ -1,8 +1,5 @@
 export class StatusError extends Error {
-    constructor(
-        readonly statusCode: number,
-        readonly message: string = "",
-    ) {
+    constructor(readonly statusCode: number, readonly message: string = "") {
         super(message);
     }
 }
@@ -20,4 +17,6 @@ export const ErrorMessages = {
     assetNotFound: "Asset not found",
     userNotAnAdmin: "User is not an admin of this community",
     userNotCreator: "User is not the creator of this community",
+    storeNotFound: "Store not found",
+    userIsNotStoreOwner: "Only the owner of the store may perform this action",
 };
