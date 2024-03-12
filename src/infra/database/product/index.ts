@@ -1,6 +1,7 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { IProductAdapter } from "./interface";
 import { NewProduct, Product, products } from "../../../database/schema/products";
+import { eq } from "drizzle-orm";
 
 class ProductAdapter implements IProductAdapter {
     constructor(private readonly db: NodePgDatabase) {}
@@ -14,11 +15,12 @@ class ProductAdapter implements IProductAdapter {
     }
 
     async delete(uuid: string): Promise<void> {
-        throw new Error("");
+        await this.db.delete(products).where(eq(products.uuid, uuid));
     }
 
     async findByUuid(uuid: string): Promise<Product> {
-        throw new Error("");
+        const data = await this.db.select().from(products).where(eq(products.uuid, uuid));
+        return data[0];
     }
 
     async listCreatedByUserUuid(
