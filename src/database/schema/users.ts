@@ -10,7 +10,6 @@ export const users = pgTable("users", {
     password: varchar("password", { length: 256 }).notNull(),
     salt: varchar("salt", { length: 256 }).notNull(),
     createdAt: date("createdAt").defaultNow().notNull(),
-    deletedAt: date("deletedAt"),
 });
 
 export type User = typeof users.$inferSelect;
