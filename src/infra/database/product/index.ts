@@ -23,34 +23,13 @@ class ProductAdapter implements IProductAdapter {
         return data[0];
     }
 
-    async listCreatedByUserUuid(
-        userUuid: string,
-        params: { limit: number; offset: number },
-    ): Promise<any> {
-        throw new Error("");
-    }
-
-    async update(
-        uuid: string,
-        data: Partial<{
-            name: string;
-            price: number;
-            stock: number;
-            storeUuid: string;
-            uuid?: string | undefined;
-            description?: string | null | undefined;
-            createdAt?: string | undefined;
-        }>,
-    ): Promise<{
-        uuid: string;
-        name: string;
-        price: number;
-        stock: number;
-        description: string | null;
-        storeUuid: string;
-        createdAt: string;
-    }> {
-        throw new Error("");
+    async update(uuid: string, data: Partial<NewProduct>): Promise<Product> {
+        const updated = await this.db
+            .update(products)
+            .set(data)
+            .where(eq(products.uuid, uuid))
+            .returning();
+        return updated[0];
     }
 }
 

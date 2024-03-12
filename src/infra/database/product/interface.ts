@@ -6,8 +6,4 @@ export interface IProductAdapter {
     findByUuid(uuid: string): Promise<Product>;
     update(uuid: string, data: Partial<NewProduct>): Promise<Product>;
     delete(uuid: string): Promise<void>;
-    listCreatedByUserUuid(
-        userUuid: string,
-        params: { limit: number; offset: number },
-    ): Promise<any>;
 }
