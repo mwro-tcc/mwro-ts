@@ -1,7 +1,7 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { NewUser, User, users } from "../../../database/schema/users";
 import { IUserAdapter } from "./interface";
-import { eq } from "drizzle-orm";
+import { and, eq, isNotNull, not } from "drizzle-orm";
 import { databaseConnectionPool } from "../../../database";
 
 export type UserCreationPayload = Pick<User, "name" | "salt" | "email" | "password">;
@@ -29,12 +29,20 @@ class UserAdapter implements IUserAdapter {
     }
 
     async findByEmail(email: string): Promise<User> {
-        const data = await this.db.select().from(users).where(eq(users.email, email)).limit(1);
+        const data = await this.db
+            .select()
+            .from(users)
+            .where(and(eq(users.email, email), isNotNull(users.deletedAt)))
+            .limit(1);
         return data[0];
     }
 
     async findByUuid(uuid: string): Promise<User> {
-        const data = await this.db.select().from(users).where(eq(users.uuid, uuid)).limit(1);
+        const data = await this.db
+            .select()
+            .from(users)
+            .where(and(eq(users.uuid, uuid), isNotNull(users.deletedAt)))
+            .limit(1);
         return data[0];
     }
 }
