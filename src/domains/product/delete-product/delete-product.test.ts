@@ -30,7 +30,7 @@ describe("Product Deletion UseCase test suite", () => {
         expect(productAfterDeletion).toBeUndefined();
     });
 
-    it.skip("It throw an error when trying to delete a product that does not exists");
+    it.skip("It throw an error when trying to delete a product that does not exist");
     it.skip("It throw an error when a invalid userUuid tries to delete a product");
     it.skip(
         "It throw an error when someone who is not the creator of the store tries to delete a product",
