@@ -6,10 +6,13 @@ import { databaseConnectionPool } from "../database";
 import { makeCreateProductUseCase } from "../domains/product/create-product";
 import { makeDeleteProductUseCase } from "../domains/product/delete-product";
 import { createProductSchema } from "../validations/CreateProduct";
+import { updateProductSchema } from "../validations/UpdateProduct";
+import { makeUpdateProductUseCase } from "../domains/product/update-product";
 
 const productAdapter = makeProductAdapter(databaseConnectionPool);
 const createProduct = makeCreateProductUseCase(databaseConnectionPool);
 const deleteProduct = makeDeleteProductUseCase(databaseConnectionPool);
+const updateProduct = makeUpdateProductUseCase(databaseConnectionPool);
 
 class ProductController {
     create() {
@@ -25,20 +28,22 @@ class ProductController {
                 .catch(next);
         };
     }
-    //   update() {
-    //       return async (req: Request, res: Response, next: NextFunction) => {
-    //           return await validate(updateCommunitySchema, req)
-    //               .then(async (validated) => {
-    //                   return await updateCommunity.execute(
-    //                       req.user.id,
-    //                       validated.params.uuid,
-    //                       validated.body,
-    //                   );
-    //               })
-    //               .then((data) => res.status(200).send(data))
-    //               .catch(next);
-    //       };
-    //   }
+
+    update() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(updateProductSchema, req)
+                .then(async (validated) => {
+                    return await updateProduct.execute(
+                        req.user.id,
+                        validated.params.uuid,
+                        validated.body,
+                    );
+                })
+                .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+
     delete() {
         return async (req: Request, res: Response, next: NextFunction) => {
             return await validate(findByUuidSchema, req)
