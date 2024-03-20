@@ -1,13 +1,18 @@
 meta {
-  name: created
+  name: list products
   type: http
-  seq: 3
+  seq: 5
 }
 
 get {
-  url: {{url}}/community/created
+  url: {{url}}/community/c9fcf554-51c8-4a7b-bbb1-e5f33d27033d/products?limit=10&offset=0
   body: json
   auth: none
+}
+
+query {
+  limit: 10
+  offset: 0
 }
 
 headers {

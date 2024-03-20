@@ -7,11 +7,16 @@ import { updateCommunitySchema } from "../validations/UpdateCommunity";
 import { findByUuidSchema } from "../validations/FindByUuid";
 import { makeDeleteCommunityUseCase } from "../domains/community/delete-community";
 import { makeCommunityAdapter } from "../infra/database/community";
+import { listWithUuid } from "../validations/ListWithUuid";
+import { makeProductAdapter } from "../infra/database/product";
+import { databaseConnectionPool } from "../database";
 
 const communityAdapter = makeCommunityAdapter();
 const createCommunity = makeCreateCommunityUseCase();
 const updateCommunity = makeUpdateCommunityUseCase();
 const deleteCommunity = makeDeleteCommunityUseCase();
+
+const productAdapter = makeProductAdapter(databaseConnectionPool);
 
 class CommunityController {
     create() {
@@ -72,6 +77,19 @@ class CommunityController {
 
             return await communityAdapter
                 .listCreatedByUserUuid(req.user.id, { limit, offset })
+                .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+
+    listProducts() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(listWithUuid, req)
+                .then(async (validated) => {
+                    return await productAdapter.listFromCommunity(validated.params.uuid, {
+                        ...validated.query,
+                    });
+                })
                 .then((data) => res.status(200).send(data))
                 .catch(next);
         };

@@ -3,6 +3,9 @@ import { IProductAdapter } from "./interface";
 import { NewProduct, Product, products } from "../../../database/schema/products";
 import { eq } from "drizzle-orm";
 import { PaginationParams } from "../../../types/PaginationParams";
+import { stores } from "../../../database/schema/stores";
+import { communities } from "../../../database/schema/communities";
+import { QueryBuilder } from "drizzle-orm/pg-core";
 
 class ProductAdapter implements IProductAdapter {
     constructor(private readonly db: NodePgDatabase) {}
@@ -33,13 +36,19 @@ class ProductAdapter implements IProductAdapter {
         return updated[0];
     }
 
-    async listFromStore(storeUuid: string, params: PaginationParams): Promise<Product[]> {
+    async listFromCommunity(communityUuid: string, params: PaginationParams): Promise<Product[]> {
         const data = await this.db
-            .select()
+            .select({
+                products,
+            })
             .from(products)
-            .where(eq(products.storeUuid, storeUuid))
+            .innerJoin(stores, eq(stores.uuid, products.storeUuid))
+            .innerJoin(communities, eq(stores.communityUuid, communities.uuid))
+            .where(eq(communities.uuid, communityUuid))
             .limit(params.limit)
-            .offset(params.offset);
+            .offset(params.offset)
+            .then((results) => results.map((r) => r.products));
+
         return data;
     }
 }
