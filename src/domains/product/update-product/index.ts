@@ -29,7 +29,7 @@ class UpdateProductUsecase {
         if (store.userUuid !== user.uuid)
             throw new StatusError(403, ErrorMessages.userIsNotStoreOwner);
 
-        await this.productAdapter.update(product.uuid, data);
+        return await this.productAdapter.update(product.uuid, data);
     }
 }
 
