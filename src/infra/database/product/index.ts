@@ -2,6 +2,7 @@ import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { IProductAdapter } from "./interface";
 import { NewProduct, Product, products } from "../../../database/schema/products";
 import { eq } from "drizzle-orm";
+import { PaginationParams } from "../../../types/PaginationParams";
 
 class ProductAdapter implements IProductAdapter {
     constructor(private readonly db: NodePgDatabase) {}
@@ -30,6 +31,16 @@ class ProductAdapter implements IProductAdapter {
             .where(eq(products.uuid, uuid))
             .returning();
         return updated[0];
+    }
+
+    async listFromStore(storeUuid: string, params: PaginationParams): Promise<Product[]> {
+        const data = await this.db
+            .select()
+            .from(products)
+            .where(eq(products.storeUuid, storeUuid))
+            .limit(params.limit)
+            .offset(params.offset);
+        return data;
     }
 }
 
