@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{url}}/community/create
+  url: {{url}}/product/create
   body: json
   auth: none
 }
@@ -16,9 +16,9 @@ headers {
 
 body:json {
   {
-    "name": "Testando2",
-    "latitude": 100.30,
-    "longitude": 100.20,
-    "isPrivate": true
+    "name": "Produto exemplo",
+    "storeUuid": "cece6fce-2aa3-46b3-bde0-9765a55a19ac",
+    "price": 3,
+    "stock": 10
   }
 }

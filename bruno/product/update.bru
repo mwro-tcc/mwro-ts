@@ -1,11 +1,11 @@
 meta {
-  name: create
+  name: update
   type: http
-  seq: 1
+  seq: 2
 }
 
-post {
-  url: {{url}}/community/create
+put {
+  url: {{url}}/product/update/dcaf0fdc-2434-4073-8d60-b0e403823b79
   body: json
   auth: none
 }
@@ -16,9 +16,6 @@ headers {
 
 body:json {
   {
-    "name": "Testando2",
-    "latitude": 100.30,
-    "longitude": 100.20,
-    "isPrivate": true
+    "name": "Mudei o nome do produto2"
   }
 }
