@@ -52,6 +52,17 @@ class CommunityController {
         };
     }
 
+    findByUuid() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(findByUuidSchema, req)
+                .then(async (validated) => {
+                    return await communityAdapter.findByUuid(validated.params.uuid);
+                })
+                .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+
     listCreatedByUser() {
         return async (req: Request, res: Response, next: NextFunction) => {
             let { limit = 10, offset = 0 } = req.params;
