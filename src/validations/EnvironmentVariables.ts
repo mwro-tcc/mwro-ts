@@ -9,6 +9,7 @@ export const envSchema = z.object({
     DATABASE_USER: z.string(),
     DATABASE_HOST: z.string(),
     DATABASE_NAME: z.string(),
+    DEFAULT_STORE_UUID: z.string(), // Temporary fix, while we do not implement store creation.
 });
 
 export type Env = z.infer<typeof envSchema>;
