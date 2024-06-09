@@ -12,7 +12,7 @@ class SignInUseCase implements ISignInUseCase {
     constructor(
         private readonly userAdapter: IUserAdapter,
         private readonly cryptoService: ICryptoService,
-    ) {}
+    ) { }
 
     async execute(payload: SignInPayload): Promise<SignInReturn> {
         const user = await this.userAdapter.findByEmail(payload.email);
@@ -31,7 +31,7 @@ class SignInUseCase implements ISignInUseCase {
         });
 
         return {
-            jwt: token,
+            token,
         };
     }
 }

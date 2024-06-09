@@ -1,5 +1,5 @@
 export type SignInReturn = {
-    jwt: string;
+    token: string;
 };
 
 export type SignInPayload = {
