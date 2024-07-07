@@ -5,7 +5,7 @@ import { makeCommunityAdapter } from "../../../infra/database/community";
 import { makeCommunityAdminAdapter } from "../../../infra/database/community-admin";
 import { ICommunityAdminAdapter } from "../../../infra/database/community-admin/interface";
 import { ICommunityAdapter } from "../../../infra/database/community/interface";
-import { makeUserAdapter } from "../../../infra/database/user";
+import { makePgUserAdapter } from "../../../infra/database/user";
 import { IUserAdapter } from "../../../infra/database/user/interface";
 import { IUpdateCommunityUseCase } from "./interface";
 import { databaseConnectionPool } from "../../../database";
@@ -47,7 +47,7 @@ class UpdateCommunityUseCase implements IUpdateCommunityUseCase {
 
 export function makeUpdateCommunityUseCase(db: NodePgDatabase = databaseConnectionPool) {
     return new UpdateCommunityUseCase(
-        makeUserAdapter(db),
+        makePgUserAdapter(db),
         makeCommunityAdapter(db),
         makeCommunityAdminAdapter(db),
     );

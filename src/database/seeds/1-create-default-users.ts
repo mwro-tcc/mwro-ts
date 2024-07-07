@@ -1,6 +1,6 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { TestDatabaseCommonValues } from "../../constants/TestDatabaseSeedValues";
-import { makeUserAdapter } from "../../infra/database/user";
+import { makePgUserAdapter } from "../../infra/database/user";
 import { NewUser } from "../schema/users";
 
 const users: NewUser[] = [
@@ -20,6 +20,6 @@ const users: NewUser[] = [
     },
 ];
 export async function populate(db: NodePgDatabase) {
-    const userAdapter = makeUserAdapter(db);
+    const userAdapter = makePgUserAdapter(db);
     await userAdapter.bulkCreate(users);
 }

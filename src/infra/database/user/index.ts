@@ -6,7 +6,7 @@ import { databaseConnectionPool } from "../../../database";
 
 export type UserCreationPayload = Pick<User, "name" | "salt" | "email" | "password">;
 
-class UserAdapter implements IUserAdapter {
+class PgUserAdapter implements IUserAdapter {
     constructor(private readonly db: NodePgDatabase) {}
     async create(payload: NewUser): Promise<User> {
         const data = await this.db.insert(users).values(payload).returning();
@@ -39,6 +39,6 @@ class UserAdapter implements IUserAdapter {
     }
 }
 
-export function makeUserAdapter(db: NodePgDatabase = databaseConnectionPool) {
-    return new UserAdapter(db);
+export function makePgUserAdapter(db: NodePgDatabase = databaseConnectionPool) {
+    return new PgUserAdapter(db);
 }

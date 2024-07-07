@@ -4,7 +4,7 @@ import { makeCommunityAdapter } from "../../../infra/database/community";
 import { makeCommunityAdminAdapter } from "../../../infra/database/community-admin";
 import { ICommunityAdminAdapter } from "../../../infra/database/community-admin/interface";
 import { ICommunityAdapter } from "../../../infra/database/community/interface";
-import { makeUserAdapter } from "../../../infra/database/user";
+import { makePgUserAdapter } from "../../../infra/database/user";
 import { IUserAdapter } from "../../../infra/database/user/interface";
 import { databaseConnectionPool } from "../../../database";
 
@@ -42,6 +42,6 @@ export function makeDeleteCommunityUseCase(db: NodePgDatabase = databaseConnecti
     return new DeleteCommunityUseCase(
         makeCommunityAdapter(db),
         makeCommunityAdminAdapter(db),
-        makeUserAdapter(db),
+        makePgUserAdapter(db),
     );
 }
