@@ -1,6 +1,6 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { IProductAdapter } from "../../../infra/database/product/interface";
-import { makeProductAdapter } from "../../../infra/database/product";
+import { makePgProductAdapter } from "../../../infra/database/product";
 import { IUserAdapter } from "../../../infra/database/user/interface";
 import { makePgUserAdapter } from "../../../infra/database/user";
 import { ErrorMessages, StatusError } from "../../../constants/StatusError";
@@ -36,7 +36,7 @@ class CreateProductUseCase implements ICreateProductUseCase {
 
 export function makeCreateProductUseCase(db: NodePgDatabase) {
     return new CreateProductUseCase(
-        makeProductAdapter(db),
+        makePgProductAdapter(db),
         makePgUserAdapter(db),
         makePgStoreAdapter(db),
     );

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { validate } from "../middlewares/validator/validator";
 import { findByUuidSchema } from "../validations/FindByUuid";
-import { makeProductAdapter } from "../infra/database/product";
+import { makePgProductAdapter } from "../infra/database/product";
 import { databaseConnectionPool } from "../database";
 import { makeCreateProductUseCase } from "../domains/product/create-product";
 import { makeDeleteProductUseCase } from "../domains/product/delete-product";
@@ -9,7 +9,7 @@ import { createProductSchema } from "../validations/CreateProduct";
 import { updateProductSchema } from "../validations/UpdateProduct";
 import { makeUpdateProductUseCase } from "../domains/product/update-product";
 
-const productAdapter = makeProductAdapter(databaseConnectionPool);
+const productAdapter = makePgProductAdapter(databaseConnectionPool);
 const createProduct = makeCreateProductUseCase(databaseConnectionPool);
 const deleteProduct = makeDeleteProductUseCase(databaseConnectionPool);
 const updateProduct = makeUpdateProductUseCase(databaseConnectionPool);

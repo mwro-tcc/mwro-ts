@@ -2,14 +2,14 @@ import { describe, expect, it } from "vitest";
 import { TestDatabaseReseter } from "../../../services/TestDatabaseReseterService";
 import { makeDeleteProductUseCase } from ".";
 import { TestDatabaseCommonValues } from "../../../constants/TestDatabaseSeedValues";
-import { makeProductAdapter } from "../../../infra/database/product";
+import { makePgProductAdapter } from "../../../infra/database/product";
 
 const testDatabaseReseter = new TestDatabaseReseter();
 
 describe("Product Deletion UseCase test suite", () => {
     it("It should delete a product without errors", async () => {
         const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
-        const productAdapter = makeProductAdapter(testDbInstance);
+        const productAdapter = makePgProductAdapter(testDbInstance);
 
         const productBeforeDeletion = await productAdapter.findByUuid(
             TestDatabaseCommonValues.community1.store1.product1.uuid,
