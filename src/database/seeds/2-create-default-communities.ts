@@ -1,8 +1,8 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { TestDatabaseCommonValues } from "../../constants/TestDatabaseSeedValues";
 import { NewCommunity } from "../schema/communities";
-import { makeCommunityAdapter } from "../../infra/database/community";
-import { makeCommunityAdminAdapter } from "../../infra/database/community-admin";
+import { makePgCommunityAdapter } from "../../infra/database/community";
+import { makePgCommunityAdminAdapter } from "../../infra/database/community-admin";
 import { NewCommunityAdmin } from "../schema/communities-admins";
 
 const communities: NewCommunity[] = [
@@ -25,9 +25,9 @@ const communityAdmins: NewCommunityAdmin[] = [
     },
 ];
 export async function populate(db: NodePgDatabase) {
-    const communityAdapter = makeCommunityAdapter(db);
+    const communityAdapter = makePgCommunityAdapter(db);
     await communityAdapter.bulkCreate(communities);
 
-    const communityAdminAdapter = makeCommunityAdminAdapter(db);
+    const communityAdminAdapter = makePgCommunityAdminAdapter(db);
     await communityAdminAdapter.bulkCreate(communityAdmins);
 }

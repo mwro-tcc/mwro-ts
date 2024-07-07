@@ -3,7 +3,7 @@ import { IStoreAdapter } from "./interface";
 import { NewStore, Store, stores } from "../../../database/schema/stores";
 import { eq } from "drizzle-orm";
 
-class StoreAdapter implements IStoreAdapter {
+class PgStoreAdapter implements IStoreAdapter {
     constructor(private readonly db: NodePgDatabase) {}
 
     async create(data: NewStore): Promise<Store> {
@@ -21,6 +21,6 @@ class StoreAdapter implements IStoreAdapter {
     }
 }
 
-export function makeStoreAdapter(db: NodePgDatabase) {
-    return new StoreAdapter(db);
+export function makePgStoreAdapter(db: NodePgDatabase) {
+    return new PgStoreAdapter(db);
 }

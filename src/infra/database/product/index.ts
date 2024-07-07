@@ -5,9 +5,8 @@ import { eq } from "drizzle-orm";
 import { PaginationParams } from "../../../types/PaginationParams";
 import { stores } from "../../../database/schema/stores";
 import { communities } from "../../../database/schema/communities";
-import { QueryBuilder } from "drizzle-orm/pg-core";
 
-class ProductAdapter implements IProductAdapter {
+class PgProductAdapter implements IProductAdapter {
     constructor(private readonly db: NodePgDatabase) {}
     async bulkCreate(payload: NewProduct[]): Promise<void> {
         await this.db.insert(products).values(payload).returning();
@@ -53,6 +52,6 @@ class ProductAdapter implements IProductAdapter {
     }
 }
 
-export function makeProductAdapter(db: NodePgDatabase) {
-    return new ProductAdapter(db);
+export function makePgProductAdapter(db: NodePgDatabase) {
+    return new PgProductAdapter(db);
 }

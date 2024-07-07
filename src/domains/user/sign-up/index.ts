@@ -1,7 +1,7 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { StatusError, ErrorMessages } from "../../../constants/StatusError";
 import { User } from "../../../database/schema/users";
-import { UserCreationPayload, makeUserAdapter } from "../../../infra/database/user";
+import { UserCreationPayload, makePgUserAdapter } from "../../../infra/database/user";
 import { IUserAdapter } from "../../../infra/database/user/interface";
 import { DecodedTokenPayload, makeCryptoService } from "../../../services/crypto/CryptService";
 import { ICryptoService } from "../../../services/crypto/interface";
@@ -58,5 +58,5 @@ class SignUpUseCase {
 }
 
 export function makeSignUpUseCase(db: NodePgDatabase = databaseConnectionPool) {
-    return new SignUpUseCase(makeCryptoService(), makeUserAdapter(db));
+    return new SignUpUseCase(makeCryptoService(), makePgUserAdapter(db));
 }

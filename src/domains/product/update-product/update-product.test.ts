@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { TestDatabaseReseter } from "../../../services/TestDatabaseReseterService";
 
 import { TestDatabaseCommonValues } from "../../../constants/TestDatabaseSeedValues";
-import { makeProductAdapter } from "../../../infra/database/product";
+import { makePgProductAdapter } from "../../../infra/database/product";
 import { makeUpdateProductUseCase } from ".";
 
 const testDatabaseReseter = new TestDatabaseReseter();
@@ -10,7 +10,7 @@ const testDatabaseReseter = new TestDatabaseReseter();
 describe("Product Update UseCase test suite", () => {
     it("It should update a product without errors", async () => {
         const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
-        const productAdapter = makeProductAdapter(testDbInstance);
+        const productAdapter = makePgProductAdapter(testDbInstance);
 
         const productBeforeDeletion = await productAdapter.findByUuid(
             TestDatabaseCommonValues.community1.store1.product1.uuid,
