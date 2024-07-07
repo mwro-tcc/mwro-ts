@@ -10,9 +10,9 @@ router.get("/", (_, res) => {
     res.send("Welcome to mwro API!");
 });
 
-router.use("/user", userRouter);
-router.use("/community", communityRouter);
-router.use("/product", productRouter);
-router.use("/store", storeRouter);
+router.use("/users", userRouter);
+router.use("/communities", communityRouter);
+router.use("/products", productRouter);
+router.use("/stores", storeRouter);
 
 export default router;

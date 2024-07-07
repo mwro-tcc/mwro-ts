@@ -4,6 +4,6 @@ import { storeController } from "../controllers/StoreController";
 
 const router = express.Router();
 
-router.post("/create", authenticationMiddleware(), storeController.create());
+router.post("/", authenticationMiddleware(), storeController.create());
 
 export default router;
