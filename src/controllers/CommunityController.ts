@@ -6,9 +6,9 @@ import { makeUpdateCommunityUseCase } from "../domains/community/update-communit
 import { updateCommunitySchema } from "../validations/UpdateCommunity";
 import { findByUuidSchema } from "../validations/FindByUuid";
 import { makeDeleteCommunityUseCase } from "../domains/community/delete-community";
-import { makeCommunityAdapter } from "../infra/database/community";
+import { makePgCommunityAdapter } from "../infra/database/community";
 
-const communityAdapter = makeCommunityAdapter();
+const communityAdapter = makePgCommunityAdapter();
 const createCommunity = makeCreateCommunityUseCase();
 const updateCommunity = makeUpdateCommunityUseCase();
 const deleteCommunity = makeDeleteCommunityUseCase();

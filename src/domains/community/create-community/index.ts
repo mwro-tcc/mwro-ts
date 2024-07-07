@@ -1,5 +1,5 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { makeCommunityAdapter } from "../../../infra/database/community";
+import { makePgCommunityAdapter } from "../../../infra/database/community";
 import { makePgCommunityAdminAdapter } from "../../../infra/database/community-admin";
 import { ICommunityAdminAdapter } from "../../../infra/database/community-admin/interface";
 import { ICommunityAdapter } from "../../../infra/database/community/interface";
@@ -30,5 +30,5 @@ class CreateCommunityUseCase {
 }
 
 export function makeCreateCommunityUseCase(db: NodePgDatabase = databaseConnectionPool) {
-    return new CreateCommunityUseCase(makeCommunityAdapter(db), makePgCommunityAdminAdapter(db));
+    return new CreateCommunityUseCase(makePg\CommunityAdapter(db), makePgCommunityAdminAdapter(db));
 }

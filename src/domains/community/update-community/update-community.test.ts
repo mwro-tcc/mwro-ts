@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { TestDatabaseReseter } from "../../../services/TestDatabaseReseterService";
 import { makeUpdateCommunityUseCase } from ".";
-import { makeCommunityAdapter } from "../../../infra/database/community";
+import { makePgCommunityAdapter } from "../../../infra/database/community";
 import { TestDatabaseCommonValues } from "../../../constants/TestDatabaseSeedValues";
 
 const testDatabaseReseter = new TestDatabaseReseter();
@@ -11,7 +11,7 @@ describe("Community Update UseCase test suite", () => {
         const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
 
         const updateCommunityUseCase = makeUpdateCommunityUseCase(testDbInstance);
-        const communityAdapter = makeCommunityAdapter(testDbInstance);
+        const communityAdapter = makePgCommunityAdapter(testDbInstance);
 
         const communityBeforeUpdate = await communityAdapter.findByUuid(
             TestDatabaseCommonValues.community1.uuid,
