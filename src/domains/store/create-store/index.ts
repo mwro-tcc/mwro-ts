@@ -1,6 +1,6 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { NewStore, Store } from "../../../database/schema/stores";
-import { makeStoreAdapter } from "../../../infra/database/store";
+import { makePgStoreAdapter } from "../../../infra/database/store";
 import { IStoreAdapter } from "../../../infra/database/store/interface";
 import { databaseConnectionPool } from "../../../database";
 import { ICreateStoreUseCase } from "./interface";
@@ -15,5 +15,5 @@ class CreateStoreUseCase implements ICreateStoreUseCase {
 }
 
 export function makeCreateStoreUseCase(db: NodePgDatabase = databaseConnectionPool) {
-    return new CreateStoreUseCase(makeStoreAdapter(db));
+    return new CreateStoreUseCase(makePgStoreAdapter(db));
 }

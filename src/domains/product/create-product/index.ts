@@ -5,7 +5,7 @@ import { IUserAdapter } from "../../../infra/database/user/interface";
 import { makeUserAdapter } from "../../../infra/database/user";
 import { ErrorMessages, StatusError } from "../../../constants/StatusError";
 import { IStoreAdapter } from "../../../infra/database/store/interface";
-import { makeStoreAdapter } from "../../../infra/database/store";
+import { makePgStoreAdapter } from "../../../infra/database/store";
 import { ICreateProductUseCase } from "./interface";
 import { CreateProductUseCaseParams } from "./types";
 
@@ -38,6 +38,6 @@ export function makeCreateProductUseCase(db: NodePgDatabase) {
     return new CreateProductUseCase(
         makeProductAdapter(db),
         makeUserAdapter(db),
-        makeStoreAdapter(db),
+        makePgStoreAdapter(db),
     );
 }

@@ -5,7 +5,7 @@ import { IUserAdapter } from "../../../infra/database/user/interface";
 import { makeUserAdapter } from "../../../infra/database/user";
 import { ErrorMessages, StatusError } from "../../../constants/StatusError";
 import { IStoreAdapter } from "../../../infra/database/store/interface";
-import { makeStoreAdapter } from "../../../infra/database/store";
+import { makePgStoreAdapter } from "../../../infra/database/store";
 
 class DeleteProductUseCase {
     constructor(
@@ -36,6 +36,6 @@ export function makeDeleteProductUseCase(db: NodePgDatabase) {
     return new DeleteProductUseCase(
         makeProductAdapter(db),
         makeUserAdapter(db),
-        makeStoreAdapter(db),
+        makePgStoreAdapter(db),
     );
 }

@@ -1,5 +1,5 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { makeStoreAdapter } from "../../infra/database/store";
+import { makePgStoreAdapter } from "../../infra/database/store";
 import { NewStore } from "../schema/stores";
 import { TestDatabaseCommonValues } from "../../constants/TestDatabaseSeedValues";
 
@@ -12,6 +12,6 @@ const stores: NewStore[] = [
     },
 ];
 export async function populate(db: NodePgDatabase) {
-    const storeAdapter = makeStoreAdapter(db);
+    const storeAdapter = makePgStoreAdapter(db);
     await storeAdapter.bulkCreate(stores);
 }
