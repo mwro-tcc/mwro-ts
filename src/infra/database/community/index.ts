@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { eq, sql, inArray } from "drizzle-orm";
 import { Community, NewCommunity, communities } from "../../../database/schema/communities";
 import { ICommunityAdapter } from "./interface";
 import { communitiesAdmins } from "../../../database/schema/communities-admins";
@@ -35,16 +35,20 @@ class CommunityAdapter implements ICommunityAdapter {
     }
 
     async listCreatedByUserUuid(userUuid: string, params: { limit: number; offset: number }) {
+        const selectCommunityUuidsFromUserUuid = sql`(
+        SELECT
+            ${communitiesAdmins.communityUuid}
+        FROM ${communitiesAdmins}
+        WHERE 
+            ${communitiesAdmins.userUuid} = ${userUuid}
+            AND ${communitiesAdmins.isCreator} IS true
+        GROUP BY ${communitiesAdmins.communityUuid}
+        )`;
+
         return await this.db
-            .select({ community: communities })
+            .select()
             .from(communities)
-            .innerJoin(communitiesAdmins, eq(communitiesAdmins.communityUuid, communities.uuid))
-            .where(
-                and(
-                    eq(communitiesAdmins.isCreator, true),
-                    eq(communitiesAdmins.userUuid, userUuid),
-                ),
-            )
+            .where(inArray(communities.uuid, selectCommunityUuidsFromUserUuid))
             .limit(params.limit)
             .offset(params.offset);
     }
