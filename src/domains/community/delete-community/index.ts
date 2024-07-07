@@ -1,7 +1,7 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { ErrorMessages, StatusError } from "../../../constants/StatusError";
 import { makeCommunityAdapter } from "../../../infra/database/community";
-import { makeCommunityAdminAdapter } from "../../../infra/database/community-admin";
+import { makePgCommunityAdminAdapter } from "../../../infra/database/community-admin";
 import { ICommunityAdminAdapter } from "../../../infra/database/community-admin/interface";
 import { ICommunityAdapter } from "../../../infra/database/community/interface";
 import { makePgUserAdapter } from "../../../infra/database/user";
@@ -41,7 +41,7 @@ class DeleteCommunityUseCase {
 export function makeDeleteCommunityUseCase(db: NodePgDatabase = databaseConnectionPool) {
     return new DeleteCommunityUseCase(
         makeCommunityAdapter(db),
-        makeCommunityAdminAdapter(db),
+        makePgCommunityAdminAdapter(db),
         makePgUserAdapter(db),
     );
 }

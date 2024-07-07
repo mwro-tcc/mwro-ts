@@ -5,7 +5,7 @@ import { makeCreateCommunityUseCase } from "../create-community";
 import { CommunityCreationData } from "../create-community/types";
 import { makeDeleteCommunityUseCase } from ".";
 import { makeCommunityAdapter } from "../../../infra/database/community";
-import { makeCommunityAdminAdapter } from "../../../infra/database/community-admin";
+import { makePgCommunityAdminAdapter } from "../../../infra/database/community-admin";
 import { TestDatabaseCommonValues } from "../../../constants/TestDatabaseSeedValues";
 
 const testDatabaseReseter = new TestDatabaseReseter();
@@ -26,7 +26,7 @@ describe("Community Deletion UseCase test suite", () => {
         const deleteCommunityUseCase = makeDeleteCommunityUseCase(testDbInstance);
 
         const communityAdapter = makeCommunityAdapter(testDbInstance);
-        const communityAdminAdapter = makeCommunityAdminAdapter(testDbInstance);
+        const communityAdminAdapter = makePgCommunityAdminAdapter(testDbInstance);
 
         const userUuid = TestDatabaseCommonValues.user1.uuid;
 
