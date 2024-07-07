@@ -7,7 +7,7 @@ import storeRouter from "./store";
 const router = express.Router();
 
 router.get("/", (_, res) => {
-    res.send("Testing response");
+    res.send("Welcome to mwro API!");
 });
 
 router.use("/user", userRouter);
