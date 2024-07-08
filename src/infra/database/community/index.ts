@@ -1,4 +1,4 @@
-import { eq, sql, inArray } from "drizzle-orm";
+import { eq, sql, inArray, desc } from "drizzle-orm";
 import { Community, NewCommunity, communities } from "../../../database/schema/communities";
 import { ICommunityAdapter } from "./interface";
 import { communitiesAdmins } from "../../../database/schema/communities-admins";
@@ -49,6 +49,7 @@ class PgCommunityAdapter implements ICommunityAdapter {
             .select()
             .from(communities)
             .where(inArray(communities.uuid, selectCommunityUuidsFromUserUuid))
+            .orderBy(desc(communities.createdAt))
             .limit(params.limit)
             .offset(params.offset);
     }
