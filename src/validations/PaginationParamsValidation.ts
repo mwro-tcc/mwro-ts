@@ -1,5 +1,5 @@
 import { z } from "zod";
 
 export const paginationParamsValidation = z.object({
-    params: z.object({ limit: z.number(), offset: z.number() }),
+    query: z.object({ limit: z.number().optional(), offset: z.number().optional() }),
 });

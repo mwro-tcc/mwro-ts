@@ -1,7 +1,7 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { IProductAdapter } from "./interface";
 import { NewProduct, Product, products } from "../../../database/schema/products";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { PaginationParams } from "../../../types/PaginationParams";
 import { stores } from "../../../database/schema/stores";
 import { communities } from "../../../database/schema/communities";
@@ -49,6 +49,18 @@ class PgProductAdapter implements IProductAdapter {
             .then((results) => results.map((r) => r.products));
 
         return data;
+    }
+
+    async listFromStore(
+        storeUuid: string,
+        params: { limit: number; offset: number },
+    ): Promise<Product[]> {
+        return await this.db
+            .select()
+            .from(products)
+            .where(eq(products.storeUuid, storeUuid))
+            .limit(params.limit)
+            .offset(params.offset);
     }
 }
 

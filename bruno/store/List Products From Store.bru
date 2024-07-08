@@ -1,0 +1,15 @@
+meta {
+  name: List Products From Store
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/stores/:uuid/products
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: {{authorization}}
+}

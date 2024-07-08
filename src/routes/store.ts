@@ -5,5 +5,6 @@ import { storeController } from "../controllers/StoreController";
 const router = express.Router();
 
 router.post("/", authenticationMiddleware(), storeController.create());
+router.get("/:uuid/products", authenticationMiddleware(), storeController.listProducts());
 
 export default router;
