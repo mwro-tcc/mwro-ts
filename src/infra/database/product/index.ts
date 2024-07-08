@@ -1,7 +1,7 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { IProductAdapter } from "./interface";
 import { NewProduct, Product, products } from "../../../database/schema/products";
-import { eq, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { PaginationParams } from "../../../types/PaginationParams";
 import { stores } from "../../../database/schema/stores";
 import { communities } from "../../../database/schema/communities";
@@ -44,6 +44,7 @@ class PgProductAdapter implements IProductAdapter {
             .innerJoin(stores, eq(stores.uuid, products.storeUuid))
             .innerJoin(communities, eq(stores.communityUuid, communities.uuid))
             .where(eq(communities.uuid, communityUuid))
+            .orderBy(desc(products.createdAt))
             .limit(params.limit)
             .offset(params.offset)
             .then((results) => results.map((r) => r.products));
