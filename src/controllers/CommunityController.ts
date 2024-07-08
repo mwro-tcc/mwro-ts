@@ -10,6 +10,8 @@ import { makePgCommunityAdapter } from "../infra/database/community";
 import { listWithUuid } from "../validations/ListWithUuid";
 import { makePgProductAdapter } from "../infra/database/product";
 import { databaseConnectionPool } from "../database";
+import { makePgStoreAdapter } from "../infra/database/store";
+import { listWithUuidFilterValidation } from "../validations/ListWithUuidFilter";
 
 const communityAdapter = makePgCommunityAdapter();
 const createCommunity = makeCreateCommunityUseCase();
@@ -17,6 +19,7 @@ const updateCommunity = makeUpdateCommunityUseCase();
 const deleteCommunity = makeDeleteCommunityUseCase();
 
 const productAdapter = makePgProductAdapter(databaseConnectionPool);
+const storeAdapter = makePgStoreAdapter(databaseConnectionPool);
 
 class CommunityController {
     create() {
@@ -88,6 +91,23 @@ class CommunityController {
                 .then(async (validated) => {
                     return await productAdapter.listFromCommunity(validated.params.uuid, {
                         ...validated.query,
+                    });
+                })
+                .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+
+    listStores() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(listWithUuidFilterValidation, req)
+                .then(async (validated) => {
+                    const limit = Number(validated.query.limit) || 10;
+                    const offset = Number(validated.query.offset) || 0;
+
+                    return await storeAdapter.listFromCommunity(validated.params.uuid, {
+                        limit,
+                        offset,
                     });
                 })
                 .then((data) => res.status(200).send(data))
