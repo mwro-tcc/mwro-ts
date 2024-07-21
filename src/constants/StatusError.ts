@@ -17,7 +17,6 @@ export const ErrorMessages = {
     assetNotFound: "Asset not found",
     userNotAnAdmin: "User is not an admin of this community",
     userNotCreator: "User is not the creator of this community",
-    userNotCreatorStore: "User is not the creator of this store",
     storeNotFound: "Store not found",
     userIsNotStoreOwner: "Only the owner of the store may perform this action",
 };
