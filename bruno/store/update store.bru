@@ -1,0 +1,25 @@
+meta {
+  name: update store
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{url}}/stores/:uuid
+  body: json
+  auth: none
+}
+
+params:path {
+  uuid: 9ce5b227-4d3b-420d-8203-ce8343d63029
+}
+
+headers {
+  authorization: {{authorization}}
+}
+
+body:json {
+  {
+    "name": "Nome atualizado"
+  }
+}

@@ -1,11 +1,11 @@
 meta {
-  name: List Products From Store
+  name: delete
   type: http
-  seq: 2
+  seq: 5
 }
 
-get {
-  url: {{url}}/stores/:uuid/products
+delete {
+  url: {{url}}/stores/:uuid
   body: none
   auth: none
 }
@@ -15,5 +15,5 @@ params:path {
 }
 
 headers {
-  Authorization: {{authorization}}
+  authorization: {{authorization}}
 }
