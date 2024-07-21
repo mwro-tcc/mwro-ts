@@ -38,6 +38,10 @@ class PgStoreAdapter implements IStoreAdapter {
             .returning();
         return updated[0];
     }
+
+    async delete(uuid: string): Promise<void> {
+        await this.db.delete(stores).where(eq(stores.uuid, uuid));
+    }
 }
 
 export function makePgStoreAdapter(db: NodePgDatabase) {

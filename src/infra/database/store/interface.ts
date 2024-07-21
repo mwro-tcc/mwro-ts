@@ -9,4 +9,5 @@ export interface IStoreAdapter {
         params: { limit: number; offset: number },
     ): Promise<Store[]>;
     update(uuid: string, data: Partial<NewStore>): Promise<Store>;
+    delete(uuid: string): Promise<void>;
 }
