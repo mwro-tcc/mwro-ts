@@ -1,11 +1,11 @@
 meta {
-  name: List Products From Store
+  name: Find store by uuid
   type: http
-  seq: 2
+  seq: 3
 }
 
 get {
-  url: {{url}}/stores/:uuid/products
+  url: {{url}}/stores/:uuid
   body: none
   auth: none
 }
@@ -15,5 +15,5 @@ params:path {
 }
 
 headers {
-  Authorization: {{authorization}}
+  authorization: {{authorization}}
 }
