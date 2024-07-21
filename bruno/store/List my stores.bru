@@ -1,0 +1,15 @@
+meta {
+  name: List my stores
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{url}}/stores/mine
+  body: none
+  auth: none
+}
+
+headers {
+  authorization: {{authorization}}
+}
