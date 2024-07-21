@@ -10,6 +10,7 @@ import { makeUpdateStoreUseCase } from "../domains/store/update-store";
 import { findByUuidSchema } from "../validations/FindByUuid";
 import { makePgStoreAdapter } from "../infra/database/store";
 import { makeDeleteStoreUseCase } from "../domains/store/delete-store";
+import { paginationParamsValidation } from "../validations/PaginationParamsValidation";
 
 const updateStore = makeUpdateStoreUseCase(databaseConnectionPool);
 const createStore = makeCreateStoreUseCase(databaseConnectionPool);
@@ -76,13 +77,30 @@ class StoreController {
         };
     }
 
+    listMyStores() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(paginationParamsValidation, req)
+                .then(async (validated) => {
+                    const limit = Number(validated.query.limit) || 10;
+                    const offset = Number(validated.query.offset) || 0;
+
+                    return await storeAdapter.listMyStores(req.user.id, {
+                        limit,
+                        offset,
+                    });
+                })
+                .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+
     delete() {
         return async (req: Request, res: Response, next: NextFunction) => {
             return await validate(findByUuidSchema, req)
                 .then(async (validated) => {
                     await deleteStore.execute(validated.params.uuid, req.user.id);
                 })
-                .then((data) => res.status(200).send(data))
+                .then(() => res.status(204).send())
                 .catch(next);
         };
     }

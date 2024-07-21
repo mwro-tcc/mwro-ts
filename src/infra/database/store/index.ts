@@ -30,6 +30,19 @@ class PgStoreAdapter implements IStoreAdapter {
             .offset(params.offset);
     }
 
+    async listMyStores(
+        userUuid: string,
+        params: { limit: number; offset: number },
+    ): Promise<Store[]> {
+        return await this.db
+            .select()
+            .from(stores)
+            .where(eq(stores.userUuid, userUuid))
+            .orderBy(desc(stores.createdAt))
+            .limit(params.limit)
+            .offset(params.offset);
+    }
+
     async update(uuid: string, data: Partial<NewStore>): Promise<Store> {
         const updated = await this.db
             .update(stores)
