@@ -11,9 +11,7 @@ export const stores = pgTable("stores", {
     userUuid: uuid("userUuid")
         .notNull()
         .references(() => users.uuid),
-    communityUuid: uuid("communityUuid")
-        .notNull()
-        .references(() => communities.uuid),
+    communityUuid: uuid("communityUuid").references(() => communities.uuid),
 
     name: varchar("name", { length: 256 }).notNull(),
     description: text("description"),
