@@ -8,4 +8,5 @@ export interface IStoreAdapter {
         communityUuid: string,
         params: { limit: number; offset: number },
     ): Promise<Store[]>;
+    update(uuid: string, data: Partial<NewStore>): Promise<Store>;
 }

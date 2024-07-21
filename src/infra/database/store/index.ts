@@ -29,6 +29,15 @@ class PgStoreAdapter implements IStoreAdapter {
             .limit(params.limit)
             .offset(params.offset);
     }
+
+    async update(uuid: string, data: Partial<NewStore>): Promise<Store> {
+        const updated = await this.db
+            .update(stores)
+            .set(data)
+            .where(eq(stores.uuid, uuid))
+            .returning();
+        return updated[0];
+    }
 }
 
 export function makePgStoreAdapter(db: NodePgDatabase) {
