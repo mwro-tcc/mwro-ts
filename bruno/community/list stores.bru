@@ -1,0 +1,19 @@
+meta {
+  name: list stores
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{url}}/communities/:uuid/stores
+  body: none
+  auth: none
+}
+
+params:path {
+  uuid: 9c73c151-d7b6-4b0e-9de2-b2db9ee3f676
+}
+
+headers {
+  Authorization: {{authorization}}
+}

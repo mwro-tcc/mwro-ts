@@ -8,4 +8,5 @@ export interface IProductAdapter {
     update(uuid: string, data: Partial<NewProduct>): Promise<Product>;
     delete(uuid: string): Promise<void>;
     listFromCommunity(storeUuid: string, params: PaginationParams): Promise<Product[]>;
+    listFromStore(storeUuid: string, params: { limit: number; offset: number }): Promise<Product[]>;
 }

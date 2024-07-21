@@ -9,5 +9,5 @@ export interface ICommunityAdapter {
     listCreatedByUserUuid(
         userUuid: string,
         params: { limit: number; offset: number },
-    ): Promise<any>;
+    ): Promise<Community[]>;
 }

@@ -1,11 +1,11 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { IProductAdapter } from "../../../infra/database/product/interface";
-import { makeProductAdapter } from "../../../infra/database/product";
+import { makePgProductAdapter } from "../../../infra/database/product";
 import { IUserAdapter } from "../../../infra/database/user/interface";
-import { makeUserAdapter } from "../../../infra/database/user";
+import { makePgUserAdapter } from "../../../infra/database/user";
 import { ErrorMessages, StatusError } from "../../../constants/StatusError";
 import { IStoreAdapter } from "../../../infra/database/store/interface";
-import { makeStoreAdapter } from "../../../infra/database/store";
+import { makePgStoreAdapter } from "../../../infra/database/store";
 
 class DeleteProductUseCase {
     constructor(
@@ -34,8 +34,8 @@ class DeleteProductUseCase {
 
 export function makeDeleteProductUseCase(db: NodePgDatabase) {
     return new DeleteProductUseCase(
-        makeProductAdapter(db),
-        makeUserAdapter(db),
-        makeStoreAdapter(db),
+        makePgProductAdapter(db),
+        makePgUserAdapter(db),
+        makePgStoreAdapter(db),
     );
 }

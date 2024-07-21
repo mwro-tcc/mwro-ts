@@ -8,7 +8,7 @@ import { ICommunityAdminAdapter } from "./interface";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { databaseConnectionPool } from "../../../database";
 
-class CommunityAdminAdapter implements ICommunityAdminAdapter {
+class PgCommunityAdminAdapter implements ICommunityAdminAdapter {
     constructor(private readonly db: NodePgDatabase) {}
 
     async create(params: NewCommunityAdmin): Promise<CommunityAdmin> {
@@ -61,6 +61,6 @@ class CommunityAdminAdapter implements ICommunityAdminAdapter {
     }
 }
 
-export function makeCommunityAdminAdapter(db: NodePgDatabase = databaseConnectionPool) {
-    return new CommunityAdminAdapter(db);
+export function makePgCommunityAdminAdapter(db: NodePgDatabase = databaseConnectionPool) {
+    return new PgCommunityAdminAdapter(db);
 }

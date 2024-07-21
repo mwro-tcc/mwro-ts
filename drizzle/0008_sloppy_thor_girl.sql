@@ -1,0 +1,1 @@
+ALTER TABLE "stores" ALTER COLUMN "communityUuid" DROP NOT NULL;

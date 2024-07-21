@@ -1,8 +1,10 @@
 import { Request } from "express";
-import { AnyZodObject, ZodError, z } from "zod";
+import { AnyZodObject, ZodError, ZodIntersection, ZodTypeAny, z } from "zod";
 import { StatusError } from "../../constants/StatusError";
 
-export const validate = async <T extends AnyZodObject>(
+type AnyZodObjectOrIntersection = AnyZodObject | ZodIntersection<AnyZodObject, ZodTypeAny>;
+
+export const validate = async <T extends AnyZodObjectOrIntersection>(
     schema: T,
     req: Request,
 ): Promise<z.infer<T>> => {

@@ -6,17 +6,20 @@ import { makeUpdateCommunityUseCase } from "../domains/community/update-communit
 import { updateCommunitySchema } from "../validations/UpdateCommunity";
 import { findByUuidSchema } from "../validations/FindByUuid";
 import { makeDeleteCommunityUseCase } from "../domains/community/delete-community";
-import { makeCommunityAdapter } from "../infra/database/community";
+import { makePgCommunityAdapter } from "../infra/database/community";
 import { listWithUuid } from "../validations/ListWithUuid";
-import { makeProductAdapter } from "../infra/database/product";
+import { makePgProductAdapter } from "../infra/database/product";
 import { databaseConnectionPool } from "../database";
+import { makePgStoreAdapter } from "../infra/database/store";
+import { listWithUuidFilterValidation } from "../validations/ListWithUuidFilter";
 
-const communityAdapter = makeCommunityAdapter();
+const communityAdapter = makePgCommunityAdapter();
 const createCommunity = makeCreateCommunityUseCase();
 const updateCommunity = makeUpdateCommunityUseCase();
 const deleteCommunity = makeDeleteCommunityUseCase();
 
-const productAdapter = makeProductAdapter(databaseConnectionPool);
+const productAdapter = makePgProductAdapter(databaseConnectionPool);
+const storeAdapter = makePgStoreAdapter(databaseConnectionPool);
 
 class CommunityController {
     create() {
@@ -88,6 +91,23 @@ class CommunityController {
                 .then(async (validated) => {
                     return await productAdapter.listFromCommunity(validated.params.uuid, {
                         ...validated.query,
+                    });
+                })
+                .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+
+    listStores() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(listWithUuidFilterValidation, req)
+                .then(async (validated) => {
+                    const limit = Number(validated.query.limit) || 10;
+                    const offset = Number(validated.query.offset) || 0;
+
+                    return await storeAdapter.listFromCommunity(validated.params.uuid, {
+                        limit,
+                        offset,
                     });
                 })
                 .then((data) => res.status(200).send(data))

@@ -1,0 +1,19 @@
+meta {
+  name: find by uuid
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{url}}/communities/:uuid
+  body: none
+  auth: none
+}
+
+params:path {
+  uuid: 2a047d7f-f934-4bf7-a1a1-c19962dd7141
+}
+
+headers {
+  Authorization: {{authorization}}
+}

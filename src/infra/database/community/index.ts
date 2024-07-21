@@ -1,11 +1,11 @@
-import { eq, sql, inArray } from "drizzle-orm";
+import { eq, sql, inArray, desc } from "drizzle-orm";
 import { Community, NewCommunity, communities } from "../../../database/schema/communities";
 import { ICommunityAdapter } from "./interface";
 import { communitiesAdmins } from "../../../database/schema/communities-admins";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { databaseConnectionPool } from "../../../database";
 
-class CommunityAdapter implements ICommunityAdapter {
+class PgCommunityAdapter implements ICommunityAdapter {
     constructor(private readonly db: NodePgDatabase) {}
     async create(input: NewCommunity): Promise<Community> {
         const data = await this.db.insert(communities).values(input).returning();
@@ -49,11 +49,12 @@ class CommunityAdapter implements ICommunityAdapter {
             .select()
             .from(communities)
             .where(inArray(communities.uuid, selectCommunityUuidsFromUserUuid))
+            .orderBy(desc(communities.createdAt))
             .limit(params.limit)
             .offset(params.offset);
     }
 }
 
-export function makeCommunityAdapter(db: NodePgDatabase = databaseConnectionPool) {
-    return new CommunityAdapter(db);
+export function makePgCommunityAdapter(db: NodePgDatabase = databaseConnectionPool) {
+    return new PgCommunityAdapter(db);
 }
