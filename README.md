@@ -27,7 +27,7 @@ By itself, this command does not alter the database in any way.
 ### Running Migrations
 
 ```sh
-pnpm migration:run
+docker exec mwro_api_container pnpm migration:run
 ```
 
 Runs all migrations that have not been executed against the database yet. It knows this by checking the drizzle schema and running a SELECT statement on the \_\_drizzle_migrations table.
