@@ -1,5 +1,5 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { NewUser, User, users } from "../../../database/schema/users";
+import { EditableUserFields, NewUser, User, users } from "../../../database/schema/users";
 import { IUserAdapter } from "./interface";
 import { eq } from "drizzle-orm";
 import { databaseConnectionPool } from "../../../database";
@@ -36,6 +36,15 @@ class PgUserAdapter implements IUserAdapter {
     async findByUuid(uuid: string): Promise<User> {
         const data = await this.db.select().from(users).where(eq(users.uuid, uuid)).limit(1);
         return data[0];
+    }
+
+    async update(uuid: string, data: Partial<EditableUserFields>): Promise<User> {
+        const updated = await this.db
+            .update(users)
+            .set(data)
+            .where(eq(users.uuid, uuid))
+            .returning();
+        return updated[0];
     }
 }
 

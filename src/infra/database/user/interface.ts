@@ -1,4 +1,4 @@
-import { NewUser, User } from "../../../database/schema/users";
+import { EditableUserFields, NewUser, User } from "../../../database/schema/users";
 
 export interface IUserAdapter {
     bulkCreate(payload: NewUser[]): Promise<void>;
@@ -7,4 +7,5 @@ export interface IUserAdapter {
     findByEmail(email: string): Promise<User>;
     findByUuid(uuid: string): Promise<User>;
     bulkCreate(data: NewUser[]): Promise<void>;
+    update(uuid: string, payload: Partial<EditableUserFields>): Promise<User>;
 }
