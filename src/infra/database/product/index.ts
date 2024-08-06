@@ -1,10 +1,12 @@
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { NodePgDatabase, NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import { IProductAdapter } from "./interface";
 import { NewProduct, Product, products } from "../../../database/schema/products";
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, eq, ExtractTablesWithRelations, sql } from "drizzle-orm";
 import { PaginationParams } from "../../../types/PaginationParams";
 import { stores } from "../../../database/schema/stores";
 import { communities } from "../../../database/schema/communities";
+import { PgTransaction } from "drizzle-orm/pg-core";
+import { DrizzleTransaction } from "../../../database";
 
 class PgProductAdapter implements IProductAdapter {
     constructor(private readonly db: NodePgDatabase) {}
@@ -19,6 +21,10 @@ class PgProductAdapter implements IProductAdapter {
 
     async delete(uuid: string): Promise<void> {
         await this.db.delete(products).where(eq(products.uuid, uuid));
+    }
+
+    async deleteAllFromStore(storeUuid: string): Promise<void> {
+        await this.db.delete(products).where(eq(products.storeUuid, storeUuid));
     }
 
     async findByUuid(uuid: string): Promise<Product> {
