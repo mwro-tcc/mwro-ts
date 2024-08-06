@@ -8,6 +8,7 @@ import { makeDeleteProductUseCase } from "../domains/product/delete-product";
 import { createProductSchema } from "../validations/CreateProduct";
 import { updateProductSchema } from "../validations/UpdateProduct";
 import { makeUpdateProductUseCase } from "../domains/product/update-product";
+import { PaginatedSearchValidation } from "../validations/Search";
 
 const productAdapter = makePgProductAdapter(databaseConnectionPool);
 const createProduct = makeCreateProductUseCase(databaseConnectionPool);
@@ -60,6 +61,20 @@ class ProductController {
             return await validate(findByUuidSchema, req)
                 .then(async (validated) => {
                     return await productAdapter.findByUuid(validated.params.uuid);
+                })
+                .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+
+    search() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(PaginatedSearchValidation, req)
+                .then(async (validated) => {
+                    return await productAdapter.searchByName(validated.query.term, {
+                        limit: validated.query.limit || 10,
+                        offset: validated.query.offset || 0,
+                    });
                 })
                 .then((data) => res.status(200).send(data))
                 .catch(next);

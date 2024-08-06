@@ -1,7 +1,7 @@
 import { NodePgDatabase, NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import { IProductAdapter } from "./interface";
 import { NewProduct, Product, products } from "../../../database/schema/products";
-import { desc, eq, ExtractTablesWithRelations, sql } from "drizzle-orm";
+import { desc, eq, ExtractTablesWithRelations, like, sql } from "drizzle-orm";
 import { PaginationParams } from "../../../types/PaginationParams";
 import { stores } from "../../../database/schema/stores";
 import { communities } from "../../../database/schema/communities";
@@ -64,6 +64,23 @@ class PgProductAdapter implements IProductAdapter {
             .select()
             .from(products)
             .where(eq(products.storeUuid, storeUuid))
+            .limit(params.limit)
+            .offset(params.offset);
+    }
+
+    async searchByName(
+        name: string,
+        params: { limit: number; offset: number },
+    ): Promise<Product[]> {
+        const lastChar = name[name.length - 1];
+        if (lastChar !== "%") {
+            name = name + "%";
+        }
+
+        return await this.db
+            .select()
+            .from(products)
+            .where(like(products.name, name))
             .limit(params.limit)
             .offset(params.offset);
     }
