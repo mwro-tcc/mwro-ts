@@ -1,0 +1,21 @@
+meta {
+  name: search by term
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}/products/search?term=Produasdd&limit=10&offset=0
+  body: none
+  auth: none
+}
+
+params:query {
+  term: Produasdd
+  limit: 10
+  offset: 0
+}
+
+headers {
+  authorization: {{authorization}}
+}
