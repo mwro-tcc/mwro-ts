@@ -4,9 +4,18 @@ import { validate } from "../middlewares/validator/validator";
 import { signUpSchema } from "../validations/SignUp";
 import { signInSchema } from "../validations/SignIn";
 import { makeSignInUseCase } from "../domains/user/sign-in";
+import { updateUserSchema } from "../validations/UpdateUser";
+import { makeUpdateUserUseCase } from "../domains/user/update-user";
+import { databaseConnectionPool } from "../database";
+import { findByUuidSchema } from "../validations/FindByUuid";
+import { makePgUserAdapter } from "../infra/database/user";
+import { ErrorMessages, StatusError } from "../constants/StatusError";
 
-const signUp = makeSignUpUseCase();
-const signIn = makeSignInUseCase();
+const signUp = makeSignUpUseCase(databaseConnectionPool);
+const signIn = makeSignInUseCase(databaseConnectionPool);
+const updateUser = makeUpdateUserUseCase(databaseConnectionPool);
+
+const userAdapter = makePgUserAdapter(databaseConnectionPool);
 
 class UserController {
     signUp() {
@@ -24,6 +33,30 @@ class UserController {
             return await validate(signInSchema, req)
                 .then(async (validated) => {
                     return signIn.execute(validated.body);
+                })
+                .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+
+    findById() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(findByUuidSchema, req)
+                .then(async (validated) => {
+                    const user = await userAdapter.findByUuid(validated.params.uuid);
+                    if (!user) throw new StatusError(404, ErrorMessages.userNotFound);
+                    return user;
+                })
+                .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+
+    update() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(updateUserSchema, req)
+                .then(async (validated) => {
+                    return updateUser.execute(req.user.id, validated.body);
                 })
                 .then((data) => res.status(200).send(data))
                 .catch(next);
