@@ -5,6 +5,7 @@ import { randomUUID } from "crypto";
 import { TestDatabaseCommonValues } from "../../../constants/TestDatabaseSeedValues";
 import { makeCreateStoreUseCase } from "../create-store";
 import { makePgStoreAdapter } from "../../../infra/database/store";
+import { makeCreateProductUseCase } from "../../product/create-product";
 
 const testDatabaseReseter = new TestDatabaseReseter();
 
@@ -20,6 +21,13 @@ describe("Store Deletion UseCase test suite", () => {
             userUuid: creatorUuid,
             name: "Testing store deletion",
         });
+
+        const createProductUseCase = makeCreateProductUseCase(testDbInstance);
+        await createProductUseCase.execute({
+            product: { name: "Testando", price: 10, stock: 10, storeUuid: store.uuid },
+            userUuidRequestingCreation: creatorUuid,
+        });
+
         const deleteStoreUseCase = makeDeleteStoreUseCase(testDbInstance);
         await deleteStoreUseCase.execute(store.uuid, creatorUuid);
 
