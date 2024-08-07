@@ -6,6 +6,10 @@
 
 #### Serviço 1: Sign-up de usuário:
 
+Este serviço simula um usuário criando uma conta.
+
+Todos os testes foram realizados num banco de dados limpo, sem qualquer tipo de dado anterior.
+
 -   Tipo de operações: Leitura e Escrita
 -   Arquivos envolvidos:
     -   src/routes/user.ts (roteamento)
