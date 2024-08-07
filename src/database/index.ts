@@ -1,4 +1,4 @@
-import pg from "pg";
+import pg, { PoolConfig } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { getEnvValues } from "../constants/EnvironmentVariables";
 import { logger } from "../services/logger/logger";
@@ -17,21 +17,14 @@ const commonConfig = {
     password: env.DATABASE_PASSWORD,
     database: env.DATABASE_NAME,
 };
-const config = {
-    test: {
-        ...commonConfig,
-    },
-    development: {
-        ...commonConfig,
-    },
-    production: {
-        ...commonConfig,
-        // Add other production configs as necessary here (eg: pool connections)
-    },
-};
+
+const config = new Map<string, PoolConfig>();
+config.set("test", commonConfig);
+config.set("development", commonConfig);
+config.set("production", { ...commonConfig });
 
 // pool represents only the DB connection established by the pg driver
-export const pool = new Pool(config[environment]);
+export const pool = new Pool(config.get(environment));
 pool.connect()
     .then(() => logger.info("Connected to database successfully"))
     .catch((e) => {
