@@ -38,6 +38,7 @@ Todos os testes foram realizados num banco de dados limpo, sem qualquer tipo de 
     Os testes foram realizados utilizando a ferramenta K6 da Grafana.
 
 -   Testes de carga (SLA):
+
     -   Baixo stress:
         -   vazão (número médio de requisições por minuto): 10 usuários virtuais por segundo \* 60 segundos = 600 requisições/minuto
         -   latência (tempo médio de resposta):
@@ -52,13 +53,10 @@ Todos os testes foram realizados num banco de dados limpo, sem qualquer tipo de 
             -   Outros valores: min=1.83ms med=63.28ms max=2.57s p(90)=168.2ms p(95)=217.3ms
         -   concorrência (limite de requisições simultâneas):
             Não atingiu nenhum limite.
-    -   Alto stress:
-        -   vazão (número médio de requisições por minuto): 10000 usuários virtuais por segundo \* 60 segundos = 60.0000 requisições/minuto
-        -   latência (tempo médio de resposta):
-            -   média: 11.01s
-            -   Outros valores: min=827.47ms med=10.46s max=1m3s p(90)=12.99s p(95)=13.36s
-        -   concorrência (limite de requisições simultâneas):
-            -   De um total de 162138 requisições realizadas no teste, 0.03% (53 falharam). Isso significa que o sistema atingiu algum tipo de limite ao realizar 10.000 requisições simultâneas, porém não se sabe dizer ao certo o número limite apenas com os dados fornecidos pelo K6.
+    -   Alto stress: - vazão (número médio de requisições por minuto): 10000 usuários virtuais por segundo \* 60 segundos = 60.0000 requisições/minuto - latência (tempo médio de resposta): - média: 11.01s - Outros valores: min=827.47ms med=10.46s max=1m3s p(90)=12.99s p(95)=13.36s - concorrência (limite de requisições simultâneas): - De um total de 162138 requisições realizadas no teste, 0.03% (53 falharam). Isso significa que o sistema atingiu algum tipo de limite ao realizar 10.000 requisições simultâneas, porém não se sabe dizer ao certo o número limite apenas com os dados fornecidos pelo K6.
+
+        ![alt text](stress-tests/1-medicao/sign-up/image.png)
+
 -   Potenciais gargalos:
 
     -   O endpoint realiza uma operação de leitura por string na coluna email da tabela users. Essa coluna atualmente não se encontra indexada. Isso é reforçado pelo fato de que a média do tempo de resposta é considerávelmente maior do que a mediana. Isso indica que as primeiras requisições não eram tão lentas, porém conforme a tabela foi sendo preenchida, as requisições foram tomando mais tempo. Um índice nesse campo poderia aumentar significativamente a performance do endpoint.
@@ -108,6 +106,7 @@ A escolha de qual nome será utilizada na busca é aleatória e decidida na exec
     Os testes foram realizados utilizando a ferramenta K6 da Grafana.
 
 -   Testes de carga (SLA):
+
     -   Baixo stress:
         -   vazão (número médio de requisições por minuto): 10 usuários virtuais por segundo \* 60 segundos = 600 requisições/minuto
         -   latência (tempo médio de resposta):
@@ -129,6 +128,9 @@ A escolha de qual nome será utilizada na busca é aleatória e decidida na exec
             -   Outros valores: min=282.9ms med=9.4s max=59.54s p(90)=10.49s p(95)=10.73s
         -   concorrência (limite de requisições simultâneas):
             -   De um total de 170389 requisições realizadas no teste, 0.99% (1697) falharam. Isso significa que o sistema atingiu algum tipo de limite ao realizar 10.000 requisições simultâneas, porém não se sabe dizer ao certo o número limite apenas com os dados fornecidos pelo K6.
+
+    ![alt text](stress-tests/1-medicao/search-product/image.png)
+
 -   Potenciais gargalos:
 
     -   Uma camada de cache poderia aumentar significativamente a performance desse serviço. Ela permitira que buscas frequentes pudessem não passar por um acesso ao banco. Isso pouparia uso de conexões do banco, pouparia recursos de processamento e memória do banco e diminuiria o tempo de resposta geral por não precisar fazer o acesso ao banco.
