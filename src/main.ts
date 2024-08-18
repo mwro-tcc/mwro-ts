@@ -25,14 +25,16 @@ app.use((err: Error | StatusError, _req: Request, res: Response, _next: NextFunc
     logger.error(err);
 
     if (err instanceof StatusError && err.statusCode !== 500) {
-        res.status(err.statusCode).send(err.message);
+        res.status(err.statusCode).send({
+            message: err.message,
+        });
         return;
     }
-    res.status(500).send(ErrorMessages.internalServerError);
+    res.status(500).send({ message: ErrorMessages.internalServerError });
 });
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-    next(new StatusError(404, ErrorMessages.routeNotFound));
+    res.status(404).send({ message: ErrorMessages.routeNotFound });
 });
 
 process.on("SIGINT", () => {
