@@ -11,6 +11,7 @@ import { findByUuidSchema } from "../validations/FindByUuid";
 import { makePgStoreAdapter } from "../infra/database/store";
 import { makeDeleteStoreUseCase } from "../domains/store/delete-store";
 import { paginationParamsValidation } from "../validations/PaginationParamsValidation";
+import { makeGetStoreByIdUseCase } from "../domains/store/get-store-by-id";
 
 const updateStore = makeUpdateStoreUseCase(databaseConnectionPool);
 const createStore = makeCreateStoreUseCase(databaseConnectionPool);
@@ -18,6 +19,8 @@ const deleteStore = makeDeleteStoreUseCase(databaseConnectionPool);
 
 const productAdapter = makePgProductAdapter(databaseConnectionPool);
 const storeAdapter = makePgStoreAdapter(databaseConnectionPool);
+
+const GetStoreUseCase = makeGetStoreByIdUseCase(databaseConnectionPool);
 
 class StoreController {
     create() {
@@ -84,10 +87,15 @@ class StoreController {
                     const limit = Number(validated.query.limit) || 10;
                     const offset = Number(validated.query.offset) || 0;
 
-                    return await storeAdapter.listMyStores(req.user.id, {
+                    const stores = await storeAdapter.listMyStores(req.user.id, {
                         limit,
                         offset,
                     });
+
+                    const data = await Promise.all(
+                        stores.map((s) => GetStoreUseCase.execute(s.uuid)),
+                    );
+                    return data;
                 })
                 .then((data) => res.status(200).send(data))
                 .catch(next);
