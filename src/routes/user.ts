@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post("/sign-up", userController.signUp());
 router.post("/sign-in", userController.signIn());
+router.get("/me", authenticationMiddleware(), userController.me());
 router.put("/", authenticationMiddleware(), userController.update());
 router.get("/:uuid", authenticationMiddleware(), userController.findById());
 

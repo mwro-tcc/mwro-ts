@@ -52,6 +52,16 @@ class UserController {
         };
     }
 
+    me() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                return res.status(200).send(req.user);
+            } catch (e) {
+                next(e);
+            }
+        };
+    }
+
     update() {
         return async (req: Request, res: Response, next: NextFunction) => {
             return await validate(updateUserSchema, req)
