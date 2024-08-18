@@ -73,7 +73,7 @@ class StoreController {
         return async (req: Request, res: Response, next: NextFunction) => {
             return await validate(findByUuidSchema, req)
                 .then(async (validated) => {
-                    return await storeAdapter.findByUuid(validated.params.uuid);
+                    return await GetStoreUseCase.execute(validated.params.uuid);
                 })
                 .then((data) => res.status(200).send(data))
                 .catch(next);
