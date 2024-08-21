@@ -40,20 +40,31 @@ Todos os testes foram realizados num banco de dados limpo, sem qualquer tipo de 
 -   Testes de carga (SLA):
 
     -   Baixo stress:
+
         -   vazão (número médio de requisições por minuto): 10 usuários virtuais por segundo \* 60 segundos = 600 requisições/minuto
         -   latência (tempo médio de resposta):
-            -   média: 6.18ms
-            -   Outros valores: min=1.85ms med=3.83ms max=810.75ms p(90)=6.73ms p(95)=7.84ms
+            -   média: 5.12ms
+            -   Outros valores: min=2.09ms med=3.89ms max=480.87ms p(90)=6.57ms p(95)=7.97ms
         -   concorrência (limite de requisições simultâneas):
             Não atingiu nenhum limite.
+
     -   Médio stress:
+
         -   vazão (número médio de requisições por minuto): 1000 usuários virtuais por segundo \* 60 segundos = 60.000 requisições/minuto
         -   latência (tempo médio de resposta):
-            -   média: 86.62ms
-            -   Outros valores: min=1.83ms med=63.28ms max=2.57s p(90)=168.2ms p(95)=217.3ms
+            -   média: 345.44ms
+            -   Outros valores: min=5.66ms med=363.67ms max=1.72s p(90)=555.59ms p(95)=623.68ms
         -   concorrência (limite de requisições simultâneas):
             Não atingiu nenhum limite.
-    -   Alto stress: - vazão (número médio de requisições por minuto): 10000 usuários virtuais por segundo \* 60 segundos = 60.0000 requisições/minuto - latência (tempo médio de resposta): - média: 11.01s - Outros valores: min=827.47ms med=10.46s max=1m3s p(90)=12.99s p(95)=13.36s - concorrência (limite de requisições simultâneas): - De um total de 162138 requisições realizadas no teste, 0.03% (53 falharam). Isso significa que o sistema atingiu algum tipo de limite ao realizar 10.000 requisições simultâneas, porém não se sabe dizer ao certo o número limite apenas com os dados fornecidos pelo K6.
+
+    -   Alto stress:
+
+        -   vazão (número médio de requisições por minuto): 10000 usuários virtuais por segundo \* 60 segundos = 60.0000 requisições/minuto
+        -   latência (tempo médio de resposta):
+            -   média: 13.32s
+            -   Outros valores: min=332.63ms med=14s max=1m1s p(90)=15.99s p(95)=16.74s
+        -   concorrência (limite de requisições simultâneas):
+            De um total de 133,554 requisições realizadas no teste,1.48% (1983 falharam). Isso significa que o sistema atingiu algum tipo de limite ao realizar 10.000 requisições simultâneas, porém não se sabe dizer ao certo o número limite apenas com os dados fornecidos pelo K6.
 
         ![alt text](stress-tests/1-medicao/sign-up/image.png)
 
@@ -140,6 +151,101 @@ A escolha de qual nome será utilizada na busca é aleatória e decidida na exec
     -   O alto número de pedidos simultâneos pode ter sido impactado pelo limitado número de conexões disponíveis na pool de conexões com o banco de dados. Para os testes, utilizou-se o número padrão de conexões da biblioteca pg-pool (10). Ao atingir o número máximo de conexões em uso, as requisições precisavam esperar até que o banco estabelecesse novas conexões com o servidor (um processo custoso). Utilizar um número maior de conexões em aberto na pool poderia aumentar significativamente a performance do endpoint.
 
     -   Aumentar o número de conexões com o banco, apesar de ser um experimento fundamental, não é uma abordagem bala-de-prata, visto que cada conexão em aberto consome recursos do banco de dados. Dessa forma, não se pode aumentar as conexões indefinidamente, visto que recursos do banco passarão a ser utilizados para manter as conexões, deixando então de serem utilizados para suas funções principais. Uma outra abordagem para auxiliar nessa questão seria utilizar uma fila de processamento (RabbitMQ, por exemplo), de forma que a fila seria responsável por gerenciar os pedidos sendo recebidos e processando-os de forma gradual, sem sobrecarregar as conexões com o banco de dados.
+
+## Fase E: 2a Medição dos testes de Carga.
+
+#### Serviço 1: Sign-up de usuário:
+
+O endpoint de sign-up não sofreu quaisquer alterações em seus arquivos. As informações sobre arquivos que envolvem esse serviço fornecidas na primeira medição permanecem os mesmos.
+
+A melhoria implementada nesse serviço para essa nova rodada de medições foi a inclusão de um índice na coluna de "email" da tabela "users".
+
+Com essa melhoria, esperou-se que a etapa de checagem se o email já estava em uso ou não fosse acelerada pelo índice.
+
+Abaixo seguem os resultados dos testes:
+
+-   Testes de carga (SLA):
+
+    -   Baixo stress:
+        -   vazão (número médio de requisições por minuto): 10 usuários virtuais por segundo \* 60 segundos = 600 requisições/minuto
+        -   latência (tempo médio de resposta):
+            -   média: 6.18ms
+            -   Outros valores: min=1.85ms med=3.83ms max=810.75ms p(90)=6.73ms p(95)=7.84ms
+        -   concorrência (limite de requisições simultâneas):
+            Não atingiu nenhum limite.
+    -   Médio stress:
+        -   vazão (número médio de requisições por minuto): 1000 usuários virtuais por segundo \* 60 segundos = 60.000 requisições/minuto
+        -   latência (tempo médio de resposta):
+            -   média: 86.62ms
+            -   Outros valores: min=1.83ms med=63.28ms max=2.57s p(90)=168.2ms p(95)=217.3ms
+        -   concorrência (limite de requisições simultâneas):
+            Não atingiu nenhum limite.
+    -   Alto stress:
+
+        -   vazão (número médio de requisições por minuto): 10000 usuários virtuais por segundo \* 60 segundos = 60.0000 requisições/minuto
+        -   latência (tempo médio de resposta):
+            -   média: 11.01s
+            -   Outros valores: min=827.47ms med=10.46s max=1m3s p(90)=12.99s p(95)=13.36s
+        -   concorrência (limite de requisições simultâneas):
+            -   De um total de 162138 requisições realizadas no teste, 0.03% (53 falharam). Isso significa que o sistema atingiu algum tipo de limite ao realizar 10.000 requisições simultâneas, porém não se sabe dizer ao certo o número limite apenas com os dados fornecidos pelo K6.
+
+    ![alt text](stress-tests/2-medicao/sign-up/image.png)
+
+    -   Conclusões:
+
+    Os valores médios e mínimos de latência em baixo stress não tiveram diferenças consideráveis entre os dois cenários. Os valores máximos tiveram um aumento considerável após a adição do índice (480.87ms para 810.75ms).
+
+    Os valores médios tiveram uma redução considerável (345.44ms para 86.62ms) em médio stress. Os valores mínimos e máximos não tiveram diferença significativa.
+
+    Em alto stress os valores médios, mínimos e máximos não tiveram grande diferença entre os cenários.
+
+    Acredita-se que com os valores obtidos pode-se concluir que no cenário de teste proposto não é possível ver grandes melhorias no uso de um índice para acelerar a leitura. Nos testes executados, foram realizados cenários com 10, 1000 e 10000 requisições simultâneas por segundo ao longo de 3 minutos.
+
+    Nesse cenário, o banco não é capaz de atender 1000 ou 10000 conexões simultâneas sendo realizadas. Isso faz com que uma requisição precise aguardar a anterior para ser executada, enquanto o banco se mantém num cenário de grande stress. Nesse contexto, acredita-se que aumentar o número de conexões na pool poderia mostrar ganhos consideráveis na performance dos testes.
+
+    Os cenários de teste (principalmente baixo e médio stress) fazem com que a tabela de users não possua muitas linhas, fazendo com que o ganho de performance da operação de leitura fosse negligenciavel. No cenário de alto stress, nem toda requisição é atendida, então apesar do cenário tentar simular 10.000 requisições, nem todas conseguem ser executadas.
+
+    Além disso, a adição de um índice oferece uma perda na performance da operação de escrita, que provavelmente anulou quaisquer ganhos na leitura.
+
+#### Serviço 2: Buscar produto:
+
+O endpoint de buscar produto não sofreu quaisquer alterações em seus arquivos. As informações sobre arquivos que envolvem esse serviço fornecidas na primeira medição permanecem os mesmos.
+
+A melhoria implementada nesse serviço para essa nova rodada de medições foi a inclusão de um índice na coluna de "name" da tabela "products".
+
+Com essa melhoria, esperou-se que a busca fosse acelerada pelo índice.
+
+-   Testes de carga (SLA):
+
+    -   Baixo stress:
+        -   vazão (número médio de requisições por minuto): 10 usuários virtuais por segundo \* 60 segundos = 600 requisições/minuto
+        -   latência (tempo médio de resposta):
+            -   média: 7.85ms
+            -   Outros valores: min=4.16ms med=7.54ms max=32.97ms p(90)=9.68ms p(95)=10.78ms
+        -   concorrência (limite de requisições simultâneas):
+            Não atingiu nenhum limite.
+    -   Médio stress:
+        -   vazão (número médio de requisições por minuto): 1000 usuários virtuais por segundo \* 60 segundos = 60.000 requisições/minuto
+        -   latência (tempo médio de resposta):
+            -   média: 62.38ms
+            -   Outros valores: min=2.08ms med=23.98ms max=2.15s p(90)=134.73ms p(95)=251.46ms
+        -   concorrência (limite de requisições simultâneas):
+            Não atingiu nenhum limite.
+    -   Alto stress:
+        -   vazão (número médio de requisições por minuto): 10000 usuários virtuais por segundo \* 60 segundos = 60.0000 requisições/minuto
+        -   latência (tempo médio de resposta):
+            -   média: 10.16s
+            -   Outros valores: min=224.61ms med=10.11s max=28.03s p(90)=11.48s p(95)=11.69s
+        -   concorrência (limite de requisições simultâneas):
+            Não atingiu nenhum limite.
+
+    ![alt text](stress-tests/2-medicao/search-product/image.png)
+
+Os resultados desse teste foram similares ao do teste sign-up. A adição de um índice não apresentou grandes melhorias na performance do serviço.
+
+Esse serviço era composto de operações exclusivamente de leitura, em cima de uma tabela com aproximadamente 70 mil linhas. Acredita-se que o ganho de performance por um índice de leitura possa ser mais perceptível com um número de linhas maior.
+
+Similarmente ao serviço de sign-up, espera-se que um aumento no número de conexões do banco possa mostrar um ganho considerável na performance, assim como uma possível adição de uma camada de cache para diminuir o número de requisições simultâneas no banco.
 
 ## Available pnpm Commands
 
