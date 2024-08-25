@@ -1,7 +1,13 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { EditableUserFields, NewUser, User, users } from "../../../database/schema/users";
+import {
+    AnonimazebleUserFields,
+    EditableUserFields,
+    NewUser,
+    User,
+    users,
+} from "../../../database/schema/users";
 import { IUserAdapter } from "./interface";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { databaseConnectionPool } from "../../../database";
 
 export type UserCreationPayload = Pick<User, "name" | "salt" | "email" | "password">;
@@ -21,7 +27,7 @@ class PgUserAdapter implements IUserAdapter {
         const data = await this.db
             .select({ email: users.email })
             .from(users)
-            .where(eq(users.email, email))
+            .where(and(eq(users.email, email), eq(users.isDeleted, false)))
             .limit(1);
         const userExists = !!data[0];
         const emailIsAvailable = !userExists;
@@ -29,12 +35,20 @@ class PgUserAdapter implements IUserAdapter {
     }
 
     async findByEmail(email: string): Promise<User> {
-        const data = await this.db.select().from(users).where(eq(users.email, email)).limit(1);
+        const data = await this.db
+            .select()
+            .from(users)
+            .where(and(eq(users.email, email), eq(users.isDeleted, false)))
+            .limit(1);
         return data[0];
     }
 
     async findByUuid(uuid: string): Promise<User> {
-        const data = await this.db.select().from(users).where(eq(users.uuid, uuid)).limit(1);
+        const data = await this.db
+            .select()
+            .from(users)
+            .where(and(eq(users.uuid, uuid), eq(users.isDeleted, false)))
+            .limit(1);
         return data[0];
     }
 
@@ -42,6 +56,15 @@ class PgUserAdapter implements IUserAdapter {
         const updated = await this.db
             .update(users)
             .set(data)
+            .where(and(eq(users.uuid, uuid), eq(users.isDeleted, false)))
+            .returning();
+        return updated[0];
+    }
+
+    async anonymize(uuid: string, data: AnonimazebleUserFields): Promise<User> {
+        const updated = await this.db
+            .update(users)
+            .set({ ...data, isDeleted: true })
             .where(eq(users.uuid, uuid))
             .returning();
         return updated[0];

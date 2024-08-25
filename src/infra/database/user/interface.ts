@@ -1,11 +1,19 @@
-import { EditableUserFields, NewUser, User } from "../../../database/schema/users";
+import {
+    AnonimazebleUserFields,
+    EditableUserFields,
+    NewUser,
+    User,
+} from "../../../database/schema/users";
 
 export interface IUserAdapter {
-    bulkCreate(payload: NewUser[]): Promise<void>;
-    create(payload: NewUser): Promise<User>;
+    // readers
     isEmailAvailable(email: string): Promise<boolean>;
     findByEmail(email: string): Promise<User>;
     findByUuid(uuid: string): Promise<User>;
-    bulkCreate(data: NewUser[]): Promise<void>;
+
+    // writters
+    bulkCreate(payload: NewUser[]): Promise<void>;
+    create(payload: NewUser): Promise<User>;
     update(uuid: string, payload: Partial<EditableUserFields>): Promise<User>;
+    anonymize(uuid: string, data: AnonimazebleUserFields): Promise<User>;
 }

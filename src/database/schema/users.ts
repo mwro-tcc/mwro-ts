@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { date, pgTable, uuid, varchar } from "drizzle-orm/pg-core";
+import { date, pgTable, uuid, varchar, boolean } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
     uuid: uuid("uuid")
@@ -10,6 +10,7 @@ export const users = pgTable("users", {
     password: varchar("password", { length: 256 }).notNull(),
     salt: varchar("salt", { length: 256 }).notNull(),
     createdAt: date("createdAt").defaultNow().notNull(),
+    isDeleted: boolean("isDeleted").default(false).notNull(),
 });
 
 export type User = typeof users.$inferSelect;
@@ -17,3 +18,4 @@ export type NewUser = typeof users.$inferInsert;
 
 export type PublicUserFields = Pick<User, "name" | "email" | "createdAt">;
 export type EditableUserFields = Pick<User, "name">;
+export type AnonimazebleUserFields = Pick<User, "name" | "email">;
