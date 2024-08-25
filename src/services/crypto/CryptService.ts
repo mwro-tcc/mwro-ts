@@ -69,8 +69,8 @@ class CryptoService implements ICryptoService {
     }
 
     getJWTExpireTimeMillis(env: string): number {
-        if (env === "development") return TWENTY_FOUR_HOURS_MILLIS;
-        if (env === "production") return ONE_HOUR_MILLIS;
+        if (env === "development") return 60 * 1000;
+        if (env === "production") return 60 * 1000;
         return ONE_HOUR_MILLIS;
     }
 }
