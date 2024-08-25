@@ -55,7 +55,10 @@ class UserController {
     me() {
         return async (req: Request, res: Response, next: NextFunction) => {
             try {
-                return res.status(200).send(req.user);
+                const user = await userAdapter.findByUuid(req.user.id);
+                if (!user) throw new StatusError(404, ErrorMessages.userNotFound);
+                res.status(200).send(user);
+                return user;
             } catch (e) {
                 next(e);
             }

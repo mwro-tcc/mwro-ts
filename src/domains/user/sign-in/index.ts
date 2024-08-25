@@ -31,6 +31,7 @@ class SignInUseCase implements ISignInUseCase {
         });
 
         return {
+            user,
             token,
         };
     }
