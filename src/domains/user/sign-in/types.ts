@@ -1,4 +1,7 @@
+import { User } from "../../../database/schema/users";
+
 export type SignInReturn = {
+    user: User;
     token: string;
 };
 
