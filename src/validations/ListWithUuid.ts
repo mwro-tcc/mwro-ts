@@ -1,9 +1,8 @@
 import { z } from "zod";
+import { paginationParamsValidation } from "./PaginationParamsValidation";
 
-export const listWithUuid = z.object({
-    params: z.object({ uuid: z.string() }),
-    query: z.object({
-        limit: z.coerce.number(),
-        offset: z.coerce.number(),
+export const listWithUuid = paginationParamsValidation.and(
+    z.object({
+        params: z.object({ uuid: z.string() }),
     }),
-});
+);

@@ -91,8 +91,12 @@ class CommunityController {
         return async (req: Request, res: Response, next: NextFunction) => {
             return await validate(listWithUuid, req)
                 .then(async (validated) => {
+                    const limit = Number(validated.query.limit) || 10;
+                    const offset = Number(validated.query.offset) || 0;
+
                     return await productAdapter.listFromCommunity(validated.params.uuid, {
-                        ...validated.query,
+                        limit,
+                        offset,
                     });
                 })
                 .then((data) => res.status(200).send(data))
