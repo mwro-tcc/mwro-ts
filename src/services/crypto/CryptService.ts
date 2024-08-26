@@ -5,8 +5,8 @@ import { ICryptoService } from "./interface";
 
 const SECRET = process.env.SECRET;
 const ENVIRONMENT = process.env.NODE_ENV;
-const TWENTY_FOUR_HOURS_MILLIS = 86400;
-const ONE_HOUR_MILLIS = 3600;
+const TWENTY_FOUR_HOURS_SECONDS = 86400;
+const ONE_HOUR_SECONDS = 3600;
 
 export type hashedPasswordData = { password: string; salt: string };
 export type DecodedToken = {
@@ -69,9 +69,9 @@ class CryptoService implements ICryptoService {
     }
 
     getJWTExpireTimeMillis(env: string): number {
-        if (env === "development") return 60;
-        if (env === "production") return 60;
-        return 60;
+        if (env === "development") return TWENTY_FOUR_HOURS_SECONDS;
+        if (env === "production") return ONE_HOUR_SECONDS;
+        return ONE_HOUR_SECONDS;
     }
 }
 
