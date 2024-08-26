@@ -10,4 +10,6 @@ export interface ICommunityAdapter {
         userUuid: string,
         params: { limit: number; offset: number },
     ): Promise<Community[]>;
+
+    list(params: { limit: number; offset: number }): Promise<Community[]>;
 }

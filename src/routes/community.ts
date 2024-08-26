@@ -4,6 +4,7 @@ import { authenticationMiddleware } from "../middlewares/auth/auth";
 
 const router = express.Router();
 
+router.get("/", authenticationMiddleware(), communityController.list());
 router.get("/created", authenticationMiddleware(), communityController.listCreatedByUser());
 router.get("/:uuid", authenticationMiddleware(), communityController.findByUuid());
 router.get("/:uuid/products", authenticationMiddleware(), communityController.listProducts());

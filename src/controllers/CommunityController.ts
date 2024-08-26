@@ -13,17 +13,35 @@ import { databaseConnectionPool } from "../database";
 import { makePgStoreAdapter } from "../infra/database/store";
 import { listWithUuidFilterValidation } from "../validations/ListWithUuidFilter";
 import { makeGetStoreByIdUseCase } from "../domains/store/get-store-by-id";
+import { paginationParamsValidation } from "../validations/PaginationParamsValidation";
 
-const communityAdapter = makePgCommunityAdapter();
 const createCommunity = makeCreateCommunityUseCase();
 const updateCommunity = makeUpdateCommunityUseCase();
 const deleteCommunity = makeDeleteCommunityUseCase();
 
+const communityAdapter = makePgCommunityAdapter();
 const productAdapter = makePgProductAdapter(databaseConnectionPool);
 const storeAdapter = makePgStoreAdapter(databaseConnectionPool);
 const GetStoreUseCase = makeGetStoreByIdUseCase(databaseConnectionPool);
 
 class CommunityController {
+    list() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(paginationParamsValidation, req)
+                .then(async (validated) => {
+                    const limit = Number(validated.query.limit) || 10;
+                    const offset = Number(validated.query.offset) || 0;
+
+                    return await communityAdapter.list({
+                        limit,
+                        offset,
+                    });
+                })
+                .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+
     create() {
         return async (req: Request, res: Response, next: NextFunction) => {
             return await validate(createCommunitySchema, req)

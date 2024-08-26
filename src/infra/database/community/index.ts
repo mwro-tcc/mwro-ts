@@ -53,6 +53,15 @@ class PgCommunityAdapter implements ICommunityAdapter {
             .limit(params.limit)
             .offset(params.offset);
     }
+
+    async list(params: { limit: number; offset: number }) {
+        return await this.db
+            .select()
+            .from(communities)
+            .orderBy(desc(communities.createdAt))
+            .limit(params.limit)
+            .offset(params.offset);
+    }
 }
 
 export function makePgCommunityAdapter(db: NodePgDatabase = databaseConnectionPool) {
