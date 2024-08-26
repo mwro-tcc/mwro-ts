@@ -10,10 +10,12 @@ import { databaseConnectionPool } from "../database";
 import { findByUuidSchema } from "../validations/FindByUuid";
 import { makePgUserAdapter } from "../infra/database/user";
 import { ErrorMessages, StatusError } from "../constants/StatusError";
+import { makeDeleteAccountUseCase } from "../domains/user/delete-account";
 
 const signUp = makeSignUpUseCase(databaseConnectionPool);
 const signIn = makeSignInUseCase(databaseConnectionPool);
 const updateUser = makeUpdateUserUseCase(databaseConnectionPool);
+const deleteAccount = makeDeleteAccountUseCase(databaseConnectionPool);
 
 const userAdapter = makePgUserAdapter(databaseConnectionPool);
 
@@ -72,6 +74,15 @@ class UserController {
                     return updateUser.execute(req.user.id, validated.body);
                 })
                 .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+
+    deleteAccount() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return deleteAccount
+                .execute(req.user.id)
+                .then(() => res.status(204).send())
                 .catch(next);
         };
     }
