@@ -1,23 +1,25 @@
-//TODO improve implementation when needed.
-// 1. Add more methods (error, warn, table...)
-
 import { getEnvValues } from "../../constants/EnvironmentVariables";
+import { makeLogAdapter } from "../../infra/mongo/log";
+import { ILogAdapter } from "../../infra/mongo/log/interface";
 
-// 2. Add winston
-class Logger {
+class LoggerService {
     constructor(
         private readonly loggingTool: any,
         private readonly errorLoggingTool: any,
+        private readonly adapter: ILogAdapter,
     ) {}
-    info(txt: any) {
+
+    info(data: any) {
         const { NODE_ENV } = getEnvValues();
         if (NODE_ENV === "test") return;
 
-        this.loggingTool(txt);
+        this.loggingTool(data);
+        this.adapter.write(data);
     }
-    error(txt: any) {
-        this.errorLoggingTool(txt);
+    error(data: any) {
+        this.errorLoggingTool(data);
+        this.adapter.write(data);
     }
 }
 
-export const logger = new Logger(console.log, console.error);
+export const logger = new LoggerService(console.log, console.error, makeLogAdapter());
