@@ -1,6 +1,6 @@
 import { Db, MongoClient } from "mongodb";
 import { getEnvValues } from "../constants/EnvironmentVariables";
-import { ConsoleLogWriter } from "drizzle-orm";
+import { logger } from "../services/logger/logger";
 
 // Connection URL
 const envValues = getEnvValues();
@@ -13,6 +13,7 @@ export async function connectToMongo() {
     if (db) return db;
 
     await client.connect();
+    if (!db) logger.info("Connected to mongodb succsessfully");
     db = client.db(envValues.MONGO_DATABASE);
     return db;
 }
