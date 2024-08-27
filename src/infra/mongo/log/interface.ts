@@ -1,3 +1,3 @@
 export interface ILogAdapter {
-    write(data: unknown): Promise<void>;
+    write(data: any): Promise<void>;
 }

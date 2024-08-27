@@ -5,9 +5,12 @@ import router from "./routes";
 import { getEnvValues } from "./constants/EnvironmentVariables";
 import { logger } from "./services/logger/logger";
 import { ErrorMessages, StatusError } from "./constants/StatusError";
+import { connectToMongo } from "./mongo";
 
 const env = getEnvValues();
 const port = env.PORT;
+
+connectToMongo();
 
 const app = express();
 

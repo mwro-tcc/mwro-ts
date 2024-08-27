@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-import jsonwebtoken from "jsonwebtoken";
+import jsonwebtoken, { SignOptions } from "jsonwebtoken";
 import { ICryptoService } from "./interface";
 
 const SECRET = process.env.SECRET;
@@ -41,7 +41,7 @@ class CryptoService implements ICryptoService {
         const passwordToken = crypto.randomBytes(16).toString("hex");
 
         const jwtPayload = { userId, passwordToken };
-        const jwtOptions = {
+        const jwtOptions: SignOptions = {
             expiresIn: this.getJWTExpireTimeMillis(ENVIRONMENT as string),
         };
         const token = jsonwebtoken.sign(jwtPayload, SECRET as string, jwtOptions);
