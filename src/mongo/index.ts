@@ -13,7 +13,6 @@ export async function connectToMongo() {
     if (db) return db;
 
     await client.connect();
-    if (!db) logger.info("Connected to mongodb succsessfully");
     db = client.db(envValues.MONGO_DATABASE);
     return db;
 }
