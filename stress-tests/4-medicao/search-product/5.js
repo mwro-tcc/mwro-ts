@@ -1,7 +1,7 @@
 import { searchProductTest } from "./search-product-test.js";
 
 export const options = {
-    vus: 500,
+    vus: 1000,
     duration: "180s",
 };
 
