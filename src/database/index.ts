@@ -21,7 +21,10 @@ const commonConfig = {
 const config = new Map<string, PoolConfig>();
 config.set("test", commonConfig);
 config.set("development", commonConfig);
-config.set("production", { ...commonConfig });
+config.set("production", commonConfig);
+// config.set("test", { ...commonConfig, min: 10000, max: 20000 });
+// config.set("development", { ...commonConfig, min: 10000, max: 20000 });
+// config.set("production", { ...commonConfig, min: 10000, max: 20000 });
 
 // pool represents only the DB connection established by the pg driver
 export const pool = new Pool(config.get(environment));
