@@ -9,11 +9,6 @@ export const envSchema = z.object({
     DATABASE_USER: z.string(),
     DATABASE_HOST: z.string(),
     DATABASE_NAME: z.string(),
-    MONGO_PORT: z.string(),
-    MONGO_HOST: z.string(),
-    MONGO_DATABASE: z.string(),
-    MONGO_USER: z.string(),
-    MONGO_PASSWORD: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;

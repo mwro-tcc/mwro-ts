@@ -21,9 +21,4 @@ export const testEnvValues: Env = {
     DATABASE_USER: "mwro_test",
     DATABASE_HOST: "localhost",
     DATABASE_NAME: "mwro_db_test",
-    MONGO_HOST: "mongo",
-    MONGO_PORT: "27017",
-    MONGO_DATABASE: "mwro_mongo_test",
-    MONGO_USER: "root",
-    MONGO_PASSWORD: "root",
 };

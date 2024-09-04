@@ -14,10 +14,8 @@ services:
             - 3040:3040
         depends_on:
             - postgres
-            - mongo
         links:
             - postgres
-            - mongo
         networks:
             - mwro_network
 
@@ -35,25 +33,10 @@ services:
         networks:
             - mwro_network
 
-    mongo:
-        image: mongo
-        restart: always
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: root
-            MONGO_INITDB_ROOT_PASSWORD: root
-        ports:
-            - 27017:27017
-        volumes:
-            - mongodata:/var/lib/mongo
-        networks:
-            - mwro_network
-
 networks:
     mwro_network:
         name: mwro_network
 
 volumes:
     postgresdata:
-        driver: local
-    mongodata:
         driver: local
