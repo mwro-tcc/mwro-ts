@@ -10,7 +10,7 @@ export function makeDeleteAccountUseCase(db: NodePgDatabase = databaseConnection
 }
 
 class DeleteAccountUseCase implements IDeleteAccount {
-    constructor(private readonly userAdapter: IUserAdapter) {}
+    constructor(private readonly userAdapter: IUserAdapter) { }
     async execute(userId: string): Promise<void> {
         const user = await this.userAdapter.findByUuid(userId);
         if (!user) throw new StatusError(404, "User not found");
@@ -20,6 +20,7 @@ class DeleteAccountUseCase implements IDeleteAccount {
         await this.userAdapter.anonymize(userId, {
             name: `Anonymous User ${uuidFraction}`,
             email: "deletedAccount",
+            phoneNumber: "deletedAccount"
         });
     }
 }
