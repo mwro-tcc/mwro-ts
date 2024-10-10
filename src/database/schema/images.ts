@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { customType, date, pgTable, uuid, varchar } from "drizzle-orm/pg-core";
+import { customType, date, pgTable, uuid } from "drizzle-orm/pg-core";
 const bytea = customType<{ data: Buffer; notNull: false; default: false }>({
     dataType() {
         return "bytea"
@@ -11,7 +11,6 @@ export const images = pgTable("images", {
         .primaryKey()
         .default(sql`gen_random_uuid()`),
 
-    assetType: varchar("assetType").notNull(),
     assetUuid: uuid("assetUuid").notNull(),
 
     content: bytea("content").notNull(),

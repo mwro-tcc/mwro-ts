@@ -140,12 +140,6 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "assetType": {
-          "name": "assetType",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
         "assetUuid": {
           "name": "assetUuid",
           "type": "uuid",
