@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get("/", authenticationMiddleware(), communityController.list());
 router.get("/created", authenticationMiddleware(), communityController.listCreatedByUser());
+router.get("/search", authenticationMiddleware(), communityController.search());
 router.get("/:uuid", authenticationMiddleware(), communityController.findByUuid());
 router.get("/:uuid/products", authenticationMiddleware(), communityController.listProducts());
 router.get("/:uuid/stores", authenticationMiddleware(), communityController.listStores());

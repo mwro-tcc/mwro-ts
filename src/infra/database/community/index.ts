@@ -1,4 +1,4 @@
-import { eq, sql, inArray, desc } from "drizzle-orm";
+import { eq, sql, inArray, desc, like } from "drizzle-orm";
 import { Community, NewCommunity, communities } from "../../../database/schema/communities";
 import { ICommunityAdapter } from "./interface";
 import { communitiesAdmins } from "../../../database/schema/communities-admins";
@@ -6,7 +6,7 @@ import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { databaseConnectionPool } from "../../../database";
 
 class PgCommunityAdapter implements ICommunityAdapter {
-    constructor(private readonly db: NodePgDatabase) {}
+    constructor(private readonly db: NodePgDatabase) { }
     async create(input: NewCommunity): Promise<Community> {
         const data = await this.db.insert(communities).values(input).returning();
         return data[0];
@@ -59,6 +59,23 @@ class PgCommunityAdapter implements ICommunityAdapter {
             .select()
             .from(communities)
             .orderBy(desc(communities.createdAt))
+            .limit(params.limit)
+            .offset(params.offset);
+    }
+
+    async searchByName(
+        name: string,
+        params: { limit: number; offset: number },
+    ): Promise<Community[]> {
+        const lastChar = name[name.length - 1];
+        if (lastChar !== "%") {
+            name = name + "%";
+        }
+
+        return await this.db
+            .select()
+            .from(communities)
+            .where(like(communities.name, name))
             .limit(params.limit)
             .offset(params.offset);
     }
