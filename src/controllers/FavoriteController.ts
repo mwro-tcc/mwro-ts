@@ -37,4 +37,4 @@ class FavoriteController {
 
 }
 
-export const favoriteCOntroller = new FavoriteController();
+export const favoriteController = new FavoriteController();

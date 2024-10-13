@@ -4,6 +4,7 @@ import communityRouter from "./community";
 import productRouter from "./product";
 import storeRouter from "./store";
 import imagesRouter from "./image";
+import favoritesRouter from "./favorite";
 
 import { loggingMiddleware } from "../middlewares/logger";
 
@@ -18,5 +19,6 @@ router.use("/communities", loggingMiddleware(), communityRouter);
 router.use("/products", loggingMiddleware(), productRouter);
 router.use("/stores", loggingMiddleware(), storeRouter);
 router.use("/images", loggingMiddleware(), imagesRouter);
+router.use("/favorites", loggingMiddleware(), favoritesRouter);
 
 export default router;
