@@ -27,11 +27,18 @@ const GetStoreUseCase = makeGetStoreByIdUseCase(databaseConnectionPool);
 
 class CommunityController {
     list() {
-        return async (req: Request, res: Response, next: NextFunction) => {
+        return async (req: any, res: Response, next: NextFunction) => {
             return await validate(paginationParamsValidation, req)
                 .then(async (validated) => {
                     const limit = Number(validated.query.limit) || 10;
                     const offset = Number(validated.query.offset) || 0;
+                    if (req.query) {
+                        return await productAdapter.searchByName(req.query?.term, {
+                            limit,
+                            offset,
+                        });
+
+                    }
 
                     return await communityAdapter.list({
                         limit,
@@ -144,21 +151,6 @@ class CommunityController {
                 .catch(next);
         };
     }
-
-    search() {
-        return async (req: Request, res: Response, next: NextFunction) => {
-            return await validate(PaginatedSearchValidation, req)
-                .then(async (validated) => {
-                    return await productAdapter.searchByName(validated.query.term, {
-                        limit: validated.query.limit || 10,
-                        offset: validated.query.offset || 0,
-                    });
-                })
-                .then((data) => res.status(200).send(data))
-                .catch(next);
-        };
-    }
-
 }
 
 export const communityController = new CommunityController();

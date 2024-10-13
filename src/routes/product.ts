@@ -5,7 +5,7 @@ import { productController } from "../controllers/ProductController";
 const router = express.Router();
 
 router.post("/", authenticationMiddleware(), productController.create());
-router.get("/search", authenticationMiddleware(), productController.search());
+router.get("/", authenticationMiddleware(), productController.search());
 router.get("/:uuid", authenticationMiddleware(), productController.findByUuid());
 router.put("/:uuid", authenticationMiddleware(), productController.update());
 router.delete("/:uuid", authenticationMiddleware(), productController.delete());
