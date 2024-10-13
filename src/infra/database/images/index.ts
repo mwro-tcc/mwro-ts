@@ -7,8 +7,12 @@ import { databaseConnectionPool } from "../../../database";
 class PgImageAdapter {
 	constructor(private readonly db: NodePgDatabase) { }
 	async create(input: NewImage): Promise<Image> {
-		const data = await this.db.insert(images).values(input).returning();
-		return data[0];
+		return await this.db.transaction(async (tx) => {
+			await tx.delete(images).where(eq(images.assetUuid, input.assetUuid))
+			const data = await tx.insert(images).values(input).returning();
+
+			return data[0];
+		})
 	}
 
 	async bulkCreate(payload: NewImage[]): Promise<void> {
