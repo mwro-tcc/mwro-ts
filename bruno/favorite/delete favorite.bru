@@ -1,0 +1,19 @@
+meta {
+  name: delete favorite
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{url}}/favorites/:assetUuid
+  body: none
+  auth: none
+}
+
+params:path {
+  assetUuid: 19944499-5d1c-4413-aa89-75bd495aa0b0
+}
+
+headers {
+  authorization: {{authorization}}
+}
