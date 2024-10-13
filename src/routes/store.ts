@@ -10,5 +10,6 @@ router.put("/:uuid", authenticationMiddleware(), storeController.update());
 router.get("/:uuid", authenticationMiddleware(), storeController.findByUuid());
 router.delete("/:uuid", authenticationMiddleware(), storeController.delete());
 router.get("/:uuid/products", authenticationMiddleware(), storeController.listProducts());
+router.get("/search", authenticationMiddleware(), storeController.search());
 
 export default router;

@@ -1,10 +1,10 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { IStoreAdapter } from "./interface";
 import { NewStore, Store, stores } from "../../../database/schema/stores";
-import { desc, eq, getOrderByOperators } from "drizzle-orm";
+import { desc, eq, getOrderByOperators, like } from "drizzle-orm";
 
 class PgStoreAdapter implements IStoreAdapter {
-    constructor(private readonly db: NodePgDatabase) {}
+    constructor(private readonly db: NodePgDatabase) { }
 
     async create(data: NewStore): Promise<Store> {
         const createdCommunity = await this.db.insert(stores).values(data).returning();
@@ -54,6 +54,23 @@ class PgStoreAdapter implements IStoreAdapter {
 
     async delete(uuid: string): Promise<void> {
         await this.db.delete(stores).where(eq(stores.uuid, uuid));
+    }
+
+    async searchByName(
+        name: string,
+        params: { limit: number; offset: number },
+    ): Promise<Store[]> {
+        const lastChar = name[name.length - 1];
+        if (lastChar !== "%") {
+            name = name + "%";
+        }
+
+        return await this.db
+            .select()
+            .from(stores)
+            .where(like(stores.name, name))
+            .limit(params.limit)
+            .offset(params.offset);
     }
 }
 

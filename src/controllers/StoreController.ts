@@ -12,6 +12,7 @@ import { makePgStoreAdapter } from "../infra/database/store";
 import { makeDeleteStoreUseCase } from "../domains/store/delete-store";
 import { paginationParamsValidation } from "../validations/PaginationParamsValidation";
 import { makeGetStoreByIdUseCase } from "../domains/store/get-store-by-id";
+import { PaginatedSearchValidation } from "../validations/Search";
 
 const updateStore = makeUpdateStoreUseCase(databaseConnectionPool);
 const createStore = makeCreateStoreUseCase(databaseConnectionPool);
@@ -109,6 +110,20 @@ class StoreController {
                     await deleteStore.execute(validated.params.uuid, req.user.id);
                 })
                 .then(() => res.status(204).send())
+                .catch(next);
+        };
+    }
+
+    search() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(PaginatedSearchValidation, req)
+                .then(async (validated) => {
+                    return await storeAdapter.searchByName(validated.query.term, {
+                        limit: validated.query.limit || 10,
+                        offset: validated.query.offset || 0,
+                    });
+                })
+                .then((data) => res.status(200).send(data))
                 .catch(next);
         };
     }
