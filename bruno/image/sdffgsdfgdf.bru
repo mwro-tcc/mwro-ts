@@ -1,0 +1,23 @@
+meta {
+  name: sdffgsdfgdf
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}/images/:uuid
+  body: multipartForm
+  auth: none
+}
+
+params:path {
+  uuid: bb61547f-cbf8-4981-a55f-4f42a86d7807
+}
+
+headers {
+  Authorization: {{authorization}}
+}
+
+body:multipart-form {
+  : @file(D:\Downloads\pato-445x445.jpeg)
+}

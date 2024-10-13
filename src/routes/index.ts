@@ -3,6 +3,8 @@ import userRouter from "./user";
 import communityRouter from "./community";
 import productRouter from "./product";
 import storeRouter from "./store";
+import imagesRouter from "./image";
+
 import { loggingMiddleware } from "../middlewares/logger";
 
 const router = express.Router();
@@ -15,5 +17,6 @@ router.use("/users", loggingMiddleware(), userRouter);
 router.use("/communities", loggingMiddleware(), communityRouter);
 router.use("/products", loggingMiddleware(), productRouter);
 router.use("/stores", loggingMiddleware(), storeRouter);
+router.use("/images", loggingMiddleware(), imagesRouter);
 
 export default router;

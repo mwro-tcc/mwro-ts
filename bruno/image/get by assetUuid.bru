@@ -1,0 +1,19 @@
+meta {
+  name: get by assetUuid
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/images/:assetUuid
+  body: none
+  auth: none
+}
+
+params:path {
+  assetUuid: bb61547f-cbf8-4981-a55f-4f42a86d7807
+}
+
+headers {
+  Authorization: {{authorization}}
+}
