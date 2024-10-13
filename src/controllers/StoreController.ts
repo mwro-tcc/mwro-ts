@@ -13,6 +13,7 @@ import { makeDeleteStoreUseCase } from "../domains/store/delete-store";
 import { paginationParamsValidation } from "../validations/PaginationParamsValidation";
 import { makeGetStoreByIdUseCase } from "../domains/store/get-store-by-id";
 import { PaginatedSearchValidation } from "../validations/Search";
+import { makeGetAssetFavoriteStatus } from "../domains/favorite";
 
 const updateStore = makeUpdateStoreUseCase(databaseConnectionPool);
 const createStore = makeCreateStoreUseCase(databaseConnectionPool);
@@ -22,6 +23,7 @@ const productAdapter = makePgProductAdapter(databaseConnectionPool);
 const storeAdapter = makePgStoreAdapter(databaseConnectionPool);
 
 const GetStoreUseCase = makeGetStoreByIdUseCase(databaseConnectionPool);
+const getAssetFavoriteStatus = makeGetAssetFavoriteStatus()
 
 class StoreController {
     create() {
@@ -74,7 +76,8 @@ class StoreController {
         return async (req: Request, res: Response, next: NextFunction) => {
             return await validate(findByUuidSchema, req)
                 .then(async (validated) => {
-                    return await GetStoreUseCase.execute(validated.params.uuid);
+                    const store = await GetStoreUseCase.execute(validated.params.uuid);
+                    return getAssetFavoriteStatus.execute([store], req.user.id).then(data => data[0])
                 })
                 .then((data) => res.status(200).send(data))
                 .catch(next);
@@ -118,10 +121,12 @@ class StoreController {
         return async (req: Request, res: Response, next: NextFunction) => {
             return await validate(PaginatedSearchValidation, req)
                 .then(async (validated) => {
-                    return await storeAdapter.searchByName(validated.query.term, {
+                    const stores = await storeAdapter.searchByName(validated.query.term, {
                         limit: validated.query.limit || 10,
                         offset: validated.query.offset || 0,
                     });
+
+                    return getAssetFavoriteStatus.execute(stores, req.user.id)
                 })
                 .then((data) => res.status(200).send(data))
                 .catch(next);

@@ -1,9 +1,21 @@
-import { and, eq, inArray, getOrderByOperators } from "drizzle-orm";
+import { and, eq, getOrderByOperators } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Favorite, NewFavorite, favorites } from "../../../database/schema/favorites";
 import { databaseConnectionPool } from "../../../database";
 
-class PgFavoriteAdapter {
+export interface IFavoriteAdapter {
+	create(input: NewFavorite): Promise<Favorite>
+	bulkCreate(payload: NewFavorite[]): Promise<void>
+	update(uuid: string, input: Partial<NewFavorite>): Promise<Favorite>
+	findByUuid(uuid: string): Promise<Favorite>
+	delete(uuid: string): Promise<void>
+	getFavoriteAssetUuids(userUuid: string): Promise<string[]>
+	deleteAllByAssetAndUser(assetUuid: string, userUuid: string): Promise<void>
+	findByAssetUuid(assetUuid: string): Promise<Favorite>
+	updateByAssetUuid(assetUuid: string, input: Partial<NewFavorite>): Promise<Favorite>
+}
+
+class PgFavoriteAdapter implements IFavoriteAdapter {
 	constructor(private readonly db: NodePgDatabase) { }
 	async create(input: NewFavorite): Promise<Favorite> {
 		return await this.db.transaction(async (tx) => {
