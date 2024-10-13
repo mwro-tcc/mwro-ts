@@ -99,7 +99,9 @@ class StoreController {
                     const data = await Promise.all(
                         stores.map((s) => GetStoreUseCase.execute(s.uuid)),
                     );
-                    return data;
+                    if (!req.user) return data;
+                    const withFavorites = await getAssetFavoriteStatus.execute(data, req.user.id)
+                    return withFavorites
                 })
                 .then((data) => res.status(200).send(data))
                 .catch(next);
@@ -126,6 +128,7 @@ class StoreController {
                         offset: validated.query.offset || 0,
                     });
 
+                    if (!req.user) return stores
                     return getAssetFavoriteStatus.execute(stores, req.user.id)
                 })
                 .then((data) => res.status(200).send(data))
