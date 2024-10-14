@@ -1,8 +1,10 @@
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { IFavoriteAdapter, makePgFavoriteAdapter } from "../../infra/database/favorites";
+import { AnyWithUuid } from "../../types/AnyWithUuid";
 
-export function makeGetAssetFavoriteStatus() {
+export function makeGetAssetFavoriteStatus(db: NodePgDatabase) {
 	return new GetAssetFavoriteStatus(
-		makePgFavoriteAdapter()
+		makePgFavoriteAdapter(db)
 	)
 }
 
@@ -23,8 +25,5 @@ class GetAssetFavoriteStatus {
 
 }
 
-type AnyWithUuid = {
-	uuid: string
-}
 
-type WithIsFavorite<T> = T & { isFavorite: boolean }
+export type WithIsFavorite<T> = T & { isFavorite: boolean }

@@ -13,7 +13,6 @@ import { makeDeleteStoreUseCase } from "../domains/store/delete-store";
 import { paginationParamsValidation } from "../validations/PaginationParamsValidation";
 import { makeGetStoreByIdUseCase } from "../domains/store/get-store-by-id";
 import { PaginatedSearchValidation } from "../validations/Search";
-import { makeGetAssetFavoriteStatus } from "../domains/favorite";
 
 const updateStore = makeUpdateStoreUseCase(databaseConnectionPool);
 const createStore = makeCreateStoreUseCase(databaseConnectionPool);
@@ -23,7 +22,6 @@ const productAdapter = makePgProductAdapter(databaseConnectionPool);
 const storeAdapter = makePgStoreAdapter(databaseConnectionPool);
 
 const GetStoreUseCase = makeGetStoreByIdUseCase(databaseConnectionPool);
-const getAssetFavoriteStatus = makeGetAssetFavoriteStatus()
 
 class StoreController {
     create() {
@@ -76,8 +74,8 @@ class StoreController {
         return async (req: Request, res: Response, next: NextFunction) => {
             return await validate(findByUuidSchema, req)
                 .then(async (validated) => {
-                    const store = await GetStoreUseCase.execute(validated.params.uuid);
-                    return getAssetFavoriteStatus.execute([store], req.user.id).then(data => data[0])
+                    const store = await GetStoreUseCase.execute(validated.params.uuid, req.user.id);
+                    return store
                 })
                 .then((data) => res.status(200).send(data))
                 .catch(next);
@@ -97,11 +95,9 @@ class StoreController {
                     });
 
                     const data = await Promise.all(
-                        stores.map((s) => GetStoreUseCase.execute(s.uuid)),
+                        stores.map((s) => GetStoreUseCase.execute(s.uuid, req.user.id)),
                     );
-                    if (!req.user) return data;
-                    const withFavorites = await getAssetFavoriteStatus.execute(data, req.user.id)
-                    return withFavorites
+                    return data
                 })
                 .then((data) => res.status(200).send(data))
                 .catch(next);
@@ -128,8 +124,10 @@ class StoreController {
                         offset: validated.query.offset || 0,
                     });
 
-                    if (!req.user) return stores
-                    return getAssetFavoriteStatus.execute(stores, req.user.id)
+                    const data = await Promise.all(
+                        stores.map((s) => GetStoreUseCase.execute(s.uuid, req.user.id)),
+                    );
+                    return data
                 })
                 .then((data) => res.status(200).send(data))
                 .catch(next);

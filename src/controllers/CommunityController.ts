@@ -14,9 +14,6 @@ import { makePgStoreAdapter } from "../infra/database/store";
 import { listWithUuidFilterValidation } from "../validations/ListWithUuidFilter";
 import { makeGetStoreByIdUseCase } from "../domains/store/get-store-by-id";
 import { paginationParamsValidation } from "../validations/PaginationParamsValidation";
-import { makeGetAssetFavoriteStatus } from "../domains/favorite";
-
-const getAssetFavoriteStatus = makeGetAssetFavoriteStatus()
 
 const createCommunity = makeCreateCommunityUseCase();
 const updateCommunity = makeUpdateCommunityUseCase();
@@ -145,12 +142,10 @@ class CommunityController {
                     });
 
                     const data = await Promise.all(
-                        stores.map((s) => GetStoreUseCase.execute(s.uuid)),
+                        stores.map((s) => GetStoreUseCase.execute(s.uuid, req.user.id)),
                     );
 
-                    if (!req.user) return data
-                    const withFavorites = await getAssetFavoriteStatus.execute(data, req.user.id)
-                    return withFavorites;
+                    return data
                 })
                 .then((data) => res.status(200).send(data))
                 .catch(next);
