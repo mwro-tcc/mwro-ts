@@ -10,22 +10,26 @@ const imageAdapter = makePgImageAdapter()
 class ImageController {
     create() {
         return async (req: any, res: Response, next: NextFunction) => {
-            const fileBuffer = req.file?.buffer
-            const fileMimetype = req.file?.mimetype || "" as string
-            const fileFormat = fileMimetype.split("/")[1]
+            try {
+                const assetUuid = req.params?.assetUuid
 
-            const assetUuid = req.params?.assetUuid
+                const base64ImageString = req.body.image
+                const fileFormat = req.body.format
+                const fileBuffer = Buffer.from(base64ImageString, "base64")
 
-            if (!fileBuffer) throw new StatusError(422, "No image has been uploaded")
-            if (!assetUuid) throw new StatusError(422, "assetUuid field is required")
+                if (!fileBuffer) throw new StatusError(422, "No image has been uploaded")
+                if (!assetUuid) throw new StatusError(422, "assetUuid field is required")
 
-            return await imageAdapter.create({
-                content: fileBuffer,
-                format: fileFormat,
-                assetUuid
-            }).then((data) => {
-                res.status(201).send(data)
-            }).catch(next);
+                return await imageAdapter.create({
+                    content: fileBuffer,
+                    format: fileFormat,
+                    assetUuid
+                }).then((data) => {
+                    res.status(201).send(data)
+                }).catch(next);
+            } catch (e) {
+                next(e)
+            }
         };
     }
 
