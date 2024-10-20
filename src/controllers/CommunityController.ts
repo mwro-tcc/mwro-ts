@@ -31,8 +31,8 @@ class CommunityController {
                 .then(async (validated) => {
                     const limit = Number(validated.query.limit) || 10;
                     const offset = Number(validated.query.offset) || 0;
-                    if (req.query) {
-                        return await productAdapter.searchByName(req.query?.term, {
+                    if (req.query?.term) {
+                        return await productAdapter.searchByName(req.query.term, {
                             limit,
                             offset,
                         });
