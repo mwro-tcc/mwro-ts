@@ -89,7 +89,29 @@ class StoreController {
                     const limit = Number(validated.query.limit) || 10;
                     const offset = Number(validated.query.offset) || 0;
 
-                    const stores = await storeAdapter.listMyStores(req.user.id, {
+                    const stores = await storeAdapter.listCreatedStores(req.user.id, {
+                        limit,
+                        offset,
+                    });
+
+                    const data = await Promise.all(
+                        stores.map((s) => GetStoreUseCase.execute(s.uuid, req.user.id)),
+                    );
+                    return data
+                })
+                .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+
+    listFavoriteStores() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(paginationParamsValidation, req)
+                .then(async (validated) => {
+                    const limit = Number(validated.query.limit) || 10;
+                    const offset = Number(validated.query.offset) || 0;
+
+                    const stores = await storeAdapter.listFavoriteStores(req.user.id, {
                         limit,
                         offset,
                     });

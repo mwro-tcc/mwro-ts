@@ -10,9 +10,14 @@ export interface IStoreAdapter {
     ): Promise<Store[]>;
     update(uuid: string, data: Partial<NewStore>): Promise<Store>;
     delete(uuid: string): Promise<void>;
-    listMyStores(userUuid: string, params: { limit: number; offset: number }): Promise<Store[]>;
-    async searchByName(
+    listCreatedStores(userUuid: string, params: { limit: number; offset: number }): Promise<Store[]>;
+    listFavoriteStores(userUuid: string, params: { limit: number; offset: number }): Promise<Store[]>;
+    searchByName(
         name: string,
+        params: { limit: number; offset: number },
+    ): Promise<Store[]>
+    listFavoriteStores(
+        userUuid: string,
         params: { limit: number; offset: number },
     ): Promise<Store[]>
 }

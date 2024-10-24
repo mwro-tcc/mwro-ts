@@ -1,7 +1,8 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { IStoreAdapter } from "./interface";
 import { NewStore, Store, stores } from "../../../database/schema/stores";
-import { desc, eq, getOrderByOperators, like } from "drizzle-orm";
+import { and, desc, eq, getOrderByOperators, like } from "drizzle-orm";
+import { favorites } from "../../../database/schema/favorites";
 
 class PgStoreAdapter implements IStoreAdapter {
     constructor(private readonly db: NodePgDatabase) { }
@@ -30,7 +31,7 @@ class PgStoreAdapter implements IStoreAdapter {
             .offset(params.offset);
     }
 
-    async listMyStores(
+    async listCreatedStores(
         userUuid: string,
         params: { limit: number; offset: number },
     ): Promise<Store[]> {
@@ -43,6 +44,25 @@ class PgStoreAdapter implements IStoreAdapter {
             .offset(params.offset);
     }
 
+    async listFavoriteStores(
+        userUuid: string,
+        params: { limit: number; offset: number },
+    ): Promise<Store[]> {
+        return await this.db
+            .select({
+                store: stores
+            })
+            .from(stores)
+            .innerJoin(favorites, eq(stores.uuid, favorites.assetUuid))
+            .where(
+                and(
+                    eq(stores.userUuid, userUuid),
+                    eq(favorites.userUuid, userUuid)
+                ))
+            .orderBy(desc(stores.createdAt))
+            .limit(params.limit)
+            .offset(params.offset).then(data => data.map(d => d.store));
+    }
     async update(uuid: string, data: Partial<NewStore>): Promise<Store> {
         const updated = await this.db
             .update(stores)
