@@ -21,10 +21,8 @@ class ReviewController {
                     userUuid,
                 }).then((data) => {
                     res.status(201).send(data)
-                }).catch(next);
-
-            }
-            )
+                })
+            }).catch(next);
         };
     }
 
