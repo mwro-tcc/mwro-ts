@@ -1,4 +1,3 @@
-
 import express from "express";
 import { authenticationMiddleware } from "../middlewares/auth/auth";
 import { favoriteController } from "../controllers/FavoriteController";
