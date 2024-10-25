@@ -1,0 +1,15 @@
+meta {
+  name: list favorite stores
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{url}}/stores/favorites
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: {{authorization}}
+}
