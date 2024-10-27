@@ -9,6 +9,7 @@ import { paginationParamsValidation } from "../validations/PaginationParamsValid
 const reviewAdapter = makePgReviewAdapter(databaseConnectionPool);
 
 class ReviewController {
+
     listReviewsFromAsset() {
         return async (req: Request, res: Response, next: NextFunction) => {
             const assetUuid = req.params?.assetUuid || ""
