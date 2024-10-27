@@ -4,10 +4,25 @@ import { findByUuidSchema } from "../validations/FindByUuid";
 import { makePgReviewAdapter } from "../infra/database/review";
 import { databaseConnectionPool } from "../database";
 import { createReviewSchema } from "../validations/CreateReview";
+import { paginationParamsValidation } from "../validations/PaginationParamsValidation";
 
 const reviewAdapter = makePgReviewAdapter(databaseConnectionPool);
 
 class ReviewController {
+    listReviewsFromAsset() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            const assetUuid = req.params?.assetUuid || ""
+
+            return await validate(paginationParamsValidation, req).then(async (validated) => {
+                return await reviewAdapter.list({
+                    filters: { assetUuid },
+                    limit: validated.query.limit || 10,
+                    offset: validated.query.offset || 0
+                })
+            }).then(data => res.status(200).send(data)).catch(e => next(e))
+        };
+    }
+
     create() {
         return async (req: Request, res: Response, next: NextFunction) => {
             const assetUuid = req.params?.assetUuid

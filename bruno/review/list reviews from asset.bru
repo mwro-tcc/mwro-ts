@@ -1,0 +1,24 @@
+meta {
+  name: list reviews from asset
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/reviews/:assetUuid?limit=10&offset=0
+  body: none
+  auth: none
+}
+
+params:query {
+  limit: 10
+  offset: 0
+}
+
+params:path {
+  assetUuid: a0830b14-4171-48ba-91ae-e2c8f7e3bfe0
+}
+
+headers {
+  Authorization: {{authorization}}
+}

@@ -2,6 +2,7 @@ import { and, avg, eq, getOrderByOperators, inArray, or, sql } from "drizzle-orm
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { databaseConnectionPool } from "../../../database";
 import { NewReview, Review, reviews } from "../../../database/schema/review";
+import { PaginationParams } from "../../../types/PaginationParams";
 
 export interface IReviewAdapter {
 	create(input: NewReview): Promise<Review>
@@ -17,6 +18,17 @@ export interface IReviewAdapter {
 
 class PgReviewAdapter implements IReviewAdapter {
 	constructor(private readonly db: NodePgDatabase) { }
+	async list(params: { filters: { assetUuid?: string } } & PaginationParams): Promise<Review[]> {
+		const andFilters = []
+
+		if (params.filters.assetUuid) andFilters.push(eq(reviews.assetUuid, params.filters.assetUuid))
+		return await this.db
+			.select()
+			.from(reviews)
+			.where(and(...andFilters))
+			.limit(params.limit)
+			.offset(params.offset)
+	}
 	async create(input: NewReview): Promise<Review> {
 		return await this.db.transaction(async (tx) => {
 			await tx.delete(reviews).where(eq(reviews.assetUuid, input.assetUuid))
