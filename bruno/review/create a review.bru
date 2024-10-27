@@ -6,6 +6,20 @@ meta {
 
 post {
   url: {{url}}/reviews/:assetUuid
-  body: none
+  body: json
   auth: none
+}
+
+params:path {
+  assetUuid: a0830b14-4171-48ba-91ae-e2c8f7e3bfe0
+}
+
+headers {
+  Authorization: {{authorization}}
+}
+
+body:json {
+  {
+    "score": 5
+  }
 }

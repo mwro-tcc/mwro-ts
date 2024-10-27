@@ -1,4 +1,4 @@
-import { and, avg, eq, getOrderByOperators } from "drizzle-orm";
+import { and, avg, eq, getOrderByOperators, inArray, or, sql } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { databaseConnectionPool } from "../../../database";
 import { NewReview, Review, reviews } from "../../../database/schema/review";
@@ -11,8 +11,8 @@ export interface IReviewAdapter {
 	delete(uuid: string): Promise<void>
 	getReviewAssetUuids(userUuid: string): Promise<string[]>
 	deleteAllByAssetAndUser(assetUuid: string, userUuid: string): Promise<void>
-	getByAssetAndUser(assetUuid: string, userUuid: string): Promise<Review>
-	getAssetAverageScore(assetUuid: string): Promise<number>
+	getManyByAssetAndUser(identifiers: { assetUuid: string, userUuid: string }[]): Promise<Review[]>
+	getAssetAverageScore(assetUuids: string[]): Promise<{ assetUuid: string, averageScore: string | null }[]>
 }
 
 class PgReviewAdapter implements IReviewAdapter {
@@ -69,25 +69,29 @@ class PgReviewAdapter implements IReviewAdapter {
 		);
 	}
 
-	async getByAssetAndUser(assetUuid: string, userUuid: string): Promise<Review> {
-		return await this.db.select().from(reviews).where(
-			and(
-				eq(reviews.assetUuid, assetUuid),
-				eq(reviews.userUuid, userUuid)
-			)
-
-		).then(data => data[0]);
+	async getManyByAssetAndUser(identifiers: { assetUuid: string, userUuid: string }[]): Promise<Review[]> {
+		if (identifiers.length === 0) return []
+		const andClauses = identifiers.map(i => {
+			return and(eq(reviews.assetUuid, i.assetUuid), eq(reviews.userUuid, i.userUuid))
+		})
+		return await this.db
+			.select()
+			.from(reviews)
+			.where(or(
+				...andClauses
+			))
 
 	}
 
-	async getAssetAverageScore(assetUuid: string): Promise<number> {
-		return await this.db.select({ average: avg(reviews.score) }).from(reviews).where(
-			eq(reviews.assetUuid, assetUuid),
+	async getAssetAverageScore(assetUuids: string[]): Promise<{ assetUuid: string, averageScore: string | null }[]> {
+		if (assetUuids.length === 0) return [] as { assetUuid: string, averageScore: string | null }[]
+		return await this.db.select({
+			assetUuid: reviews.assetUuid,
+			averageScore: sql`ROUND(AVG(reviews.score),2)` as any as any
+		}).from(reviews).where(
+			inArray(reviews.assetUuid, assetUuids),
 
-		).then(data => {
-			if (!data) return 0
-			return Number(data[0].average)
-		});
+		).groupBy(reviews.assetUuid)
 
 	}
 }

@@ -14,10 +14,12 @@ import { makePgStoreAdapter } from "../infra/database/store";
 import { listWithUuidFilterValidation } from "../validations/ListWithUuidFilter";
 import { makeGetStoreByIdUseCase } from "../domains/store/get-store-by-id";
 import { paginationParamsValidation } from "../validations/PaginationParamsValidation";
+import { makeParseProductRowsUseCase } from "../domains/product/parse-product-rows";
 
 const createCommunity = makeCreateCommunityUseCase();
 const updateCommunity = makeUpdateCommunityUseCase();
 const deleteCommunity = makeDeleteCommunityUseCase();
+const parseProductRows = makeParseProductRowsUseCase(databaseConnectionPool)
 
 const communityAdapter = makePgCommunityAdapter();
 const productAdapter = makePgProductAdapter(databaseConnectionPool);
@@ -32,7 +34,7 @@ class CommunityController {
                     const limit = Number(validated.query.limit) || 10;
                     const offset = Number(validated.query.offset) || 0;
                     if (req.query?.term) {
-                        return await productAdapter.searchByName(req.query.term, {
+                        return await communityAdapter.searchByName(req.query.term, {
                             limit,
                             offset,
                         });
@@ -119,10 +121,11 @@ class CommunityController {
                     const limit = Number(validated.query.limit) || 10;
                     const offset = Number(validated.query.offset) || 0;
 
-                    return await productAdapter.listFromCommunity(validated.params.uuid, {
+                    const products = await productAdapter.listFromCommunity(validated.params.uuid, {
                         limit,
                         offset,
                     });
+                    return await parseProductRows.execute(products, req.user.id)
                 })
                 .then((data) => res.status(200).send(data))
                 .catch(next);
