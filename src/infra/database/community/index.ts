@@ -1,4 +1,4 @@
-import { eq, sql, inArray, desc, like } from "drizzle-orm";
+import { eq, sql, inArray, desc, ilike } from "drizzle-orm";
 import { Community, NewCommunity, communities } from "../../../database/schema/communities";
 import { ICommunityAdapter } from "./interface";
 import { communitiesAdmins } from "../../../database/schema/communities-admins";
@@ -75,7 +75,7 @@ class PgCommunityAdapter implements ICommunityAdapter {
         return await this.db
             .select()
             .from(communities)
-            .where(like(communities.name, name))
+            .where(ilike(communities.name, name))
             .limit(params.limit)
             .offset(params.offset);
     }

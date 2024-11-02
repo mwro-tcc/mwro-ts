@@ -1,13 +1,13 @@
-import { NodePgDatabase, NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
+import { NodePgDatabase, } from "drizzle-orm/node-postgres";
 import { IProductAdapter } from "./interface";
 import { NewProduct, Product, products } from "../../../database/schema/products";
-import { desc, eq, ExtractTablesWithRelations, like, sql } from "drizzle-orm";
+import { desc, eq, ilike } from "drizzle-orm";
 import { PaginationParams } from "../../../types/PaginationParams";
 import { stores } from "../../../database/schema/stores";
 import { communities } from "../../../database/schema/communities";
 
 class PgProductAdapter implements IProductAdapter {
-    constructor(private readonly db: NodePgDatabase) {}
+    constructor(private readonly db: NodePgDatabase) { }
     async bulkCreate(payload: NewProduct[]): Promise<void> {
         await this.db.insert(products).values(payload).returning();
     }
@@ -80,7 +80,7 @@ class PgProductAdapter implements IProductAdapter {
         return await this.db
             .select()
             .from(products)
-            .where(like(products.name, name))
+            .where(ilike(products.name, name))
             .limit(params.limit)
             .offset(params.offset);
     }
