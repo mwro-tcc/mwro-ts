@@ -19,4 +19,7 @@ export const ErrorMessages = {
     userNotCreator: "User is not the creator of this community",
     storeNotFound: "Store not found",
     userIsNotStoreOwner: "Only the owner of the store may perform this action",
+    requestAlreadyReviewed: "This request has already been reviewed",
+    storeAlreadyBelongsToACommunity: "This store already belongs to a community",
+    operationNotAllowed: "Operation not allowed"
 };

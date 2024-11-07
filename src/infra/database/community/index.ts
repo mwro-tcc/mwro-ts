@@ -1,9 +1,11 @@
-import { eq, sql, inArray, desc, ilike } from "drizzle-orm";
+import { eq, sql, inArray, desc, ilike, and } from "drizzle-orm";
 import { Community, NewCommunity, communities } from "../../../database/schema/communities";
 import { ICommunityAdapter } from "./interface";
 import { communitiesAdmins } from "../../../database/schema/communities-admins";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { databaseConnectionPool } from "../../../database";
+import { CommunityRequest, NewCommunityRequest, communitiesRequests, communitiesRequestsStatusEnum } from "../../../database/schema/communities-requests";
+import { ListCommunityRequestsParams } from "../../../domains/community/list-requests/types";
 
 class PgCommunityAdapter implements ICommunityAdapter {
     constructor(private readonly db: NodePgDatabase) { }
@@ -76,8 +78,45 @@ class PgCommunityAdapter implements ICommunityAdapter {
             .select()
             .from(communities)
             .where(ilike(communities.name, name))
+            .orderBy(desc(communities.createdAt))
             .limit(params.limit)
             .offset(params.offset);
+    }
+
+    async createAccessRequest(params: NewCommunityRequest): Promise<CommunityRequest> {
+        const data = await this.db.insert(communitiesRequests).values(params).returning();
+        return data[0]
+    }
+
+    async getAccessRequest(requestUuid: string): Promise<CommunityRequest> {
+        const data = await this.db.select().from(communitiesRequests).where(eq(communitiesRequests.uuid, requestUuid));
+        return data[0]
+    }
+
+    async listAccessRequest(params: ListCommunityRequestsParams): Promise<CommunityRequest[]> {
+        const filters = []
+        if (params?.filter?.communityUuid) filters.push(eq(communitiesRequests.communityUuid, params.filter.communityUuid))
+        if (params?.filter?.status) filters.push(inArray(communitiesRequests.status, params.filter.status))
+
+        const whereClause = filters.length > 0 ? and(...filters) : undefined
+        const data = await this.db
+            .select()
+            .from(communitiesRequests)
+            .where(whereClause)
+            .orderBy(desc(communitiesRequests.createdAt))
+            .limit(params.limit)
+            .offset(params.offset);
+        ;
+        return data
+    }
+
+    async updateAccessRequestStatus(params: { requestUuid: string, reviewedByUser: string; status: communitiesRequestsStatusEnum }): Promise<CommunityRequest> {
+        const data = await this.db
+            .update(communitiesRequests)
+            .set({ status: params.status, reviewedByUser: params.reviewedByUser })
+            .where(eq(communitiesRequests.uuid, params.requestUuid))
+            .returning();
+        return data[0];
     }
 }
 

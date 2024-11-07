@@ -1,20 +1,18 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { Store } from "../../../database/schema/stores";
 import { makePgStoreAdapter } from "../../../infra/database/store";
 import { IStoreAdapter } from "../../../infra/database/store/interface";
 import { databaseConnectionPool } from "../../../database";
 import { Community } from "../../../database/schema/communities";
 import { ICommunityAdapter } from "../../../infra/database/community/interface";
 import { makePgCommunityAdapter } from "../../../infra/database/community";
-import { User } from "../../../database/schema/users";
 import { IUserAdapter } from "../../../infra/database/user/interface";
 import { makePgUserAdapter } from "../../../infra/database/user";
-import { WithIsFavorite, makeGetAssetFavoriteStatus } from "../../favorite";
+import { makeGetAssetFavoriteStatus } from "../../favorite";
 import { IGetFavoriteStatus } from "../../favorite/interface";
 import { IReviewAdapter, makePgReviewAdapter } from "../../../infra/database/review";
-import { Review } from "../../../database/schema/review";
+import { IGetStoreByUuid, StoreWithLazyLoadedAssets } from "./interface";
 
-class GetStoreById {
+class GetStoreById implements IGetStoreByUuid {
     constructor(
         private readonly getFavoriteStatus: IGetFavoriteStatus,
         private readonly storeAdapter: IStoreAdapter,
@@ -45,12 +43,6 @@ class GetStoreById {
     }
 }
 
-type StoreWithLazyLoadedAssets = WithIsFavorite<Store & {
-    community: Community | null;
-    owner: User;
-    averageScore: string | null;
-    myReview: Review | null
-}>;
 
 export function makeGetStoreByIdUseCase(db: NodePgDatabase = databaseConnectionPool) {
     return new GetStoreById(
