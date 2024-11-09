@@ -28,6 +28,8 @@ class ListCommunityRequests {
 		private readonly userAdapter: IUserAdapter
 	) { }
 	async execute(loggedUserUuid: string, listParams: ListCommunityRequestsParams) {
+		const hasAnyFilter = listParams.filter && Object.keys(listParams.filter)?.length > 0
+		if (!hasAnyFilter) throw new StatusError(400, ErrorMessages.operationNotAllowed)
 		if (listParams.filter.communityUuid) {
 			const adminRow = await this.communityAdminAdapter.findByUserAndCommunityUuid(loggedUserUuid, listParams.filter.communityUuid)
 			if (!adminRow) throw new StatusError(400, ErrorMessages.userNotAnAdmin)
