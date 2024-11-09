@@ -5,13 +5,17 @@ meta {
 }
 
 get {
-  url: {{url}}/communities-requests?communityUuid=6ffe3c5d-99a1-4f0b-894e-0855b9518cda
+  url: {{url}}/communities-requests
   body: none
   auth: none
 }
 
 params:query {
-  communityUuid: 6ffe3c5d-99a1-4f0b-894e-0855b9518cda
+  ~communityUuid: 6ffe3c5d-99a1-4f0b-894e-0855b9518cda
+  ~communityUuid: uuid_q_n_existe
+  ~storeUuid: b6833a37-d795-4126-9012-f8154a534f70
+  ~status: pending
+  ~status: approved
 }
 
 headers {
