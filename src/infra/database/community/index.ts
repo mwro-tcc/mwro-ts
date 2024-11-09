@@ -95,8 +95,16 @@ class PgCommunityAdapter implements ICommunityAdapter {
 
     async listAccessRequest(params: ListCommunityRequestsParams): Promise<CommunityRequest[]> {
         const filters = []
+
         if (params?.filter?.communityUuid) filters.push(eq(communitiesRequests.communityUuid, params.filter.communityUuid))
-        if (params?.filter?.status) filters.push(inArray(communitiesRequests.status, params.filter.status))
+
+        if (params?.filter?.status) {
+            const val = params.filter.status
+            if (Array.isArray(val)) filters.push(inArray(communitiesRequests.status, val))
+            if (typeof val === 'string') filters.push(eq(communitiesRequests.status, val))
+        }
+
+        if (params?.filter?.storeUuid) filters.push(eq(communitiesRequests.storeUuid, params.filter.storeUuid))
 
         const whereClause = filters.length > 0 ? and(...filters) : undefined
         const data = await this.db

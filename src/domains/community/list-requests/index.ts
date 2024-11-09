@@ -27,14 +27,20 @@ class ListCommunityRequests {
 		private readonly communityAdminAdapter: ICommunityAdminAdapter,
 		private readonly userAdapter: IUserAdapter
 	) { }
-	async execute(adminUuid: string, listParams: ListCommunityRequestsParams) {
-		console.log(listParams)
-		if (!listParams.filter.communityUuid) throw new StatusError(400, ErrorMessages.operationNotAllowed)
-		const adminRow = await this.communityAdminAdapter.findByUserAndCommunityUuid(adminUuid, listParams.filter.communityUuid)
-		if (!adminRow) throw new StatusError(400, ErrorMessages.userNotAnAdmin)
+	async execute(loggedUserUuid: string, listParams: ListCommunityRequestsParams) {
+		if (listParams.filter.communityUuid) {
+			const adminRow = await this.communityAdminAdapter.findByUserAndCommunityUuid(loggedUserUuid, listParams.filter.communityUuid)
+			if (!adminRow) throw new StatusError(400, ErrorMessages.userNotAnAdmin)
+		}
+
+		if (listParams.filter.storeUuid) {
+			const store = await this.getStore.execute(listParams.filter.storeUuid, loggedUserUuid)
+			const isStoreOwner = store.userUuid === loggedUserUuid;
+			if (!isStoreOwner) throw new StatusError(400, ErrorMessages.userIsNotStoreOwner);
+		}
 
 		const rows = await this.communityAdapter.listAccessRequest(listParams)
-		const lazyLoaded = await Promise.all(rows.map(r => this.lazyLoad(r, adminUuid)))
+		const lazyLoaded = await Promise.all(rows.map(r => this.lazyLoad(r, loggedUserUuid)))
 		return lazyLoaded
 	}
 	private async lazyLoad(request: CommunityRequest, adminUuid: string) {

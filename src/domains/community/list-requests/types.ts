@@ -2,8 +2,9 @@ import { communitiesRequestsStatusEnum } from "../../../database/schema/communit
 
 export type ListCommunityRequestsParams = {
 	filter: {
-		status?: communitiesRequestsStatusEnum[],
-		communityUuid?: string
+		status?: communitiesRequestsStatusEnum | communitiesRequestsStatusEnum[],
+		communityUuid?: string,
+		storeUuid?: string
 	},
 	limit: number,
 	offset: number

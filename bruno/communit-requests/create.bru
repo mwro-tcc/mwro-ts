@@ -5,11 +5,18 @@ meta {
 }
 
 post {
-  url: {{url}}/communities-requets
-  body: none
+  url: {{url}}/communities-requests
+  body: json
   auth: none
 }
 
 headers {
   Authorization: {{authorization}}
+}
+
+body:json {
+  {
+    "communityUuid": "6ffe3c5d-99a1-4f0b-894e-0855b9518cda",
+    "storeUuid": "b6833a37-d795-4126-9012-f8154a534f70"
+  }
 }
