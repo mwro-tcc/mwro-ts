@@ -11,13 +11,16 @@ import { makePgStoreAdapter } from "../../../infra/database/store";
 import { IApproveRequestUseCase } from "../update-request-approval-status/interface";
 import { communitiesRequestsStatusEnum } from "../../../database/schema/communities-requests";
 import { makeUpdateRequestApprovalStatusUseCase } from "../update-request-approval-status";
+import { ICommunityRequestsAdapter } from "../../../infra/database/community-requests/interface";
+import { makePgCommunityRequestsAdapter } from "../../../infra/database/community-requests";
 
 export function makeRequestAccessToCommunityUseCase(db: NodePgDatabase) {
 	return new RequestAccessToCommunityUseCase(
 		makeUpdateRequestApprovalStatusUseCase(db),
 		makePgCommunityAdapter(db),
 		makePgCommunityAdminAdapter(db),
-		makePgStoreAdapter(db)
+		makePgStoreAdapter(db),
+		makePgCommunityRequestsAdapter(db)
 	)
 }
 
@@ -27,6 +30,7 @@ class RequestAccessToCommunityUseCase implements IRequestAccessToCommunity {
 		private readonly communityAdapter: ICommunityAdapter,
 		private readonly communityAdminAdapter: ICommunityAdminAdapter,
 		private readonly storeAdapter: IStoreAdapter,
+		private readonly communityRequestsAdapter: ICommunityRequestsAdapter
 	) { }
 	async execute(params: RequestAccessToCommunityParams): Promise<void> {
 		const store = await this.storeAdapter.findByUuid(params.storeRequestingAccessUuid)
@@ -37,7 +41,7 @@ class RequestAccessToCommunityUseCase implements IRequestAccessToCommunity {
 
 		if (store.communityUuid) throw new StatusError(400, ErrorMessages.storeAlreadyBelongsToACommunity)
 
-		const request = await this.communityAdapter.createAccessRequest({
+		const request = await this.communityRequestsAdapter.createAccessRequest({
 			communityUuid: params.communityUuid,
 			storeUuid: params.storeRequestingAccessUuid,
 		})

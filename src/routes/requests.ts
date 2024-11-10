@@ -1,11 +1,12 @@
 import express from "express";
-import { communityController } from "../controllers/CommunityController";
+import { communityRequestsController } from "../controllers/CommunityRequestsController";
 import { authenticationMiddleware } from "../middlewares/auth/auth";
 
 const router = express.Router();
 
-router.get("/", authenticationMiddleware(), communityController.listRequests());
-router.post("/", authenticationMiddleware(), communityController.createRequest());
-router.put("/:uuid", authenticationMiddleware(), communityController.updateRequestStatus());
+router.get("/my-communities", authenticationMiddleware(), communityRequestsController.listUserCommunitiesPendingRequests());
+router.get("/my-stores", authenticationMiddleware(), communityRequestsController.listUserStoresPendingRequests());
+router.post("/", authenticationMiddleware(), communityRequestsController.createRequest());
+router.put("/:uuid", authenticationMiddleware(), communityRequestsController.updateRequestStatus());
 
 export default router;
