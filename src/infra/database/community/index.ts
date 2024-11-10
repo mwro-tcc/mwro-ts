@@ -6,6 +6,8 @@ import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { databaseConnectionPool } from "../../../database";
 import { CommunityRequest, NewCommunityRequest, communitiesRequests, communitiesRequestsStatusEnum } from "../../../database/schema/communities-requests";
 import { ListCommunityRequestsParams } from "../../../domains/community/list-requests/types";
+import { PaginationParams } from "../../../types/PaginationParams";
+import { stores } from "../../../database/schema/stores";
 
 class PgCommunityAdapter implements ICommunityAdapter {
     constructor(private readonly db: NodePgDatabase) { }
@@ -115,6 +117,46 @@ class PgCommunityAdapter implements ICommunityAdapter {
             .limit(params.limit)
             .offset(params.offset);
         ;
+        return data
+    }
+
+    async listPendingAccessRequestsFromUserCommunities(userUuid: string, params: PaginationParams): Promise<CommunityRequest[]> {
+        const data = await this.db
+            .select({
+                request: communitiesRequests
+            })
+            .from(communitiesRequests)
+            .innerJoin(
+                communitiesAdmins,
+                and(
+                    eq(communitiesAdmins.communityUuid, communitiesRequests.communityUuid),
+                    eq(communitiesAdmins.userUuid, userUuid)
+                )
+            )
+            .where(eq(communitiesRequests.status, communitiesRequestsStatusEnum.PENDING))
+            .orderBy(desc(communitiesRequests.createdAt))
+            .limit(params.limit)
+            .offset(params.offset).then(data => data.map(d => d.request));
+        return data
+    }
+
+    async listPendingAccessRequestsFromUserStores(userUuid: string, params: PaginationParams): Promise<CommunityRequest[]> {
+        const data = await this.db
+            .select({
+                request: communitiesRequests
+            })
+            .from(communitiesRequests)
+            .innerJoin(
+                stores,
+                and(
+                    eq(stores.uuid, communitiesRequests.storeUuid),
+                    eq(stores.userUuid, userUuid)
+                )
+            )
+            .where(eq(communitiesRequests.status, communitiesRequestsStatusEnum.PENDING))
+            .orderBy(desc(communitiesRequests.createdAt))
+            .limit(params.limit)
+            .offset(params.offset).then(data => data.map(d => d.request));
         return data
     }
 

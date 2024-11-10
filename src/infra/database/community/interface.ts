@@ -1,6 +1,7 @@
 import { Community, NewCommunity } from "../../../database/schema/communities";
 import { CommunityRequest, NewCommunityRequest, communitiesRequestsStatusEnum } from "../../../database/schema/communities-requests";
 import { ListCommunityRequestsParams } from "../../../domains/community/list-requests/types";
+import { PaginationParams } from "../../../types/PaginationParams";
 
 export interface ICommunityAdapter {
     bulkCreate(payload: NewCommunity[]): Promise<void>;
@@ -17,8 +18,11 @@ export interface ICommunityAdapter {
         name: string,
         params: { limit: number; offset: number },
     ): Promise<Community[]>;
+
+    // should be moved to access request adapter
     createAccessRequest(params: NewCommunityRequest): Promise<CommunityRequest>
     getAccessRequest(requestUuid: string): Promise<CommunityRequest>
     updateAccessRequestStatus(params: { requestUuid: string, status: communitiesRequestsStatusEnum }): Promise<CommunityRequest>
     listAccessRequest(params: ListCommunityRequestsParams): Promise<CommunityRequest[]>
+    listPendingAccessRequestsFromUserCommunities(userUuid: string, params: PaginationParams): Promise<CommunityRequest[]>
 }
