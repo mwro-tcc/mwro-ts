@@ -22,5 +22,6 @@ export const testEnvValues: Env = {
     DATABASE_HOST: "localhost",
     DATABASE_NAME: "mwro_db_test",
     STRIPE_SECRET_KEY: "sdfhsduihjfsd",
-    STRIPE_PUBLISHABLE_KEY: "sdofsdfhs"
+    STRIPE_PUBLISHABLE_KEY: "sdofsdfhs",
+    STRIPE_WEBHOOK_SECRET_KEY: "asdfkjsdfjsd"
 };

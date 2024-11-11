@@ -1,5 +1,4 @@
 import express, { Request, Response, NextFunction } from "express";
-import bodyParser from "body-parser";
 import cors from "cors";
 import router from "./routes";
 import { getEnvValues } from "./constants/EnvironmentVariables";
@@ -11,8 +10,17 @@ const port = env.PORT;
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+//@ts-ignore
+function nextIfStripeWebhook(fn) {
+    //@ts-ignore
+    return (req, res, next) =>
+        req.path === '/stripe/webhook' && req.method === 'POST' ? next() : fn(req, res, next);
+}
+
+app.use(express.urlencoded({ limit: '3mb', extended: false }));
+
+app.use(nextIfStripeWebhook(express.json()));
+
 app.use(cors());
 
 app.use(router);

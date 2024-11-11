@@ -1,21 +1,22 @@
 import express from "express";
 import { getEnvValues } from "../constants/EnvironmentVariables";
 import { makePgStripeEventAdapter } from "../infra/database/stripeEvent";
-
-const envValues = getEnvValues()
-
-// @ts-ignore
-const stripe = require("stripe")(envValues.STRIPE_SECRET_KEY)
+import stripePkg from "stripe"
 
 const router = express.Router();
+const envValues = getEnvValues()
 const stripeEventAdapter = makePgStripeEventAdapter()
 
+// @ts-ignore
+const stripe = stripePkg(envValues.STRIPE_SECRET_KEY)
 
-router.post("/webhook", (req, res, next) => {
-    // const signature = req.headers['stripe-signature'];
-    // const event = Stripe.webhooks.constructEvent(req.body, signature, envValues.STRIPE_SECRET_KEY);
-    // stripeEventAdapter.create({ event: event })
-    // res.status(200).send()
+router.post("/webhook", express.raw({ type: 'application/json' }), (req, res, next) => {
+    const signature = req.headers['stripe-signature'];
+    const secret = envValues.STRIPE_WEBHOOK_SECRET_KEY;
+    // @ts-ignore
+    const event = stripe.webhooks.constructEvent(req.body, signature, secret);
+    stripeEventAdapter.create({ event: event })
+    res.status(200).send()
 })
 
 export default router;
