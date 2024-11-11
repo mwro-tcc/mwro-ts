@@ -21,4 +21,6 @@ export const testEnvValues: Env = {
     DATABASE_USER: "mwro_test",
     DATABASE_HOST: "localhost",
     DATABASE_NAME: "mwro_db_test",
+    STRIPE_SECRET_KEY: "sdfhsduihjfsd",
+    STRIPE_PUBLISHABLE_KEY: "sdofsdfhs"
 };

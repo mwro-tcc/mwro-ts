@@ -7,6 +7,7 @@ import imagesRouter from "./image";
 import favoritesRouter from "./favorite";
 import reviewsRouter from "./review";
 import communitiesRequestsRouter from "./requests";
+import stripeRouter from "./stripe";
 
 import { loggingMiddleware } from "../middlewares/logger";
 
@@ -24,5 +25,7 @@ router.use("/images", loggingMiddleware(), imagesRouter);
 router.use("/favorites", loggingMiddleware(), favoritesRouter);
 router.use("/reviews", loggingMiddleware(), reviewsRouter);
 router.use("/communities-requests", loggingMiddleware(), communitiesRequestsRouter);
+router.use("/stripe", loggingMiddleware(), stripeRouter);
+
 
 export default router;

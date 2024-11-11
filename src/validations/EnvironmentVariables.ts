@@ -9,6 +9,8 @@ export const envSchema = z.object({
     DATABASE_USER: z.string(),
     DATABASE_HOST: z.string(),
     DATABASE_NAME: z.string(),
+    STRIPE_SECRET_KEY: z.string(),
+    STRIPE_PUBLISHABLE_KEY: z.string()
 });
 
 export type Env = z.infer<typeof envSchema>;

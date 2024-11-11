@@ -5,7 +5,21 @@ meta {
 }
 
 put {
-  url: fgsdfsdf
-  body: none
+  url: {{url}}/communities-requests/:uuid
+  body: json
   auth: none
+}
+
+params:path {
+  uuid: 96004086-61a6-4804-9cf1-48e41267625c
+}
+
+headers {
+  authorization: {{authorization}}
+}
+
+body:json {
+  {
+    "status": "approved"
+  }
 }
