@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, uuid, jsonb, time } from "drizzle-orm/pg-core";
+import { pgTable, uuid, jsonb, time, timestamp } from "drizzle-orm/pg-core";
 
 export const stripeEvents = pgTable("stripe_events", {
     uuid: uuid("uuid")
@@ -7,7 +7,7 @@ export const stripeEvents = pgTable("stripe_events", {
         .default(sql`gen_random_uuid()`),
 
     event: jsonb("event"),
-    createdAt: time("createdAt").defaultNow().notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
 export type StripeEvent = typeof stripeEvents.$inferSelect;
