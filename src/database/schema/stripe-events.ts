@@ -1,11 +1,12 @@
 import { sql } from "drizzle-orm";
-import { pgTable, uuid, jsonb, time, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, uuid, jsonb, time, timestamp, varchar } from "drizzle-orm/pg-core";
 
 export const stripeEvents = pgTable("stripe_events", {
     uuid: uuid("uuid")
         .primaryKey()
         .default(sql`gen_random_uuid()`),
 
+    eventId: varchar("eventId").unique(),
     event: jsonb("event"),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
