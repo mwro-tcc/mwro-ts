@@ -1,4 +1,4 @@
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, isNull, gte, sql, lte } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { databaseConnectionPool } from "../../../database";
 import { AdminSubscription, adminSubscriptions, NewAdminSubscription } from "../../../database/schema/admin-subscriptions";
@@ -29,6 +29,20 @@ class PgAdminSubscriptionsAdapter {
 			.set(input)
 			.where(eq(adminSubscriptions.objectId, objectId))
 			.returning();
+		return data[0];
+	}
+
+	async getUserActiveSubscription(userUuid: string): Promise<AdminSubscription | null> {
+		const data = await this.db
+			.select()
+			.from(adminSubscriptions)
+			.where(and(
+				eq(adminSubscriptions.userUuid, userUuid),
+				isNull(adminSubscriptions.cancelationEventUuid),
+				lte(adminSubscriptions.startsAt, sql`NOW()`),
+				gte(adminSubscriptions.expiresAt, sql`NOW()`)
+			))
+			.orderBy(desc(adminSubscriptions.createdAt));
 		return data[0];
 	}
 

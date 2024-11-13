@@ -8,6 +8,7 @@ import favoritesRouter from "./favorite";
 import reviewsRouter from "./review";
 import communitiesRequestsRouter from "./requests";
 import stripeRouter from "./stripe";
+import adminSubscriptionsRouter from "./admin-subscription";
 
 import { loggingMiddleware } from "../middlewares/logger";
 
@@ -26,6 +27,7 @@ router.use("/favorites", loggingMiddleware(), favoritesRouter);
 router.use("/reviews", loggingMiddleware(), reviewsRouter);
 router.use("/communities-requests", loggingMiddleware(), communitiesRequestsRouter);
 router.use("/stripe", loggingMiddleware(), stripeRouter);
+router.use("/admin-subscriptions", loggingMiddleware(), adminSubscriptionsRouter);
 
 
 export default router;
