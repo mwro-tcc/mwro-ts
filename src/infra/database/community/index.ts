@@ -91,7 +91,10 @@ class PgCommunityAdapter implements ICommunityAdapter {
                 eq(communitiesAdmins.userUuid, users.uuid)
             )
             .where(
-                eq(communitiesAdmins.communityUuid, communityUuid)
+                and(
+                    eq(communitiesAdmins.communityUuid, communityUuid),
+                    eq(communitiesAdmins.isCreator, true)
+                )
             )
             .then(data => data[0]?.user)
         return user
