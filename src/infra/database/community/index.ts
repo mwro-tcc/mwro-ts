@@ -4,6 +4,7 @@ import { ICommunityAdapter } from "./interface";
 import { communitiesAdmins } from "../../../database/schema/communities-admins";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { databaseConnectionPool } from "../../../database";
+import { User, users } from "../../../database/schema/users";
 
 class PgCommunityAdapter implements ICommunityAdapter {
     constructor(private readonly db: NodePgDatabase) { }
@@ -79,6 +80,36 @@ class PgCommunityAdapter implements ICommunityAdapter {
             .orderBy(desc(communities.createdAt))
             .limit(params.limit)
             .offset(params.offset);
+    }
+
+    async getCommunityCreator(communityUuid: string): Promise<User> {
+        const user = await this.db
+            .select({ user: users })
+            .from(communitiesAdmins)
+            .innerJoin(
+                users,
+                eq(communitiesAdmins.userUuid, users.uuid)
+            )
+            .where(
+                eq(communitiesAdmins.communityUuid, communityUuid)
+            )
+            .then(data => data[0]?.user)
+        return user
+    }
+
+    async getCommunityAdmins(communityUuid: string): Promise<User[]> {
+        const user = await this.db
+            .select({ user: users })
+            .from(communitiesAdmins)
+            .innerJoin(
+                users,
+                eq(communitiesAdmins.userUuid, users.uuid)
+            )
+            .where(
+                eq(communitiesAdmins.communityUuid, communityUuid)
+            )
+            .then(data => data.map(d => d.user))
+        return user
     }
 
 }

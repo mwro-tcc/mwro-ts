@@ -1,4 +1,5 @@
 import { Community, NewCommunity } from "../../../database/schema/communities";
+import { User } from "../../../database/schema/users";
 
 export interface ICommunityAdapter {
     bulkCreate(payload: NewCommunity[]): Promise<void>;
@@ -15,4 +16,6 @@ export interface ICommunityAdapter {
         name: string,
         params: { limit: number; offset: number },
     ): Promise<Community[]>;
+    getCommunityCreator(communityUuid: string): Promise<User>
+    getCommunityAdmins(communityUuid: string): Promise<User[]>;
 }

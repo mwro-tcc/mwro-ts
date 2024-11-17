@@ -15,11 +15,13 @@ import { listWithUuidFilterValidation } from "../validations/ListWithUuidFilter"
 import { makeGetStoreByIdUseCase } from "../domains/store/get-store-by-id";
 import { paginationParamsValidation } from "../validations/PaginationParamsValidation";
 import { makeParseProductRowsUseCase } from "../domains/product/parse-product-rows";
+import { makeGetCommunityByIdUseCase } from "../domains/community/get-by-id";
 
 const createCommunity = makeCreateCommunityUseCase();
 const updateCommunity = makeUpdateCommunityUseCase();
 const deleteCommunity = makeDeleteCommunityUseCase();
-const parseProductRows = makeParseProductRowsUseCase(databaseConnectionPool)
+const parseProductRows = makeParseProductRowsUseCase(databaseConnectionPool);
+const getCommunityById = makeGetCommunityByIdUseCase(databaseConnectionPool);
 
 const communityAdapter = makePgCommunityAdapter();
 const productAdapter = makePgProductAdapter(databaseConnectionPool);
@@ -94,7 +96,7 @@ class CommunityController {
         return async (req: Request, res: Response, next: NextFunction) => {
             return await validate(findByUuidSchema, req)
                 .then(async (validated) => {
-                    return await communityAdapter.findByUuid(validated.params.uuid);
+                    return await getCommunityById.execute(validated.params.uuid, req.user.id)
                 })
                 .then((data) => res.status(200).send(data))
                 .catch(next);
