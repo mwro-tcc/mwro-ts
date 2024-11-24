@@ -28,7 +28,7 @@ class ParseProductRowsUseCase {
 
 		const productRows: ProductFrontendRow[] = []
 		for (let i = 0; i < products.length; i++) {
-			const store = await this.getStoreByUuid.execute(productRows[i].storeUuid, loggedUserUuid)
+			const store = await this.getStoreByUuid.execute(products[i].storeUuid, loggedUserUuid)
 
 			const product = products[i]
 			const average = averages.find(a => a.assetUuid === product.uuid)
