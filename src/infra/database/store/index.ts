@@ -92,6 +92,13 @@ class PgStoreAdapter implements IStoreAdapter {
             .limit(params.limit)
             .offset(params.offset);
     }
+
+    async unnassociateFromCommunity(communityUuid: string): Promise<void> {
+        await this.db
+            .update(stores)
+            .set({ communityUuid: null })
+            .where(eq(stores.communityUuid, communityUuid))
+    }
 }
 
 export function makePgStoreAdapter(db: NodePgDatabase) {
