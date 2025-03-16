@@ -7,7 +7,7 @@ import { databaseConnectionPool } from "../../../database";
 import { User, users } from "../../../database/schema/users";
 
 class PgCommunityAdapter implements ICommunityAdapter {
-    constructor(private readonly db: NodePgDatabase) { }
+    constructor(private readonly db: NodePgDatabase) {}
     async create(input: NewCommunity): Promise<Community> {
         const data = await this.db.insert(communities).values(input).returning();
         return data[0];
@@ -86,35 +86,26 @@ class PgCommunityAdapter implements ICommunityAdapter {
         const user = await this.db
             .select({ user: users })
             .from(communitiesAdmins)
-            .innerJoin(
-                users,
-                eq(communitiesAdmins.userUuid, users.uuid)
-            )
+            .innerJoin(users, eq(communitiesAdmins.userUuid, users.uuid))
             .where(
                 and(
                     eq(communitiesAdmins.communityUuid, communityUuid),
-                    eq(communitiesAdmins.isCreator, true)
-                )
+                    eq(communitiesAdmins.isCreator, true),
+                ),
             )
-            .then(data => data[0]?.user)
-        return user
+            .then((data) => data[0]?.user);
+        return user;
     }
 
     async getCommunityAdmins(communityUuid: string): Promise<User[]> {
         const user = await this.db
             .select({ user: users })
             .from(communitiesAdmins)
-            .innerJoin(
-                users,
-                eq(communitiesAdmins.userUuid, users.uuid)
-            )
-            .where(
-                eq(communitiesAdmins.communityUuid, communityUuid)
-            )
-            .then(data => data.map(d => d.user))
-        return user
+            .innerJoin(users, eq(communitiesAdmins.userUuid, users.uuid))
+            .where(eq(communitiesAdmins.communityUuid, communityUuid))
+            .then((data) => data.map((d) => d.user));
+        return user;
     }
-
 }
 
 export function makePgCommunityAdapter(db: NodePgDatabase = databaseConnectionPool) {
