@@ -90,6 +90,11 @@ class PgCommunityRequestsAdapter implements ICommunityRequestsAdapter {
             .delete(communitiesRequests)
             .where(eq(communitiesRequests.storeUuid, storeUuid));
     }
+    async deleteAllFromCommunity(communityUuid: string): Promise<void> {
+        await this.db
+            .delete(communitiesRequests)
+            .where(eq(communitiesRequests.communityUuid, communityUuid));
+    }
 }
 
 export function makePgCommunityRequestsAdapter(db: NodePgDatabase = databaseConnectionPool) {

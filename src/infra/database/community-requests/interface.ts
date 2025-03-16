@@ -21,4 +21,5 @@ export interface ICommunityRequestsAdapter {
         params: PaginationParams,
     ): Promise<CommunityRequest[]>;
     deleteAllFromStore(storeUuid: string): Promise<void>;
+    deleteAllFromCommunity(communityUuid: string): Promise<void>;
 }

@@ -9,14 +9,17 @@ import { IUserAdapter } from "../../../infra/database/user/interface";
 import { databaseConnectionPool } from "../../../database";
 import { IStoreAdapter } from "../../../infra/database/store/interface";
 import { makePgStoreAdapter } from "../../../infra/database/store";
+import { ICommunityRequestsAdapter } from "../../../infra/database/community-requests/interface";
+import { makePgCommunityRequestsAdapter } from "../../../infra/database/community-requests";
 
 class DeleteCommunityUseCase {
     constructor(
         private readonly communityAdapter: ICommunityAdapter,
         private readonly communityAdminAdapter: ICommunityAdminAdapter,
+        private readonly communityRequestsAdapter: ICommunityRequestsAdapter,
         private readonly storeAdapter: IStoreAdapter,
         private readonly userAdapter: IUserAdapter,
-    ) { }
+    ) {}
 
     async execute(userUuidRequestingDeletion: string, communityUuid: string): Promise<void> {
         const [communityExists, userExists] = await Promise.all([
@@ -37,6 +40,7 @@ class DeleteCommunityUseCase {
             throw new StatusError(401, ErrorMessages.userNotCreator);
 
         await this.storeAdapter.unnassociateFromCommunity(communityUuid);
+        await this.communityRequestsAdapter.deleteAllFromCommunity(communityUuid);
         await this.communityAdminAdapter.delete(userAdminRow.uuid);
         await this.communityAdapter.delete(communityUuid);
     }
@@ -46,6 +50,7 @@ export function makeDeleteCommunityUseCase(db: NodePgDatabase = databaseConnecti
     return new DeleteCommunityUseCase(
         makePgCommunityAdapter(db),
         makePgCommunityAdminAdapter(db),
+        makePgCommunityRequestsAdapter(db),
         makePgStoreAdapter(db),
         makePgUserAdapter(db),
     );
