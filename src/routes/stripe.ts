@@ -16,11 +16,11 @@ const stripe = stripePkg(envValues.STRIPE_SECRET_KEY);
 
 router.post("/checkout-session", authenticationMiddleware(), async (req, res, next) => {
     const { id } = req.user;
-    const { successUrl, cancelUrl } = req.body
-
-    if (!successUrl || !cancelUrl) {
-        next(new StatusError(422, "Invalid urls"))
-    }
+    // const { successUrl, cancelUrl } = req.body
+    //
+    // if (!successUrl || !cancelUrl) {
+    //     next(new StatusError(422, "Invalid urls"))
+    // }
 
     const session = await stripe.checkout.sessions
         .create({
