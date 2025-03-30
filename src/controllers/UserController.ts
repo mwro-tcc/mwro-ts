@@ -11,6 +11,7 @@ import { findByUuidSchema } from "../validations/FindByUuid";
 import { makePgUserAdapter } from "../infra/database/user";
 import { ErrorMessages, StatusError } from "../constants/StatusError";
 import { makeDeleteAccountUseCase } from "../domains/user/delete-account";
+import { makePgAdminSubscriptionsAdapter } from "../infra/database/admin-subscription";
 
 const signUp = makeSignUpUseCase(databaseConnectionPool);
 const signIn = makeSignInUseCase(databaseConnectionPool);
@@ -18,6 +19,7 @@ const updateUser = makeUpdateUserUseCase(databaseConnectionPool);
 const deleteAccount = makeDeleteAccountUseCase(databaseConnectionPool);
 
 const userAdapter = makePgUserAdapter(databaseConnectionPool);
+const adminSubscriptionAdapter = makePgAdminSubscriptionsAdapter()
 
 class UserController {
     signUp() {
@@ -59,7 +61,9 @@ class UserController {
             try {
                 const user = await userAdapter.findByUuid(req.user.id);
                 if (!user) throw new StatusError(404, ErrorMessages.userNotFound);
-                res.status(200).send(user);
+                const isSubscribed = !!(await adminSubscriptionAdapter.getUserActiveSubscription(req.user.id))
+                const response = { ...user, isSubscribed }
+                res.status(200).send(response);
                 return user;
             } catch (e) {
                 next(e);
