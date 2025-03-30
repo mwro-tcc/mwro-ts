@@ -162,6 +162,13 @@
       "when": 1731376509609,
       "tag": "0022_last_thundra",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "5",
+      "when": 1743373200233,
+      "tag": "0023_futuristic_sir_ram",
+      "breakpoints": true
     }
   ]
 }
