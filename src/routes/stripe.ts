@@ -66,11 +66,11 @@ async function handleEvent(event: any) {
     const userUuid = event?.data?.object?.metadata?.userUuid;
 
     switch (event.type) {
-        case StripeWebhookEventType.CustomerSubscriptionCreated: {
+        case StripeWebhookEventType.CheckoutSessionCompleted: {
             await adminSubscriptionAdapter.create({
                 userUuid,
                 creationEventUuid: createdEvent?.uuid,
-                objectId: event?.data?.object?.id,
+                objectId: event?.data?.object?.subscription,
                 startsAt: new Date(event?.data?.object?.current_period_start * 1000),
                 expiresAt: new Date(event?.data?.object?.current_period_end * 1000),
             });
