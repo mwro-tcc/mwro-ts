@@ -6,10 +6,17 @@ meta {
 
 post {
   url: {{url}}/stripe/checkout-session
-  body: none
+  body: json
   auth: inherit
 }
 
 headers {
   authorization: {{authorization}}
+}
+
+body:json {
+  {
+    "successUrl": "https://www.google.com",
+    "cancelUrl": "https://www.google.com"
+  }
 }
