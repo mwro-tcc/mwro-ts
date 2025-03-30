@@ -51,7 +51,7 @@ router.post("/cancel-subscription", async (req, res, next) => {
     try {
         const subscription = await adminSubscriptionAdapter.getUserActiveSubscription(userId)
         if (!subscription) throw new StatusError(404, ErrorMessages.assetNotFound)
-        await stripe.subscriptions.cancel(subscription?.objectId)
+        await stripe.subscriptions.cancel(subscription?.objectId).catch((e) => next(e))
     } catch (e) {
         next(e)
     }
