@@ -32,6 +32,31 @@ class PgAdminSubscriptionsAdapter {
 		return data[0];
 	}
 
+	async createOrUpdateByObjectId(objectId: string, input: Partial<NewAdminSubscription>): Promise<AdminSubscription> {
+		const existingRow = await this.findByObjectId(objectId)
+		const creationEventUuid = input.creationEventUuid as string
+
+		if (!existingRow) {
+			const row = await this.create({ objectId, creationEventUuid, ...input })
+			return row
+		}
+
+		if (input.startsAt && input.expiresAt) {
+			await this.updateByObjectId(objectId, {
+				startsAt: input.startsAt,
+				expiresAt: input.expiresAt
+			})
+
+		}
+		if (input.userUuid) {
+			await this.updateByObjectId(objectId, {
+				userUuid: input.userUuid
+			})
+		}
+
+		return await this.findByObjectId(objectId)
+	}
+
 	async getUserActiveSubscription(userUuid: string): Promise<AdminSubscription | null> {
 		const data = await this.db
 			.select()
@@ -48,6 +73,11 @@ class PgAdminSubscriptionsAdapter {
 
 	async findByUuid(uuid: string): Promise<AdminSubscription> {
 		const data = await this.db.select().from(adminSubscriptions).where(eq(adminSubscriptions.uuid, uuid));
+		return data[0];
+	}
+
+	async findByObjectId(objectId: string): Promise<AdminSubscription> {
+		const data = await this.db.select().from(adminSubscriptions).where(eq(adminSubscriptions.objectId, objectId)).orderBy(desc(adminSubscriptions.createdAt),);
 		return data[0];
 	}
 

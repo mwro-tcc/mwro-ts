@@ -9,15 +9,14 @@ export const adminSubscriptions = pgTable("admin_subscriptions", {
         .default(sql`gen_random_uuid()`),
 
     userUuid: uuid("userUuid")
-        .notNull()
         .references(() => users.uuid),
 
     objectId: varchar("objectId").notNull(),
 
-    startsAt: timestamp("startsAt").notNull(),
+    startsAt: timestamp("startsAt"),
     creationEventUuid: uuid("creationEventUuid").notNull().references(() => stripeEvents.uuid),
 
-    expiresAt: timestamp("expiresAt").defaultNow().notNull(),
+    expiresAt: timestamp("expiresAt"),
 
     cancelationEventUuid: uuid("cancelationEventUuid").references(() => stripeEvents.uuid),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
