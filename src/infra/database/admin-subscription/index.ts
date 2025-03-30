@@ -32,29 +32,29 @@ class PgAdminSubscriptionsAdapter {
 		return data[0];
 	}
 
-	async createOrUpdateByObjectId(objectId: string, input: Partial<NewAdminSubscription>): Promise<AdminSubscription> {
-		const existingRow = await this.findByObjectId(objectId)
+	async createOrUpdateByObjectId(objectId: string, input: Partial<NewAdminSubscription>) {
 		const creationEventUuid = input.creationEventUuid as string
 
-		if (!existingRow) {
+		try {
 			const row = await this.create({ objectId, creationEventUuid, ...input })
 			return row
-		}
+		} catch (e) {
+			const existingRow = await this.findByObjectId(objectId)
 
-		if (input.startsAt && input.expiresAt) {
-			await this.updateByObjectId(objectId, {
-				startsAt: input.startsAt,
-				expiresAt: input.expiresAt
-			})
+			if (input.startsAt && input.expiresAt) {
+				await this.update(existingRow.uuid, {
+					startsAt: input.startsAt,
+					expiresAt: input.expiresAt
+				})
 
-		}
-		if (input.userUuid) {
-			await this.updateByObjectId(objectId, {
-				userUuid: input.userUuid
-			})
-		}
+			}
 
-		return await this.findByObjectId(objectId)
+			if (input.userUuid) {
+				await this.update(existingRow.uuid, {
+					userUuid: input.userUuid
+				})
+			}
+		}
 	}
 
 	async getUserActiveSubscription(userUuid: string): Promise<AdminSubscription | null> {

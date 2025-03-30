@@ -11,7 +11,8 @@ export const adminSubscriptions = pgTable("admin_subscriptions", {
     userUuid: uuid("userUuid")
         .references(() => users.uuid),
 
-    objectId: varchar("objectId").notNull(),
+    // Actually stripe's subscription ID
+    objectId: varchar("objectId").notNull().unique(),
 
     startsAt: timestamp("startsAt"),
     creationEventUuid: uuid("creationEventUuid").notNull().references(() => stripeEvents.uuid),

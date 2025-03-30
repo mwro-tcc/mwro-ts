@@ -80,8 +80,8 @@ async function handleEvent(event: any) {
 
             await adminSubscriptionAdapter.createOrUpdateByObjectId(objectId, {
                 userUuid,
+                objectId,
                 creationEventUuid: createdEvent?.uuid,
-                objectId: event?.data?.object?.id,
                 startsAt: new Date(event?.data?.object?.current_period_start * 1000),
                 expiresAt: new Date(event?.data?.object?.current_period_end * 1000),
             });
