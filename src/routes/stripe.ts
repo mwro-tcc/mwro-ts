@@ -67,8 +67,10 @@ async function handleEvent(event: any) {
     switch (event.type) {
         case StripeWebhookEventType.CheckoutSessionCompleted: {
             const objectId = event?.data?.object?.subscription
+            const userUuid = event?.data?.object?.metadata?.userUuid;
             await adminSubscriptionAdapter.createOrUpdateByObjectId(objectId, {
                 creationEventUuid: createdEvent?.uuid,
+                userUuid,
                 objectId,
             });
             break;
@@ -76,10 +78,8 @@ async function handleEvent(event: any) {
 
         case StripeWebhookEventType.CustomerSubscriptionCreated: {
             const objectId = event?.data?.object?.id
-            const userUuid = event?.data?.object?.metadata?.userUuid;
 
             await adminSubscriptionAdapter.createOrUpdateByObjectId(objectId, {
-                userUuid,
                 objectId,
                 creationEventUuid: createdEvent?.uuid,
                 startsAt: new Date(event?.data?.object?.current_period_start * 1000),
