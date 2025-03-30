@@ -11,7 +11,6 @@ const router = express.Router();
 const envValues = getEnvValues();
 const stripeEventAdapter = makePgStripeEventAdapter();
 const adminSubscriptionAdapter = makePgAdminSubscriptionsAdapter();
-
 // @ts-ignore
 const stripe = stripePkg(envValues.STRIPE_SECRET_KEY);
 
@@ -28,11 +27,12 @@ router.post("/checkout-session", authenticationMiddleware(), async (req, res, ne
             mode: "subscription",
             payment_method_types: ["card"],
             line_items: [{ price: "price_1QJvzcP7sqyH9Y3ciWQiGAPu", quantity: 1 }],
-            success_url: successUrl,
-            cancel_url: cancelUrl,
+            success_url: "https://www.google.com",
+            cancel_url: "https://www.google.com",
             client_reference_id: id,
         })
         .catch((e: any) => {
+            console.log(e)
             res.status(500).send({
                 error: "internal server error while attempting to create checkout session",
             });
