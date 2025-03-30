@@ -5,6 +5,7 @@ import stripePkg from "stripe";
 import { StripeWebhookEventType } from "../database/schema/stripe-events";
 import { makePgAdminSubscriptionsAdapter } from "../infra/database/admin-subscription";
 import { authenticationMiddleware } from "../middlewares/auth/auth";
+import { ErrorMessages, StatusError } from "../constants/StatusError";
 
 const router = express.Router();
 const envValues = getEnvValues();
@@ -49,6 +50,7 @@ router.post("/cancel-subscription", async (req, res, next) => {
     const userId = req.user.id
     try {
         const subscription = await adminSubscriptionAdapter.getUserActiveSubscription(userId)
+        if (!subscription) throw new StatusError(404, ErrorMessages.assetNotFound)
         await stripe.subscriptions.cancel(subscription?.objectId)
     } catch (e) {
         next(e)
