@@ -46,7 +46,7 @@ router.post("/checkout-session", authenticationMiddleware(), async (req, res, ne
 });
 
 
-router.post("/cancel-subscription", async (req, res, next) => {
+router.post("/cancel-subscription", authenticationMiddleware(), async (req, res, next) => {
     const userId = req.user.id
     try {
         const subscription = await adminSubscriptionAdapter.getUserActiveSubscription(userId)
