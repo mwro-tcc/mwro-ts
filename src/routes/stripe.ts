@@ -5,6 +5,7 @@ import stripePkg from "stripe";
 import { StripeWebhookEventType } from "../database/schema/stripe-events";
 import { makePgAdminSubscriptionsAdapter } from "../infra/database/admin-subscription";
 import { authenticationMiddleware } from "../middlewares/auth/auth";
+import { StatusError } from "../constants/StatusError";
 
 const router = express.Router();
 const envValues = getEnvValues();
@@ -16,14 +17,19 @@ const stripe = stripePkg(envValues.STRIPE_SECRET_KEY);
 
 router.post("/checkout-session", authenticationMiddleware(), async (req, res, next) => {
     const { id } = req.user;
+    const { successUrl, cancelUrl } = req.body
+
+    if (!successUrl || !cancelUrl) {
+        next(new StatusError(422, "Invalid urls"))
+    }
 
     const session = await stripe.checkout.sessions
         .create({
             mode: "subscription",
             payment_method_types: ["card"],
             line_items: [{ price: "price_1QJvzcP7sqyH9Y3ciWQiGAPu", quantity: 1 }],
-            success_url: "https://www.google.com",
-            cancel_url: "https://www.google.com",
+            success_url: successUrl,
+            cancel_url: cancelUrl,
             client_reference_id: id,
         })
         .catch((e: any) => {
