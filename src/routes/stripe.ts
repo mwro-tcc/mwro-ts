@@ -30,6 +30,9 @@ router.post("/checkout-session", authenticationMiddleware(), async (req, res, ne
             success_url: "https://www.google.com",
             cancel_url: "https://www.google.com",
             client_reference_id: id,
+            metadata: {
+                userUuid: id
+            }
         })
         .catch((e: any) => {
             console.log(e)
