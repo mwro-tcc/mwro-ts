@@ -5,7 +5,6 @@ import stripePkg from "stripe";
 import { StripeWebhookEventType } from "../database/schema/stripe-events";
 import { makePgAdminSubscriptionsAdapter } from "../infra/database/admin-subscription";
 import { authenticationMiddleware } from "../middlewares/auth/auth";
-import { StatusError } from "../constants/StatusError";
 
 const router = express.Router();
 const envValues = getEnvValues();
@@ -44,6 +43,17 @@ router.post("/checkout-session", authenticationMiddleware(), async (req, res, ne
 
     res.status(200).send({ id: session.id, url: session.url });
 });
+
+
+router.post("/cancel-subscription", async (req, res, next) => {
+    const userId = req.user.id
+    try {
+        const subscription = await adminSubscriptionAdapter.getUserActiveSubscription(userId)
+        await stripe.subscriptions.cancel(subscription?.objectId)
+    } catch (e) {
+        next(e)
+    }
+})
 
 router.post("/webhook", express.raw({ type: "application/json" }), (req, res, next) => {
     const signature = req.headers["stripe-signature"];
