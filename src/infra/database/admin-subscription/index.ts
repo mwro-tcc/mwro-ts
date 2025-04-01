@@ -2,8 +2,9 @@ import { eq, desc, and, isNull, gte, sql, lte } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { databaseConnectionPool } from "../../../database";
 import { AdminSubscription, adminSubscriptions, NewAdminSubscription } from "../../../database/schema/admin-subscriptions";
+import { IAdminSubscriptionAdapter } from "./interface";
 
-class PgAdminSubscriptionsAdapter {
+class PgAdminSubscriptionsAdapter implements IAdminSubscriptionAdapter {
 	constructor(private readonly db: NodePgDatabase) { }
 	async create(input: NewAdminSubscription): Promise<AdminSubscription> {
 		const data = await this.db.insert(adminSubscriptions).values(input).returning();
@@ -36,8 +37,7 @@ class PgAdminSubscriptionsAdapter {
 		const creationEventUuid = input.creationEventUuid as string
 
 		try {
-			const row = await this.create({ objectId, creationEventUuid, ...input })
-			return row
+			await this.create({ objectId, creationEventUuid, ...input })
 		} catch (e) {
 			const existingRow = await this.findByObjectId(objectId)
 
