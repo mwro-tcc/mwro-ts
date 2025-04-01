@@ -1,10 +1,10 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { makePgAdminSubscriptionsAdapter } from "../../../infra/database/admin-subscription";
 import { IAdminSubscriptionAdapter } from "../../../infra/database/admin-subscription/interface";
-import { IAssureIsAdminUseCase as IAssureHasSubscriptionUseCase } from "./interface";
+import { IAssureHasActiveSubscriptionUseCase, } from "./interface";
 import { ErrorMessages, StatusError } from "../../../constants/StatusError";
 
-class AssureHasSubscriptionUseCase implements IAssureHasSubscriptionUseCase {
+class AssureHasSubscriptionUseCase implements IAssureHasActiveSubscriptionUseCase {
 	constructor(
 		private readonly adminSubscriptionAdapter: IAdminSubscriptionAdapter
 	) { }
