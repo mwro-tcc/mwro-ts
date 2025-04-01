@@ -3,6 +3,7 @@ import { TestDatabaseReseter } from "../../../services/TestDatabaseReseterServic
 import { makeCreateCommunityUseCase } from ".";
 import { CommunityCreationData } from "./types";
 import { TestDatabaseCommonValues } from "../../../constants/TestDatabaseSeedValues";
+import { ErrorMessages, StatusError } from "../../../constants/StatusError";
 
 const testDatabaseReseter = new TestDatabaseReseter();
 
@@ -27,5 +28,15 @@ describe("Community Creation UseCase test suite", () => {
         expect(community).toBeDefined();
         expect(creator).toBeDefined();
         expect(creator.userUuid).toBe(TestDatabaseCommonValues.user1.uuid);
+    });
+
+    it("It should block the creation of the community", async () => {
+        const testDbInstance = await testDatabaseReseter.returnTestDbInstance();
+        const createCommunityUseCase = makeCreateCommunityUseCase(testDbInstance);
+
+        await expect(createCommunityUseCase.execute({
+            creatorUserUuid: TestDatabaseCommonValues.user2.uuid,
+            communityData,
+        })).rejects.toThrow(new StatusError(400, ErrorMessages.userDontHaveSubscription));
     });
 });

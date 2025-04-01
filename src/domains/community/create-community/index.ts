@@ -5,15 +5,19 @@ import { ICommunityAdminAdapter } from "../../../infra/database/community-admin/
 import { ICommunityAdapter } from "../../../infra/database/community/interface";
 import { CreateCommunityUseCasePayload, CreateCommunityUseCaseReturn } from "./types";
 import { databaseConnectionPool } from "../../../database";
+import { IAssureHasActiveSubscriptionUseCase } from "../../user/assure-has-subscription/interface";
+import { makeAssureHasSubscriptionUseCase } from "../../user/assure-has-subscription";
 
 class CreateCommunityUseCase {
     constructor(
+        private readonly assureHasSubscription: IAssureHasActiveSubscriptionUseCase,
         private readonly communityAdapter: ICommunityAdapter,
         private readonly communityAdminAdapter: ICommunityAdminAdapter,
-    ) {}
+    ) { }
 
     async execute(payload: CreateCommunityUseCasePayload): Promise<CreateCommunityUseCaseReturn> {
-        //TODO after creating a subscription usecase, add the verification here.
+        await this.assureHasSubscription.execute(payload.creatorUserUuid)
+
         const community = await this.communityAdapter.create(payload.communityData);
         const communityCreator = await this.communityAdminAdapter.create({
             userUuid: payload.creatorUserUuid,
@@ -30,5 +34,5 @@ class CreateCommunityUseCase {
 }
 
 export function makeCreateCommunityUseCase(db: NodePgDatabase = databaseConnectionPool) {
-    return new CreateCommunityUseCase(makePgCommunityAdapter(db), makePgCommunityAdminAdapter(db));
+    return new CreateCommunityUseCase(makeAssureHasSubscriptionUseCase(db), makePgCommunityAdapter(db), makePgCommunityAdminAdapter(db));
 }
