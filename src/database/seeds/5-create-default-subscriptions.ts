@@ -18,7 +18,7 @@ const subscriptions: AdminSubscription[] = [
         uuid: "d12ade59-f4d3-4e49-85fb-dca2e8487882",
         objectId: "id-qlqr-de-subscription",
         startsAt: mockDate,
-        expiresAt: new Date("3000-00--00"),
+        expiresAt: new Date("3000-01--01"),
         userUuid: TestDatabaseCommonValues.user1.uuid,
         createdAt: mockDate,
         creationEventUuid: event.uuid,
