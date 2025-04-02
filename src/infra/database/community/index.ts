@@ -5,9 +5,11 @@ import { communitiesAdmins } from "../../../database/schema/communities-admins";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { databaseConnectionPool } from "../../../database";
 import { User, users } from "../../../database/schema/users";
+import { stores } from "../../../database/schema/stores";
+import { communitiesRequests } from "../../../database/schema/communities-requests";
 
 class PgCommunityAdapter implements ICommunityAdapter {
-    constructor(private readonly db: NodePgDatabase) {}
+    constructor(private readonly db: NodePgDatabase) { }
     async create(input: NewCommunity): Promise<Community> {
         const data = await this.db.insert(communities).values(input).returning();
         return data[0];
@@ -105,6 +107,28 @@ class PgCommunityAdapter implements ICommunityAdapter {
             .where(eq(communitiesAdmins.communityUuid, communityUuid))
             .then((data) => data.map((d) => d.user));
         return user;
+    }
+
+    // TODO refactor into own usecase
+    async deleteAllFromUser(userUuid: string): Promise<void> {
+        const adminRows = await this.db
+            .select()
+            .from(communitiesAdmins)
+            .where(eq(communitiesAdmins.userUuid, userUuid))
+
+        for (const row of adminRows) {
+            // deleting communityAdmin rows
+            await this.db.delete(communitiesAdmins).where(eq(communitiesAdmins.communityUuid, row.communityUuid));
+
+            // deleting communityRequests rows
+            await this.db.delete(communitiesRequests).where(eq(communitiesRequests.communityUuid, row.communityUuid));
+
+            // deleting the relation between stores and this community
+            await this.db.update(stores).set({ communityUuid: null }).where(eq(stores.communityUuid, row.communityUuid))
+
+            // deleting the community
+            await this.delete(row.userUuid)
+        }
     }
 }
 

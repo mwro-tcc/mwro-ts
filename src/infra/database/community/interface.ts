@@ -18,4 +18,5 @@ export interface ICommunityAdapter {
     ): Promise<Community[]>;
     getCommunityCreator(communityUuid: string): Promise<User>
     getCommunityAdmins(communityUuid: string): Promise<User[]>;
+    deleteAllFromUser(userUuid: string): Promise<void>
 }

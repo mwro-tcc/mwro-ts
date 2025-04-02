@@ -6,11 +6,14 @@ import { StripeWebhookEventType } from "../database/schema/stripe-events";
 import { makePgAdminSubscriptionsAdapter } from "../infra/database/admin-subscription";
 import { authenticationMiddleware } from "../middlewares/auth/auth";
 import { ErrorMessages, StatusError } from "../constants/StatusError";
+import { makePgCommunityAdapter } from "../infra/database/community";
 
 const router = express.Router();
 const envValues = getEnvValues();
 const stripeEventAdapter = makePgStripeEventAdapter();
 const adminSubscriptionAdapter = makePgAdminSubscriptionsAdapter();
+const communityAdapter = makePgCommunityAdapter()
+
 // @ts-ignore
 const stripe = stripePkg(envValues.STRIPE_SECRET_KEY);
 
@@ -103,9 +106,15 @@ async function handleEvent(event: any) {
 
         case StripeWebhookEventType.CustomerSubscriptionDeleted: {
             const objectId = event?.data?.object?.id;
+            const row = await adminSubscriptionAdapter.findByObjectId(objectId)
             await adminSubscriptionAdapter.updateByObjectId(objectId, {
                 cancelationEventUuid: createdEvent?.uuid,
             });
+
+            if (row && row.userUuid) {
+                await communityAdapter.deleteAllFromUser(row.userUuid)
+            }
+
             break;
         }
         default:
