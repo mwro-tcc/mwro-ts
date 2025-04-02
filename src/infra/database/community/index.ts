@@ -127,7 +127,7 @@ class PgCommunityAdapter implements ICommunityAdapter {
             await this.db.update(stores).set({ communityUuid: null }).where(eq(stores.communityUuid, row.communityUuid))
 
             // deleting the community
-            await this.delete(row.userUuid)
+            await this.delete(row.communityUuid)
         }
     }
 }
