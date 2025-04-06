@@ -11,6 +11,7 @@ router.get("/:uuid/products", authenticationMiddleware(), communityController.li
 router.get("/:uuid/stores", authenticationMiddleware(), communityController.listStores());
 router.post("/", authenticationMiddleware(), communityController.create());
 router.put("/:uuid", authenticationMiddleware(), communityController.update());
+router.post("/:uuid/kick-store", authenticationMiddleware(), communityController.kickStore());
 router.delete("/:uuid", authenticationMiddleware(), communityController.delete());
 
 export default router;

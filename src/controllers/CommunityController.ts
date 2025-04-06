@@ -16,6 +16,8 @@ import { makeGetStoreByIdUseCase } from "../domains/store/get-store-by-id";
 import { paginationParamsValidation } from "../validations/PaginationParamsValidation";
 import { makeParseProductRowsUseCase } from "../domains/product/parse-product-rows";
 import { makeGetCommunityByIdUseCase } from "../domains/community/get-by-id";
+import { makeKickStoreFromCommunityUseCase } from "../domains/community/kick-store";
+import { kickStoreSchema } from "../validations/KickStore";
 
 const createCommunity = makeCreateCommunityUseCase();
 const updateCommunity = makeUpdateCommunityUseCase();
@@ -27,6 +29,8 @@ const communityAdapter = makePgCommunityAdapter();
 const productAdapter = makePgProductAdapter(databaseConnectionPool);
 const storeAdapter = makePgStoreAdapter(databaseConnectionPool);
 const GetStoreUseCase = makeGetStoreByIdUseCase(databaseConnectionPool);
+
+const kickStoreUseCase = makeKickStoreFromCommunityUseCase(databaseConnectionPool)
 
 class CommunityController {
     list() {
@@ -154,6 +158,21 @@ class CommunityController {
                     return data
                 })
                 .then((data) => res.status(200).send(data))
+                .catch(next);
+        };
+    }
+
+    kickStore() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            return await validate(kickStoreSchema, req)
+                .then(async (validated) => {
+                    return await kickStoreUseCase.execute({
+                        communityUuid: validated.params.uuid,
+                        adminUuid: req.user.id
+                        storeUuid: validated.body.storeUuid,
+                    });
+                })
+                .then(() => res.status(204).send())
                 .catch(next);
         };
     }
