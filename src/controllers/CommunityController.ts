@@ -168,7 +168,7 @@ class CommunityController {
                 .then(async (validated) => {
                     return await kickStoreUseCase.execute({
                         communityUuid: validated.params.uuid,
-                        adminUuid: req.user.id
+                        adminUuid: req.user.id,
                         storeUuid: validated.body.storeUuid,
                     });
                 })
