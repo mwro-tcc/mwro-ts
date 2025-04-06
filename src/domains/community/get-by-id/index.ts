@@ -6,7 +6,7 @@ import { ICommunityAdapter } from "../../../infra/database/community/interface";
 import { databaseConnectionPool } from "../../../database";
 import { ErrorMessages, StatusError } from "../../../constants/StatusError";
 
-type CommunityWithLazyLoadedAssets = Community & {
+export type CommunityWithLazyLoadedAssets = Community & {
 	creator: User;
 	admins: User[];
 }
@@ -16,13 +16,13 @@ export function makeGetCommunityByIdUseCase(db: NodePgDatabase = databaseConnect
 		makePgCommunityAdapter(db)
 	);
 }
-class GetCommunityById {
+class GetCommunityById implements IGetCommunityByIdUseCase {
 	constructor(
 		private readonly communityAdapter: ICommunityAdapter,
 	) { }
 
-	async execute(storeUuid: string, loggedUserUuid: string): Promise<CommunityWithLazyLoadedAssets> {
-		const community = await this.communityAdapter.findByUuid(storeUuid);
+	async execute(communityUuid: string, loggedUserUuid: string): Promise<CommunityWithLazyLoadedAssets> {
+		const community = await this.communityAdapter.findByUuid(communityUuid);
 		if (!community) throw new StatusError(404, ErrorMessages.assetNotFound)
 
 
@@ -35,4 +35,6 @@ class GetCommunityById {
 	}
 }
 
-
+export interface IGetCommunityByIdUseCase {
+	execute(storeUuid: string, loggedUserUuid: string): Promise<CommunityWithLazyLoadedAssets>
+}

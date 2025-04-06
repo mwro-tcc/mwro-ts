@@ -11,12 +11,14 @@ import { makeGetAssetFavoriteStatus } from "../../favorite";
 import { IGetFavoriteStatus } from "../../favorite/interface";
 import { IReviewAdapter, makePgReviewAdapter } from "../../../infra/database/review";
 import { IGetStoreByUuid, StoreWithLazyLoadedAssets } from "./interface";
+import { User } from "../../../database/schema/users";
+import { CommunityWithLazyLoadedAssets, IGetCommunityByIdUseCase, makeGetCommunityByIdUseCase } from "../../community/get-by-id";
 
 class GetStoreById implements IGetStoreByUuid {
     constructor(
         private readonly getFavoriteStatus: IGetFavoriteStatus,
+        private readonly getCommunity: IGetCommunityByIdUseCase,
         private readonly storeAdapter: IStoreAdapter,
-        private readonly communityAdapter: ICommunityAdapter,
         private readonly userAdapter: IUserAdapter,
         private readonly reviewAdapter: IReviewAdapter,
     ) { }
@@ -32,9 +34,9 @@ class GetStoreById implements IGetStoreByUuid {
 
         ])
 
-        let community: Community | null = null;
+        let community: CommunityWithLazyLoadedAssets | null = null
         if (baseStore.communityUuid) {
-            community = await this.communityAdapter.findByUuid(baseStore.communityUuid);
+            community = await this.getCommunity.execute(baseStore.communityUuid, loggedUserUuid)
         }
 
         const owner = await this.userAdapter.findByUuid(baseStore.userUuid)
@@ -47,8 +49,8 @@ class GetStoreById implements IGetStoreByUuid {
 export function makeGetStoreByIdUseCase(db: NodePgDatabase = databaseConnectionPool) {
     return new GetStoreById(
         makeGetAssetFavoriteStatus(db),
+        makeGetCommunityByIdUseCase(db),
         makePgStoreAdapter(db),
-        makePgCommunityAdapter(db),
         makePgUserAdapter(db),
         makePgReviewAdapter(db)
     );
