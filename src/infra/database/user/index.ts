@@ -9,11 +9,12 @@ import {
 import { IUserAdapter } from "./interface";
 import { and, eq } from "drizzle-orm";
 import { databaseConnectionPool } from "../../../database";
+import { DrizzlePgTransaction } from "../../../database/TransactionManager";
 
 export type UserCreationPayload = Pick<User, "name" | "salt" | "email" | "password">;
 
 class PgUserAdapter implements IUserAdapter {
-    constructor(private readonly db: NodePgDatabase) {}
+    constructor(private readonly db: DrizzlePgTransaction) { }
     async create(payload: NewUser): Promise<User> {
         const data = await this.db.insert(users).values(payload).returning();
         return data[0];
